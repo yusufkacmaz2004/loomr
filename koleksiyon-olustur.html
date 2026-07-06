@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOOMR — Collection Builder</title>
+  <meta name="description" content="LOOMR Collection Builder — isim, sezon, pazar, fiyat, kumaş ve renk seçin; LOOMR koleksiyonunuzu oluştursun.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="wrap nav">
+      <a href="index.html" class="brand">LOOMR<span>.</span></a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html#vision">Vizyon</a></li>
+          <li><a href="lookbook.html">Lookbook</a></li>
+          <li><a href="kumas.html">Fabric Hub</a></li>
+          <li><a href="koleksiyon-olustur.html">Collection Builder</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <a href="app.html" class="btn btn--ghost">Workspace'e Gir</a>
+        <button class="nav-toggle" aria-label="Menü">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="wrap center">
+      <p class="eyebrow">Collection Builder</p>
+      <h1>Koleksiyonunu oluştur.</h1>
+      <p style="margin-inline:auto">Beş adımda parametreleri belirle — LOOMR koleksiyonun tamamını hazırlasın.</p>
+    </div>
+  </section>
+
+  <div class="wrap wizard" id="wizard">
+    <div class="wsteps">
+      <span data-s="1" class="on">01 · Kimlik</span>
+      <span data-s="2">02 · Pazar</span>
+      <span data-s="3">03 · Segment</span>
+      <span data-s="4">04 · Kumaş &amp; Renk</span>
+      <span data-s="5">05 · Özet</span>
+    </div>
+
+    <!-- ADIM 1 -->
+    <div class="wpanel" data-step="1">
+      <h2>Koleksiyonun kimliği</h2>
+      <p class="hint">Koleksiyonuna bir isim ver ve sezonunu seç.</p>
+      <div class="field">
+        <label for="cname">Koleksiyon Adı</label>
+        <input type="text" id="cname" placeholder="örn. Coastal Modern" maxlength="40">
+      </div>
+      <div class="field">
+        <label>Sezon</label>
+        <div class="opt-grid" data-group="sezon" data-single>
+          <div class="opt" data-v="SS27">SS27<small>İlkbahar / Yaz</small></div>
+          <div class="opt" data-v="AW27">AW27<small>Sonbahar / Kış</small></div>
+          <div class="opt" data-v="Resort 27">Resort 27<small>Cruise</small></div>
+          <div class="opt" data-v="SS28">SS28<small>İlkbahar / Yaz</small></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADIM 2 -->
+    <div class="wpanel" data-step="2" hidden>
+      <h2>Hedef pazar</h2>
+      <p class="hint">Koleksiyon hangi pazara ve kime hitap ediyor?</p>
+      <div class="field">
+        <label>Pazar</label>
+        <div class="opt-grid" data-group="pazar" data-single>
+          <div class="opt" data-v="Türkiye">Türkiye</div>
+          <div class="opt" data-v="Birleşik Krallık">Birleşik Krallık</div>
+          <div class="opt" data-v="Almanya">Almanya</div>
+          <div class="opt" data-v="İtalya">İtalya</div>
+          <div class="opt" data-v="Hollanda">Hollanda</div>
+          <div class="opt" data-v="Global">Global</div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Hedef Müşteri</label>
+        <div class="opt-grid" data-group="musteri" data-single>
+          <div class="opt" data-v="Premium Kadın">Premium Kadın<small>28–45</small></div>
+          <div class="opt" data-v="Premium Erkek">Premium Erkek<small>28–45</small></div>
+          <div class="opt" data-v="Unisex">Unisex<small>Modern minimal</small></div>
+          <div class="opt" data-v="Genç Contemporary">Genç Contemporary<small>20–30</small></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADIM 3 -->
+    <div class="wpanel" data-step="3" hidden>
+      <h2>Fiyat segmenti &amp; kapsam</h2>
+      <p class="hint">Segment, ürün başına hedef FOB maliyeti belirler.</p>
+      <div class="field">
+        <label>Segment</label>
+        <div class="opt-grid" data-group="segment" data-single>
+          <div class="opt" data-v="Contemporary">Contemporary<small>FOB $8–18</small></div>
+          <div class="opt" data-v="Premium">Premium<small>FOB $18–40</small></div>
+          <div class="opt" data-v="Luxury">Luxury<small>FOB $40+</small></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Ürün Adedi</label>
+        <div class="opt-grid" data-group="adet" data-single>
+          <div class="opt" data-v="6">6 ürün<small>Kapsül</small></div>
+          <div class="opt" data-v="9">9 ürün<small>Mini koleksiyon</small></div>
+          <div class="opt" data-v="12">12 ürün<small>Standart</small></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADIM 4 -->
+    <div class="wpanel" data-step="4" hidden>
+      <h2>Kumaş &amp; renk hikâyesi</h2>
+      <p class="hint">Birden fazla seçebilirsin — LOOMR ürünleri kumaşlara dağıtır.</p>
+      <div class="field">
+        <label>Kumaşlar <span style="color:var(--stone); text-transform:none">(Fabric Hub'dan)</span></label>
+        <div class="opt-grid" data-group="kumas">
+          <div class="opt" data-v="Saf Keten">Saf Keten<small>185 GSM · İzmir</small></div>
+          <div class="opt" data-v="Selvedge Denim">Selvedge Denim<small>13oz · Portekiz</small></div>
+          <div class="opt" data-v="Yün-Kaşmir">Yün-Kaşmir<small>380 GSM · Biella</small></div>
+          <div class="opt" data-v="İpek Şarmöz">İpek Şarmöz<small>19mm · Como</small></div>
+          <div class="opt" data-v="Donegal Tüvit">Donegal Tüvit<small>420 GSM · Bursa</small></div>
+          <div class="opt" data-v="Organik Poplin">Organik Poplin<small>120 GSM · Denizli</small></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Renk Paleti</label>
+        <div class="color-row" data-group="renk">
+          <div class="copt" data-v="Ecru" style="background:#E8DFC9" title="Ecru"></div>
+          <div class="copt" data-v="Kum" style="background:#D9CBB2" title="Kum"></div>
+          <div class="copt" data-v="Camel" style="background:#A97B50" title="Camel"></div>
+          <div class="copt" data-v="Burgundy" style="background:#5F1E27" title="Burgundy"></div>
+          <div class="copt" data-v="İndigo" style="background:#2C3A55" title="İndigo"></div>
+          <div class="copt" data-v="Zeytin" style="background:#6E7052" title="Zeytin"></div>
+          <div class="copt" data-v="Siyah" style="background:#141212" title="Siyah"></div>
+          <div class="copt" data-v="Beyaz" style="background:#F6F3EC" title="Beyaz"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADIM 5 -->
+    <div class="wpanel" data-step="5" hidden>
+      <h2>Özet</h2>
+      <p class="hint">Her şey hazır — kontrol et ve koleksiyonu oluştur.</p>
+      <dl class="spec-list" id="summary" style="grid-template-columns:1fr"></dl>
+    </div>
+
+    <div class="wnav">
+      <button class="btn btn--ghost" id="back" style="visibility:hidden">← Geri</button>
+      <button class="btn" id="next">Devam →</button>
+    </div>
+  </div>
+
+  <!-- SONUÇ -->
+  <div class="wrap" id="result" hidden>
+    <div class="result-head">
+      <p class="eyebrow">Koleksiyon Oluşturuldu</p>
+      <h1 class="h2" id="r-title"></h1>
+      <p class="muted" id="r-sub"></p>
+      <div class="result-meta" id="r-meta"></div>
+    </div>
+    <div class="product-grid" id="r-products"></div>
+    <div class="center" style="padding-bottom:4rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap">
+      <a class="btn" href="app.html">Workspace'te Aç</a>
+      <button class="btn btn--ghost" id="again">Yeni Koleksiyon</button>
+    </div>
+  </div>
+
+  <footer class="mini-footer">
+    LOOMR — Emre Korkmaz Textile Design Studio · İstanbul · Londra · Milano · Berlin
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    const state = { adim: 1, sezon: null, pazar: null, musteri: null, segment: null, adet: null, kumas: [], renk: [] };
+    const TOPLAM = 5;
+
+    // Seçim davranışı
+    document.querySelectorAll("[data-group]").forEach(g => {
+      g.addEventListener("click", e => {
+        const o = e.target.closest(".opt, .copt");
+        if (!o) return;
+        const key = g.dataset.group;
+        if (g.hasAttribute("data-single")) {
+          g.querySelectorAll(".sel").forEach(x => x.classList.remove("sel"));
+          o.classList.add("sel");
+          state[key] = o.dataset.v;
+        } else {
+          o.classList.toggle("sel");
+          state[key] = [...g.querySelectorAll(".sel")].map(x => x.dataset.v);
+        }
+      });
+    });
+
+    const panels = document.querySelectorAll(".wpanel");
+    const steps = document.querySelectorAll(".wsteps span");
+    const back = document.getElementById("back");
+    const next = document.getElementById("next");
+
+    function goto(n) {
+      state.adim = n;
+      panels.forEach(p => p.hidden = +p.dataset.step !== n);
+      steps.forEach(s => {
+        s.classList.toggle("on", +s.dataset.s === n);
+        s.classList.toggle("done", +s.dataset.s < n);
+      });
+      back.style.visibility = n === 1 ? "hidden" : "visible";
+      next.textContent = n === TOPLAM ? "✦ Koleksiyonu Oluştur" : "Devam →";
+      if (n === TOPLAM) renderSummary();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function valid(n) {
+      if (n === 1) return document.getElementById("cname").value.trim() && state.sezon;
+      if (n === 2) return state.pazar && state.musteri;
+      if (n === 3) return state.segment && state.adet;
+      if (n === 4) return state.kumas.length && state.renk.length;
+      return true;
+    }
+
+    function renderSummary() {
+      const ad = document.getElementById("cname").value.trim();
+      document.getElementById("summary").innerHTML = [
+        ["Koleksiyon", `${ad} — ${state.sezon}`],
+        ["Pazar", `${state.pazar} · ${state.musteri}`],
+        ["Segment", `${state.segment} · ${state.adet} ürün`],
+        ["Kumaşlar", state.kumas.join(", ")],
+        ["Renk Paleti", state.renk.join(" · ")],
+      ].map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("");
+    }
+
+    next.addEventListener("click", () => {
+      if (!valid(state.adim)) {
+        next.textContent = "Lütfen seçimleri tamamla ✗";
+        setTimeout(() => next.textContent = state.adim === TOPLAM ? "✦ Koleksiyonu Oluştur" : "Devam →", 1400);
+        return;
+      }
+      if (state.adim < TOPLAM) goto(state.adim + 1);
+      else generate();
+    });
+    back.addEventListener("click", () => goto(state.adim - 1));
+
+    // ---- Koleksiyon üretimi ----
+    const SABLON = {
+      "Premium Kadın":     ["Oversize Gömlek", "Bol Paça Pantolon", "Blazer", "Slip Elbise", "Midi Etek", "Trençkot", "Triko Kazak", "Yelek", "Crop Ceket", "Anvelop Elbise", "Palto", "Bluz"],
+      "Premium Erkek":     ["Oversize Gömlek", "Pileli Pantolon", "Blazer", "Overshirt", "Polo Triko", "Trençkot", "Balıkçı Kazak", "Yelek", "Bomber Ceket", "Chino", "Palto", "Tişört"],
+      "Unisex":            ["Oversize Gömlek", "Geniş Pantolon", "Boxy Blazer", "Overshirt", "Sweatshirt", "Kaban", "Triko", "Yelek", "Ceket", "Kargo Pantolon", "Palto", "Tişört"],
+      "Genç Contemporary": ["Crop Gömlek", "Baggy Pantolon", "Boxy Ceket", "Mini Etek", "Grafik Triko", "Puffer", "Hoodie", "Yelek", "Denim Ceket", "Kargo", "Mont", "Tişört"],
+    };
+    const FOB = { Contemporary: [8, 18], Premium: [18, 40], Luxury: [40, 75] };
+    const GORSEL = {
+      Ecru: ["img/redwall-vest.png", "img/redwall-wrap.png", "img/collection-summer.png"],
+      Kum: ["img/redwall-knot.jpg", "img/collection-oversize-2026.png", "img/collection-tailored.png"],
+      Camel: ["img/cold-elegance-camel.jpg", "img/cold-elegance-portrait.png", "img/collection-urban-relax.png"],
+      Burgundy: ["img/cold-elegance-stool.jpg", "img/editorial-classic-lines.png", "img/editorial-she-walks.jpg"],
+      "İndigo": ["img/redwall-navy.png", "img/refined-relaxation.png", "img/collection-denim-2026.png"],
+      Zeytin: ["img/look-tweed-suit.png", "img/portrait-tweed.png", "img/collection-london.png"],
+      Siyah: ["img/editorial-success.jpg", "img/collection-classic-2027.png", "img/collection-winter.png"],
+      Beyaz: ["img/collection-cropped.png", "img/redwall-slit.png", "img/hero-editorial.jpg"],
+    };
+
+    function generate() {
+      const ad = document.getElementById("cname").value.trim();
+      const n = +state.adet;
+      const urunler = (SABLON[state.musteri] || SABLON["Unisex"]).slice(0, n);
+      const [lo, hi] = FOB[state.segment];
+      const havuz = state.renk.flatMap(r => GORSEL[r] || []);
+      const items = urunler.map((u, i) => {
+        const kumas = state.kumas[i % state.kumas.length];
+        const renk = state.renk[i % state.renk.length];
+        const fob = (lo + Math.random() * (hi - lo)).toFixed(2);
+        const img = havuz[i % havuz.length];
+        return { u, kumas, renk, fob, img };
+      });
+
+      const toplam = items.reduce((s, x) => s + +x.fob, 0);
+
+      document.getElementById("r-title").textContent = `${ad} — ${state.sezon}`;
+      document.getElementById("r-sub").textContent =
+        `${state.segment} · ${state.musteri} · ${state.pazar} pazarı için ${n} ürünlük koleksiyon`;
+      document.getElementById("r-meta").innerHTML = `
+        <div><span class="n">${n}</span><span class="l">Ürün</span></div>
+        <div><span class="n">${state.kumas.length}</span><span class="l">Kumaş</span></div>
+        <div><span class="n">${state.renk.length}</span><span class="l">Renk</span></div>
+        <div><span class="n">$${toplam.toFixed(0)}</span><span class="l">Toplam FOB</span></div>
+        <div><span class="n">~6 hf</span><span class="l">Tahmini Termin</span></div>`;
+      document.getElementById("r-products").innerHTML = items.map(x => `
+        <article class="product-card">
+          <img src="${x.img}" alt="${x.u}" loading="lazy">
+          <div class="pbody">
+            <h4>${x.u}</h4>
+            <div class="pfab">${x.kumas} · ${x.renk}</div>
+            <div class="pcost">Hedef FOB $${x.fob}</div>
+          </div>
+        </article>`).join("");
+
+      // localStorage'a kaydet
+      const kayit = { ad, ...state, items, tarih: new Date().toISOString() };
+      const eski = JSON.parse(localStorage.getItem("loomr-koleksiyonlar") || "[]");
+      eski.push(kayit);
+      localStorage.setItem("loomr-koleksiyonlar", JSON.stringify(eski));
+
+      document.getElementById("wizard").hidden = true;
+      document.querySelector(".page-hero").hidden = true;
+      document.getElementById("result").hidden = false;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    document.getElementById("again").addEventListener("click", () => location.reload());
+  </script>
+</body>
+</html>
