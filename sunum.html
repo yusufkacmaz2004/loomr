@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOOMR — Sunum</title>
+  <meta name="description" content="LOOMR tanıtım sunumu — Moda Markalarının İşletim Sistemi.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
+  <style>
+    :root{
+      --wine:#8E2430; --wine-d:#5F161F; --wine-xd:#3D0E14;
+      --gold:#C2A05E; --gold-l:#DCC391;
+      --cream:#F6F1E7; --stone:#A89F90; --ink:#1C1414;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{height:100%;overflow:hidden;background:var(--wine-xd)}
+    body{font-family:'Inter',sans-serif;color:var(--cream)}
+    .serif{font-family:'Fraunces',serif;font-weight:300}
+    em{font-family:'Fraunces',serif;font-style:italic;color:var(--gold-l)}
+
+    .deck{height:100%;position:relative}
+    .slide{
+      position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+      padding:clamp(2rem,6vw,6rem);opacity:0;visibility:hidden;transform:translateY(24px);
+      transition:opacity .55s ease,transform .55s ease,visibility .55s;
+      background:linear-gradient(150deg,var(--wine-d),var(--wine-xd) 70%);
+      overflow:hidden;
+    }
+    .slide.on{opacity:1;visibility:visible;transform:none}
+    .slide--light{background:var(--cream);color:var(--ink)}
+    .slide--light .muted{color:#6b6257}
+    .slide--light .eyebrow{color:var(--wine)}
+
+    .eyebrow{font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem}
+    .display{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(2.2rem,6vw,4.6rem);line-height:1.06}
+    .h2{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(1.7rem,4vw,3.1rem);line-height:1.12}
+    .lede{font-size:clamp(.95rem,1.6vw,1.15rem);line-height:1.65;max-width:56ch;color:var(--stone);margin-top:1.4rem}
+    .slide--light .lede{color:#6b6257}
+    .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(2rem,5vw,5rem);align-items:center}
+
+    .imgbox{border-radius:6px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+    .imgbox img{width:100%;height:100%;object-fit:cover;display:block}
+
+    .hero-meta{display:flex;gap:2.6rem;margin-top:2.4rem}
+    .hero-meta .n{font-family:'Fraunces',serif;font-size:2.2rem;color:var(--gold-l);display:block}
+    .hero-meta .l{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--stone)}
+
+    .compare{display:flex;flex-direction:column;gap:.55rem;margin-top:1.8rem}
+    .compare div{display:flex;gap:1.2rem;align-items:baseline;border-bottom:1px solid rgba(194,160,94,.25);padding-bottom:.55rem}
+    .compare b{font-family:'Fraunces',serif;font-weight:400;font-size:1.05rem;min-width:6.5rem;color:var(--gold-l)}
+    .compare span{font-size:.85rem;color:var(--stone)}
+
+    .modgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:.6rem;margin-top:2.2rem}
+    .mod{border:1px solid rgba(194,160,94,.3);border-radius:4px;padding:.8rem .7rem;background:rgba(0,0,0,.18)}
+    .mod .n{font-size:.62rem;color:var(--gold);letter-spacing:.12em}
+    .mod h4{font-family:'Fraunces',serif;font-weight:400;font-size:.86rem;margin-top:.3rem;line-height:1.25}
+
+    .pillars{display:flex;flex-direction:column;gap:1.1rem;margin-top:2rem}
+    .pillar{display:grid;grid-template-columns:3.2rem 15rem 1fr;gap:1.4rem;align-items:baseline;border-bottom:1px solid rgba(142,36,48,.25);padding-bottom:1rem}
+    .pillar .no{font-family:'Fraunces',serif;color:var(--wine);font-size:1.2rem}
+    .pillar h3{font-family:'Fraunces',serif;font-weight:400;font-size:1.25rem}
+    .pillar p{font-size:.9rem;color:#6b6257;line-height:1.5}
+
+    .collage{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin-top:2rem}
+    .collage figure{border-radius:4px;overflow:hidden;aspect-ratio:3/4;position:relative}
+    .collage img{width:100%;height:100%;object-fit:cover;display:block}
+    .collage figcaption{position:absolute;left:0;right:0;bottom:0;padding:.9rem .8rem .6rem;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;background:linear-gradient(transparent,rgba(0,0,0,.75));color:var(--cream)}
+
+    .quote{font-family:'Fraunces',serif;font-style:italic;font-weight:300;font-size:clamp(1.5rem,3.4vw,2.6rem);line-height:1.3;max-width:24ch}
+    .sig{margin-top:2rem;font-size:.75rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+
+    .flow{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:2.2rem}
+    .flow span{border:1px solid var(--gold);border-radius:999px;padding:.45rem 1.1rem;font-size:.8rem;letter-spacing:.08em;color:var(--gold-l)}
+    .flow span:last-child{background:var(--gold);color:var(--wine-xd);font-weight:600}
+
+    ul.plain{list-style:none;margin-top:1.4rem;display:flex;flex-direction:column;gap:.55rem}
+    ul.plain li{padding-left:1.4rem;position:relative;font-size:.95rem;color:var(--stone);line-height:1.5}
+    ul.plain li::before{content:"—";position:absolute;left:0;color:var(--gold)}
+    .slide--light ul.plain li{color:#5c5348}
+    .slide--light ul.plain li::before{color:var(--wine)}
+
+    .roadmap{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:2.4rem}
+    .step{border-top:2px solid var(--gold);padding-top:1rem}
+    .step .t{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem}
+    .step h4{font-family:'Fraunces',serif;font-weight:400;font-size:1.1rem;margin-bottom:.4rem}
+    .step p{font-size:.82rem;color:var(--stone);line-height:1.5}
+    .step.done{border-color:var(--gold-l)}
+    .step.done .t::after{content:" ✓"}
+
+    .url{display:inline-block;margin-top:2.2rem;border:1px solid var(--gold);border-radius:999px;padding:.7rem 1.6rem;color:var(--gold-l);font-size:.95rem;letter-spacing:.04em;text-decoration:none}
+
+    .hud{position:fixed;bottom:1.4rem;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:0 2rem;z-index:10;pointer-events:none}
+    .hud .brand{font-family:'Fraunces',serif;font-size:.95rem;letter-spacing:.14em;color:var(--gold);opacity:.85}
+    .dots{display:flex;gap:.45rem;pointer-events:auto}
+    .dots button{width:.5rem;height:.5rem;border-radius:50%;border:1px solid var(--gold);background:transparent;cursor:pointer;padding:0}
+    .dots button.on{background:var(--gold)}
+    .hud .count{font-size:.72rem;letter-spacing:.2em;color:var(--stone)}
+    .hint{position:fixed;top:1.4rem;right:2rem;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,241,231,.45);z-index:10}
+
+    .bgimg{position:absolute;inset:0;z-index:0}
+    .bgimg img{width:100%;height:100%;object-fit:cover;opacity:.22;display:block}
+    .slide>.wrapz{position:relative;z-index:1}
+
+    @media (max-width:900px){
+      .grid2{grid-template-columns:1fr}
+      .grid2 .imgbox{display:none}
+      .modgrid{grid-template-columns:repeat(3,1fr)}
+      .collage{grid-template-columns:repeat(2,1fr)}
+      .roadmap{grid-template-columns:repeat(2,1fr)}
+      .pillar{grid-template-columns:2.4rem 1fr;grid-template-rows:auto auto}
+      .pillar p{grid-column:2}
+      .hint{display:none}
+    }
+  </style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- 1 · KAPAK -->
+  <section class="slide on">
+    <div class="bgimg"><img src="img/redwall-standing.png" alt=""></div>
+    <div class="wrapz">
+      <p class="eyebrow">Tanıtım Sunumu · 2026</p>
+      <h1 class="display">LOOMR<span style="color:var(--gold)">.</span><br>Moda Markalarının<br><em>İşletim Sistemi</em></h1>
+      <p class="lede">Bir markanın ihtiyacı olan her şey — ilk eskizden mağaza rafına — tek platformda.</p>
+      <div class="hero-meta">
+        <div><span class="n">18</span><span class="l">Modül</span></div>
+        <div><span class="n">7+</span><span class="l">Tedarik Ülkesi</span></div>
+        <div><span class="n">1</span><span class="l">Platform</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · PROBLEM -->
+  <section class="slide slide--light">
+    <div class="grid2">
+      <div>
+        <p class="eyebrow">Problem</p>
+        <h2 class="h2">Bir koleksiyon çıkarmak,<br>on ayrı aracı yönetmek demek.</h2>
+        <p class="lede">Bugün bir moda markası; tasarımı bir yerde, kumaş tedarikini başka yerde, üretim takibini e-posta ve Excel'de, showroom'u ise bambaşka bir kanalda yürütüyor.</p>
+        <ul class="plain">
+          <li>Moodboard'lar Pinterest'te, tech pack'ler mailde kayboluyor</li>
+          <li>Kumaş numuneleri haftalar süren yazışmalarla ilerliyor</li>
+          <li>Üretim durumu "fabrikayı arayınca" öğreniliyor</li>
+          <li>Koleksiyon verisi hiçbir yerde birikmiyor</li>
+        </ul>
+      </div>
+      <div class="imgbox"><img src="img/bts-camera.jpg" alt="Kamera arkası"></div>
+    </div>
+  </section>
+
+  <!-- 3 · ÇÖZÜM / VİZYON -->
+  <section class="slide">
+    <div class="grid2">
+      <div>
+        <p class="eyebrow">Çözüm</p>
+        <h2 class="h2">Bir tekstil uygulaması değil.<br><em>Bir işletim sistemi.</em></h2>
+        <p class="lede">LOOMR, markanın tüm yaşam döngüsünü tek sistemde birleştirir — bir stüdyonun tasarım zekâsı, bir ERP'nin yapısı, bir pazaryerinin keşif gücüyle.</p>
+      </div>
+      <div class="compare">
+        <div><b>SAP</b><span>Üretim, sipariş ve operasyon omurgası</span></div>
+        <div><b>Pinterest</b><span>Moodboard, trend panoları, görsel keşif</span></div>
+        <div><b>Notion</b><span>Çalışma alanları, onaylar, bilgi yönetimi</span></div>
+        <div><b>Figma</b><span>Ortak tasarım, teknik çizim, tech pack</span></div>
+        <div><b>Alibaba</b><span>Küresel tedarik, üreticiler, aksesuarlar</span></div>
+        <div><b>PLM</b><span>Ürün yaşam döngüsü — konseptten sevkiyata</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · EKOSİSTEM -->
+  <section class="slide">
+    <p class="eyebrow">LOOMR Ekosistemi</p>
+    <h2 class="h2">On sekiz modül. <em>Tek işletim sistemi.</em></h2>
+    <div class="modgrid">
+      <div class="mod"><span class="n">01</span><h4>Design Hub</h4></div>
+      <div class="mod"><span class="n">02</span><h4>Fabric Hub</h4></div>
+      <div class="mod"><span class="n">03</span><h4>Garment Development</h4></div>
+      <div class="mod"><span class="n">04</span><h4>Collection Builder</h4></div>
+      <div class="mod"><span class="n">05</span><h4>Dijital Showroom</h4></div>
+      <div class="mod"><span class="n">06</span><h4>Sourcing</h4></div>
+      <div class="mod"><span class="n">07</span><h4>Tedarikçi Ağı</h4></div>
+      <div class="mod"><span class="n">08</span><h4>Marka Geliştirme</h4></div>
+      <div class="mod"><span class="n">09</span><h4>Production Live</h4></div>
+      <div class="mod"><span class="n">10</span><h4>Quality Hub</h4></div>
+      <div class="mod"><span class="n">11</span><h4>Trend Intelligence</h4></div>
+      <div class="mod"><span class="n">12</span><h4>AI Asistan</h4></div>
+      <div class="mod"><span class="n">13</span><h4>Markam</h4></div>
+      <div class="mod"><span class="n">14</span><h4>Belge Merkezi</h4></div>
+      <div class="mod"><span class="n">15</span><h4>İletişim</h4></div>
+      <div class="mod"><span class="n">16</span><h4>LOOMR Akademi</h4></div>
+      <div class="mod"><span class="n">17</span><h4>Marketplace</h4></div>
+      <div class="mod"><span class="n">18</span><h4>Analitik</h4></div>
+    </div>
+  </section>
+
+  <!-- 5 · TEMEL SÜTUNLAR -->
+  <section class="slide slide--light">
+    <p class="eyebrow">Temel Sütunlar</p>
+    <h2 class="h2">Bir markanın ihtiyacı olan her şey.</h2>
+    <div class="pillars">
+      <div class="pillar"><span class="no">01</span><h3>Design Hub</h3><p>Moodboard'dan teknik çizime tüm tasarım süreci — yapay zekâ destekli.</p></div>
+      <div class="pillar"><span class="no">02</span><h3>Fabric Hub</h3><p>Her kumaş yaşayan bir kayıt: kompozisyon, GSM, sertifikalar, canlı stok, numune talebi.</p></div>
+      <div class="pillar"><span class="no">03</span><h3>Collection Builder</h3><p>Sezon, pazar, fiyat ve kumaş girin — LOOMR koleksiyonun tamamını hazırlar.</p></div>
+      <div class="pillar"><span class="no">04</span><h3>Production Live</h3><p>Kalıp → numune → kesim → dikim → kalite kontrol → sevkiyat, gerçek zamanlı.</p></div>
+      <div class="pillar"><span class="no">05</span><h3>Tedarikçi Ağı</h3><p>Türkiye, İtalya, Portekiz, Çin, Hindistan, Bangladeş, Vietnam — doğrulanmış fabrikalar.</p></div>
+    </div>
+  </section>
+
+  <!-- 6 · DİJİTAL SHOWROOM -->
+  <section class="slide">
+    <p class="eyebrow">Dijital Showroom</p>
+    <h2 class="h2">Koleksiyonlar <em>podyumda.</em></h2>
+    <div class="collage">
+      <figure><img src="img/collection-summer-2026.png" alt="Summer 2026"><figcaption>Summer 2026 · Resort</figcaption></figure>
+      <figure><img src="img/collection-denim-2026.png" alt="Denim 2026"><figcaption>Denim 2026 · Premium</figcaption></figure>
+      <figure><img src="img/cold-elegance-camel.jpg" alt="Cold Elegance"><figcaption>Cold Elegance · AW</figcaption></figure>
+      <figure><img src="img/collection-london.png" alt="London AW26"><figcaption>London AW26</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- 7 · WORKSPACE -->
+  <section class="slide slide--light">
+    <div class="grid2">
+      <div>
+        <p class="eyebrow">LOOMR Workspace</p>
+        <h2 class="h2">Her markaya özel<br>bir komuta merkezi.</h2>
+        <p class="lede">Her müşteriye özel dijital çalışma alanı: koleksiyonlar, tasarımlar, kumaşlar, numuneler, revizeler, onaylar, üretim ve sevkiyat — tek ekrandan.</p>
+        <ul class="plain">
+          <li>Canlı demo: <strong>Atelier Nord / SS27</strong> çalışma alanı</li>
+          <li>Menü grupları: Tasarla · Üret · Büyüt · Yönet</li>
+          <li>Ürün bazında durum: "Numune V2", "Dikimde", "KK Geçti"</li>
+        </ul>
+      </div>
+      <div class="imgbox"><img src="img/collection-urban-relax.png" alt="Urban Relax — Pantone kartela"></div>
+    </div>
+  </section>
+
+  <!-- 8 · AI -->
+  <section class="slide">
+    <p class="eyebrow">AI Asistan</p>
+    <p class="quote">"Premium bir SS27 koleksiyonu için bana 15 keten gömlek tasarla."</p>
+    <div class="flow">
+      <span>Eskizler</span><span>Kumaşlar</span><span>Renk Alternatifleri</span><span>Tech Pack</span><span>Maliyet</span><span>Hazır.</span>
+    </div>
+  </section>
+
+  <!-- 9 · MARKETPLACE + AKADEMİ -->
+  <section class="slide">
+    <div class="grid2" style="align-items:start">
+      <div>
+        <p class="eyebrow">LOOMR Marketplace</p>
+        <h2 class="h2">Satın al. Sat. <em>Lisansla.</em></h2>
+        <ul class="plain">
+          <li>Üretime hazır koleksiyonlar</li>
+          <li>Teknik çizimler &amp; kalıplar</li>
+          <li>Kumaşlar &amp; baskı desenleri</li>
+          <li>Moodboard'lar &amp; trend raporları</li>
+        </ul>
+      </div>
+      <div>
+        <p class="eyebrow">LOOMR Akademi</p>
+        <h2 class="h2">Zanaatı <em>öğren.</em></h2>
+        <ul class="plain">
+          <li>Moda tasarımı &amp; kalıp yapımı</li>
+          <li>Kumaş bilgisi &amp; konfeksiyon teknikleri</li>
+          <li>Koleksiyon planlama &amp; merchandising</li>
+          <li>Marka kurma &amp; lüks perakende</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 · STÜDYO -->
+  <section class="slide">
+    <div class="bgimg"><img src="img/editorial-classic-lines.png" alt=""></div>
+    <div class="wrapz">
+      <p class="eyebrow">Arkasındaki Stüdyo</p>
+      <p class="quote">"Klasik çizgiler. Sessiz özgüven.<br>O yürür — oda dinler."</p>
+      <p class="lede">LOOMR'ın kalbinde gerçek bir tasarım stüdyosu var. Her kampanya, platformdaki Design Hub'dan Dijital Showroom'a uzanan sürecin ürünü.</p>
+      <p class="sig">Emre Korkmaz — Textile Design Studio · Tasarımcı: Funda Korkmaz<br><span style="color:var(--stone);letter-spacing:.14em">İstanbul · Londra · Milano · Berlin</span></p>
+    </div>
+  </section>
+
+  <!-- 11 · DURUM & YOL HARİTASI -->
+  <section class="slide slide--light">
+    <p class="eyebrow">Bugün Neredeyiz</p>
+    <h2 class="h2">v1 yayında. Sırada büyüme var.</h2>
+    <div class="roadmap">
+      <div class="step done"><div class="t">Tamamlandı</div><h4>v1 Platform</h4><p>Landing, workspace demosu, lookbook (33 görsel), Fabric Hub, 5 adımlı Collection Builder.</p></div>
+      <div class="step"><div class="t">Sırada</div><h4>Performans &amp; Dil</h4><p>Görsel optimizasyonu (WebP), TR/EN dil değiştirici.</p></div>
+      <div class="step"><div class="t">Yakında</div><h4>Canlı Veri</h4><p>Workspace'in oluşturulan koleksiyonları göstermesi; kullanıcı hesapları.</p></div>
+      <div class="step"><div class="t">Vizyon</div><h4>Gerçek Backend</h4><p>Tedarikçi ağı, marketplace ve üretim takibinin gerçek operasyonlara bağlanması.</p></div>
+    </div>
+  </section>
+
+  <!-- 12 · KAPANIŞ -->
+  <section class="slide">
+    <div class="bgimg"><img src="img/redwall-slit.png" alt=""></div>
+    <div class="wrapz">
+      <p class="eyebrow">Fikirden Üretime</p>
+      <h2 class="display">Markalar koleksiyonlarını<br><em>burada kurar.</em></h2>
+      <p class="lede">Platform şimdi çevrimiçi — her cihazdan inceleyin.</p>
+      <a class="url" href="https://yusufkacmaz2004.github.io/loomr/">yusufkacmaz2004.github.io/loomr</a>
+    </div>
+  </section>
+
+</div>
+
+<div class="hint">← → ile gezin</div>
+<div class="hud">
+  <span class="brand">LOOMR.</span>
+  <div class="dots" id="dots"></div>
+  <span class="count" id="count">01 / 12</span>
+</div>
+
+<script>
+(function(){
+  var slides = document.querySelectorAll('.slide');
+  var dotsBox = document.getElementById('dots');
+  var count = document.getElementById('count');
+  var i = 0;
+
+  slides.forEach(function(_, k){
+    var b = document.createElement('button');
+    b.setAttribute('aria-label','Slayt ' + (k+1));
+    b.addEventListener('click', function(){ go(k); });
+    dotsBox.appendChild(b);
+  });
+  var dots = dotsBox.querySelectorAll('button');
+
+  function pad(n){ return (n<10?'0':'')+n; }
+  function go(k){
+    if(k<0 || k>=slides.length) return;
+    slides[i].classList.remove('on');
+    dots[i].classList.remove('on');
+    i = k;
+    slides[i].classList.add('on');
+    dots[i].classList.add('on');
+    count.textContent = pad(i+1) + ' / ' + pad(slides.length);
+  }
+  dots[0].classList.add('on');
+
+  document.addEventListener('keydown', function(e){
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ') go(i+1);
+    if(e.key==='ArrowLeft'||e.key==='PageUp') go(i-1);
+    if(e.key==='Home') go(0);
+    if(e.key==='End') go(slides.length-1);
+  });
+  document.addEventListener('click', function(e){
+    if(e.target.closest('a, button')) return;
+    go(i+1);
+  });
+  var x0 = null;
+  document.addEventListener('touchstart', function(e){ x0 = e.touches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if(x0===null) return;
+    var dx = e.changedTouches[0].clientX - x0;
+    if(Math.abs(dx) > 50) go(dx < 0 ? i+1 : i-1);
+    x0 = null;
+  }, {passive:true});
+})();
+</script>
+</body>
+</html>
