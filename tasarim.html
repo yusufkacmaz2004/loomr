@@ -83,12 +83,6 @@
       <h4>Özet</h4>
       <div class="spec-mini" id="summary"></div>
 
-      <h4>Gerçek Doku Referansı</h4>
-      <a id="refLink" href="lookbook.html" target="_blank" rel="noopener" style="display:block;border:1px solid var(--line);border-radius:6px;overflow:hidden">
-        <img id="refImg" alt="Foto-gerçek ürün referansı" style="width:100%;display:block;aspect-ratio:4/3;object-fit:cover;background:var(--paper-2)">
-      </a>
-      <p style="font-size:.68rem;color:var(--stone);margin:.4rem 0 0">Seçtiğin yapıya göre foto-gerçek örnek — kumaşın gerçekte nasıl durduğunu gösterir.</p>
-
       <div class="studio__cta">
         <button class="btn" id="toTechpack">Teknik Föye Geç →</button>
         <button class="btn btn--ghost" id="saveDesign">Tasarımı Kaydet</button>
@@ -274,19 +268,9 @@
       renderSummary();
     }
 
-    // seçime göre foto-gerçek referans görseli
-    const REF_IMG = {
-      "denim-ceket": "img/urun/denim-set.png", "denim-pantolon": "img/urun/denim-set.png",
-      "denim-short": "img/urun/denim-set.png", "denim-gomlek": "img/urun/denim-set.png",
-      "dokuma-ceket": "img/urun/navy-blazer.png", "dokuma-pantolon": "img/urun/grey-suit.png",
-      "dokuma-short": "img/urun/beige-linen-suit.png", "dokuma-gomlek": "img/urun/white-cropped-suit.png",
-    };
-
     function renderSummary() {
       const { garment: g, fabric: f, color: c } = state;
       if (!g) return;
-      const ref = REF_IMG[g.id] || "img/urun/grey-suit.png";
-      document.getElementById("refImg").src = ref;
       document.getElementById("summary").innerHTML = [
         ["Ürün", g.ad],
         ["Yapı", g.construction === "denim" ? "Denim" : "Dokuma"],
