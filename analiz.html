@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOOMR — Analitik</title>
+  <meta name="description" content="LOOMR Analitik — tasarımların, teknik föylerin, koleksiyonların ve numunelerin canlı özeti.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
+  <style>
+    .an-kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:6px; overflow:hidden; margin-bottom:2rem; }
+    .an-kpi { background:var(--white); padding:1.3rem 1.4rem; }
+    .an-kpi .v { font-family:var(--serif); font-size:2.2rem; line-height:1; }
+    .an-kpi .t { font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--stone); margin-top:.4rem; }
+    .an-grid { display:grid; gap:1.2rem; grid-template-columns:1fr; }
+    @media(min-width:820px){ .an-grid { grid-template-columns:1fr 1fr; } }
+    .an-card { background:var(--white); border:1px solid var(--line); border-radius:8px; padding:1.4rem 1.5rem; }
+    .an-card h3 { font-size:1.15rem; margin:0 0 1.1rem; }
+    .bar-row { display:grid; grid-template-columns:8.5rem 1fr 2rem; align-items:center; gap:.7rem; margin-bottom:.6rem; font-size:.85rem; }
+    .bar-row .lbl { color:var(--ink-soft); }
+    .bar-track { background:var(--paper-2); border-radius:100px; height:12px; overflow:hidden; }
+    .bar-fill { height:100%; border-radius:100px; transition:width .8s var(--ease); }
+    .bar-row .num { font-weight:600; text-align:right; }
+    .an-empty { text-align:center; padding:3rem 1rem; color:var(--stone); }
+    .an-legend { display:flex; gap:1.2rem; flex-wrap:wrap; margin-top:1rem; font-size:.8rem; }
+    .an-legend span { display:flex; align-items:center; gap:.4rem; }
+    .an-legend i { width:12px; height:12px; border-radius:3px; display:inline-block; }
+    .donut-wrap { display:flex; align-items:center; gap:1.6rem; flex-wrap:wrap; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap nav">
+      <a href="index.html" class="brand">LOOMR<span>.</span></a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html#vision">Vizyon</a></li>
+          <li><a href="tasarim.html">Design Studio</a></li>
+          <li><a href="kumas.html">Fabric Hub</a></li>
+          <li><a href="lookbook.html">Lookbook</a></li>
+          <li><a href="koleksiyon-olustur.html">Collection Builder</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <a href="giris.html" class="btn btn--ghost">Workspace'e Gir</a>
+        <button class="nav-toggle" aria-label="Menü">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">Analitik</p>
+      <h1>Çalışmanın nabzı.</h1>
+      <p>Tasarımların, teknik föylerin, koleksiyonların ve numune taleplerin — canlı özet.</p>
+    </div>
+  </section>
+
+  <div class="wrap" style="padding-bottom:4rem">
+    <div id="anContent"></div>
+  </div>
+
+  <footer class="mini-footer">
+    LOOMR — Emre Korkmaz Textile Design Studio · İstanbul · Londra · Milano · Berlin
+  </footer>
+
+  <script src="js/loomr-data.js"></script>
+  <script src="js/loomr-api.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+  (async function () {
+    const D = window.LOOMR_DATA, API = window.LoomrAPI;
+    const root = document.getElementById("anContent");
+    let designs = [], techpacks = [], collections = [], samples = [];
+    try {
+      [designs, techpacks, collections, samples] = await Promise.all([
+        API.designs.list(), API.techpacks.list(), API.collections.list(), API.samples.list(),
+      ]);
+    } catch (e) {}
+
+    if (!(designs.length || techpacks.length || collections.length || samples.length)) {
+      root.innerHTML = `<div class="an-card an-empty">
+        <h3 style="margin-bottom:.4rem">Henüz veri yok.</h3>
+        <p>Design Studio'da bir tasarım oluştur ya da Collection Builder'ı çalıştır —
+           analizin burada canlanır.</p>
+        <div style="margin-top:1.4rem;display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap">
+          <a class="btn" href="tasarim.html">3D Stüdyoyu Aç</a>
+          <a class="btn btn--ghost" href="koleksiyon-olustur.html">Koleksiyon Oluştur</a>
+        </div></div>`;
+      return;
+    }
+
+    // ---- toplama ----
+    const FAM_COLOR = { denim:"#2C3A55", viskon:"#C9B59A", polyester:"#6E7052", yun:"#5F1E27", tencel:"#5E7793" };
+    const TYPE_ADI = { pantolon:"Pantolon", short:"Short", ceket:"Ceket", gomlek:"Gömlek" };
+    const countBy = (arr, fn) => arr.reduce((m, x) => { const k = fn(x); if (k) m[k] = (m[k]||0)+1; return m; }, {});
+
+    const byFamily = countBy(designs, d => { const f = D.fabric(d.fabric_id); return f && f.family; });
+    const byType   = countBy(designs, d => { const g = D.garment(d.garment_id); return g && g.type; });
+    const byConstr = countBy(designs, d => { const g = D.garment(d.garment_id); return g && g.construction; });
+    const tpStatus = countBy(techpacks, t => t.status || "taslak");
+    const sent = tpStatus["modeliste_iletildi"] || 0;
+    const sentPct = techpacks.length ? Math.round(sent / techpacks.length * 100) : 0;
+
+    // ---- SVG yardımcıları ----
+    function bars(obj, colorFn, labelFn) {
+      const entries = Object.entries(obj).sort((a,b)=>b[1]-a[1]);
+      const max = Math.max(1, ...entries.map(e=>e[1]));
+      return entries.map(([k,v]) => `
+        <div class="bar-row">
+          <span class="lbl">${labelFn ? labelFn(k) : k}</span>
+          <span class="bar-track"><span class="bar-fill" style="width:${v/max*100}%;background:${colorFn(k)}"></span></span>
+          <span class="num">${v}</span>
+        </div>`).join("") || `<p class="muted">—</p>`;
+    }
+    function donut(obj, colorFn, labelFn) {
+      const entries = Object.entries(obj);
+      const total = entries.reduce((s,e)=>s+e[1],0) || 1;
+      let acc = 0; const R = 52, C = 2*Math.PI*R;
+      const arcs = entries.map(([k,v]) => {
+        const frac = v/total, dash = frac*C;
+        const seg = `<circle r="${R}" cx="70" cy="70" fill="none" stroke="${colorFn(k)}" stroke-width="20"
+          stroke-dasharray="${dash} ${C-dash}" stroke-dashoffset="${-acc*C}" transform="rotate(-90 70 70)"/>`;
+        acc += frac; return seg;
+      }).join("");
+      const legend = entries.map(([k,v]) => `<span><i style="background:${colorFn(k)}"></i>${labelFn?labelFn(k):k} · ${v}</span>`).join("");
+      return `<div class="donut-wrap">
+        <svg width="140" height="140" viewBox="0 0 140 140" aria-hidden="true">${arcs}
+          <text x="70" y="66" text-anchor="middle" font-family="Fraunces,serif" font-size="26" fill="#150B0B">${total}</text>
+          <text x="70" y="86" text-anchor="middle" font-size="9" letter-spacing="1.5" fill="#8B807A">TOPLAM</text>
+        </svg>
+        <div class="an-legend" style="flex-direction:column;gap:.5rem">${legend}</div></div>`;
+    }
+
+    const famC = k => FAM_COLOR[k] || "#8E2430";
+    const typeShades = { pantolon:"#8E2430", short:"#A9434F", ceket:"#5F161F", gomlek:"#C2A05E" };
+
+    root.innerHTML = `
+      <div class="an-kpis">
+        <div class="an-kpi"><div class="v">${designs.length}</div><div class="t">Tasarım</div></div>
+        <div class="an-kpi"><div class="v">${techpacks.length}</div><div class="t">Teknik Föy</div></div>
+        <div class="an-kpi"><div class="v">${collections.length}</div><div class="t">Koleksiyon</div></div>
+        <div class="an-kpi"><div class="v">${samples.length}</div><div class="t">Numune</div></div>
+        <div class="an-kpi"><div class="v">%${sentPct}</div><div class="t">Modeliste İletilen</div></div>
+      </div>
+      <div class="an-grid">
+        <div class="an-card"><h3>Kumaş Ailesine Göre Tasarım</h3>${bars(byFamily, famC, k => (D.FABRIC_FAMILIES.find(x=>x.id===k)||{}).ad || k)}</div>
+        <div class="an-card"><h3>Garment Tipine Göre</h3>${bars(byType, k=>typeShades[k]||"#8E2430", k=>TYPE_ADI[k]||k)}</div>
+        <div class="an-card"><h3>Denim / Dokuma Dağılımı</h3>${donut(byConstr, k=>k==="denim"?"#2C3A55":"#A97B50", k=>k==="denim"?"Denim":"Dokuma")}</div>
+        <div class="an-card"><h3>Teknik Föy Durumu</h3>${donut(tpStatus, k=>k==="modeliste_iletildi"?"#3A6349":"#C2A05E", k=>k==="modeliste_iletildi"?"Modeliste İletildi":"Taslak")}</div>
+      </div>`;
+  })();
+  </script>
+</body>
+</html>
