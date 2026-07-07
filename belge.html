@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOOMR — Belge Merkezi</title>
+  <meta name="description" content="LOOMR Belge Merkezi — teknik föyler, koleksiyonlar ve numune talepleri tek yerde.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
+  <style>
+    .doc-table { width:100%; border-collapse:collapse; font-size:.9rem; background:var(--white); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+    .doc-table th { text-align:left; font-size:.64rem; letter-spacing:.14em; text-transform:uppercase; color:var(--stone); font-weight:600; padding:.9rem 1.2rem; border-bottom:1px solid var(--line); }
+    .doc-table td { padding:.9rem 1.2rem; border-bottom:1px solid var(--paper-2); }
+    .doc-table tr:last-child td { border-bottom:0; }
+    .doc-table tr:hover td { background:var(--paper); }
+    .doc-type { font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; font-weight:700; padding:.25rem .6rem; border-radius:100px; }
+    .doc-type.foy { background:#F4E8D8; color:#94661F; }
+    .doc-type.kol { background:#E7E0F0; color:#5b4a86; }
+    .doc-type.num { background:#E4EEE7; color:#3A6349; }
+    .doc-empty { text-align:center; padding:3rem 1rem; color:var(--stone); background:var(--white); border:1px solid var(--line); border-radius:8px; }
+    .doc-act { color:var(--clay); font-weight:600; font-size:.82rem; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap nav">
+      <a href="index.html" class="brand">LOOMR<span>.</span></a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html#vision">Vizyon</a></li>
+          <li><a href="tasarim.html">Design Studio</a></li>
+          <li><a href="kumas.html">Fabric Hub</a></li>
+          <li><a href="lookbook.html">Lookbook</a></li>
+          <li><a href="koleksiyon-olustur.html">Collection Builder</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <a href="giris.html" class="btn btn--ghost">Workspace'e Gir</a>
+        <button class="nav-toggle" aria-label="Menü">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">Belge Merkezi</p>
+      <h1>Bütün belgeler tek yerde.</h1>
+      <p>Teknik föyler, koleksiyonlar ve numune talepleri — türüne göre süz, aç ya da yazdır.</p>
+      <div class="filters" id="filters">
+        <button class="fchip active" data-f="all">Tümü</button>
+        <button class="fchip" data-f="foy">Teknik Föy</button>
+        <button class="fchip" data-f="kol">Koleksiyon</button>
+        <button class="fchip" data-f="num">Numune</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap" style="padding-bottom:4rem">
+    <div id="docContent"></div>
+  </div>
+
+  <footer class="mini-footer">
+    LOOMR — Emre Korkmaz Textile Design Studio · İstanbul · Londra · Milano · Berlin
+  </footer>
+
+  <script src="js/loomr-data.js"></script>
+  <script src="js/loomr-api.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+  (async function () {
+    const D = window.LOOMR_DATA, API = window.LoomrAPI;
+    const root = document.getElementById("docContent");
+    let techpacks = [], collections = [], samples = [];
+    try {
+      [techpacks, collections, samples] = await Promise.all([
+        API.techpacks.list(), API.collections.list(), API.samples.list(),
+      ]);
+    } catch (e) {}
+
+    const fmt = d => d ? new Date(d).toLocaleDateString("tr-TR", { day:"2-digit", month:"short", year:"numeric" }) : "—";
+    const docs = [];
+    techpacks.forEach(t => {
+      const g = t.garment || D.garment(t.garment_id) || {}, f = t.fabric || D.fabric(t.fabric_id) || {};
+      docs.push({ tur:"foy", turAd:"Teknik Föy", ref:t.ref, ad:`${g.ad||"Ürün"} · ${f.ad||""}`,
+        durum: t.status === "modeliste_iletildi" ? "Modeliste iletildi" : "Taslak",
+        tarih:t.created_at, href: t.design_id ? `tasarim.html?d=${t.design_id}` : "tasarim.html", act:"Föy'ü aç" });
+    });
+    collections.forEach(c => {
+      docs.push({ tur:"kol", turAd:"Koleksiyon", ref:c.ref||"—", ad:`${c.name||c.ad||"Koleksiyon"} · ${c.season||""}`,
+        durum:`${(c.items?c.items.length:(c.meta&&c.meta.adet))||"—"} ürün`, tarih:c.created_at||c.tarih,
+        href:"koleksiyon-olustur.html", act:"Aç" });
+    });
+    samples.forEach(s => {
+      const f = D.fabric(s.fabric_id) || {};
+      docs.push({ tur:"num", turAd:"Numune", ref:s.ref, ad:f.ad||s.fabric_id, durum:s.status||"talep",
+        tarih:s.created_at, href:"kumas.html", act:"Fabric Hub" });
+    });
+    docs.sort((a,b)=> String(b.tarih||"").localeCompare(String(a.tarih||"")));
+
+    if (!docs.length) {
+      root.innerHTML = `<div class="doc-empty">
+        <h3 style="margin-bottom:.4rem">Henüz belge yok.</h3>
+        <p>Bir teknik föy oluştur, koleksiyon kur ya da numune talep et — belgelerin burada birikir.</p>
+        <div style="margin-top:1.4rem;display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap">
+          <a class="btn" href="tasarim.html">Teknik Föy Oluştur</a>
+          <a class="btn btn--ghost" href="kumas.html">Numune Talep Et</a>
+        </div></div>`;
+      return;
+    }
+
+    function render(filter) {
+      const rows = docs.filter(d => filter === "all" || d.tur === filter).map(d => `
+        <tr data-tur="${d.tur}">
+          <td><span class="doc-type ${d.tur}">${d.turAd}</span></td>
+          <td style="font-weight:600">${d.ref || "—"}</td>
+          <td>${d.ad}</td>
+          <td class="muted">${d.durum}</td>
+          <td class="muted">${fmt(d.tarih)}</td>
+          <td><a class="doc-act" href="${d.href}">${d.act} →</a></td>
+        </tr>`).join("");
+      root.innerHTML = `<div style="overflow-x:auto"><table class="doc-table">
+        <thead><tr><th>Tür</th><th>Ref</th><th>İçerik</th><th>Durum</th><th>Tarih</th><th></th></tr></thead>
+        <tbody>${rows || '<tr><td colspan="6" class="muted" style="text-align:center;padding:2rem">Bu türde belge yok.</td></tr>'}</tbody>
+      </table></div>`;
+    }
+    render("all");
+
+    document.getElementById("filters").addEventListener("click", e => {
+      const c = e.target.closest(".fchip"); if (!c) return;
+      document.querySelectorAll(".fchip").forEach(x => x.classList.remove("active"));
+      c.classList.add("active");
+      render(c.dataset.f);
+    });
+  })();
+  </script>
+</body>
+</html>
