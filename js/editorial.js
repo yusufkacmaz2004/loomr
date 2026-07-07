@@ -91,11 +91,6 @@
         cur.style.transform = "translate3d(" + cx + "px," + cy + "px,0) translate(-50%,-50%)";
         requestAnimationFrame(loop);
       })();
-      const grow = "a,button,.ed-cell,.ed-cta,.hg-card";
-      document.querySelectorAll(grow).forEach(function (el) {
-        el.addEventListener("mouseenter", function () { cur.classList.add("big"); });
-        el.addEventListener("mouseleave", function () { cur.classList.remove("big"); });
-      });
       document.body.classList.add("has-cursor");
     }
   }
