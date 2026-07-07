@@ -138,6 +138,7 @@
       this.el = container;
       this.colorHex = "#8E2430";
       this.fabric = null;
+      this._models = new Set(); // GLB'si olan garment id'leri (manifest'ten)
       const w = container.clientWidth || 600, h = container.clientHeight || 520;
 
       this.scene = new THREE.Scene();
@@ -206,11 +207,14 @@
       });
     }
 
+    // Hangi garment'ların gerçek GLB modeli var (manifest'ten)
+    setAvailableModels(arr) { this._models = new Set(arr || []); return this; }
+
     // GLB varsa gerçek modeli, yoksa prosedürel garmenti kur
     setGarment(meshKey, garmentId) {
       this.garmentKey = meshKey;
       this._garmentId = garmentId || null;
-      if (garmentId && THREE.GLTFLoader) {
+      if (garmentId && this._models.has(garmentId) && THREE.GLTFLoader) {
         this._loadGLB(garmentId, () => this._buildProcedural(meshKey));
       } else {
         this._buildProcedural(meshKey);

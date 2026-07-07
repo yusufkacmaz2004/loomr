@@ -432,9 +432,16 @@
     /* ---------- Başlat ---------- */
     renderGarments();
     renderFabrics();
-    const _did = new URLSearchParams(location.search).get("d");
-    if (_did) loadDesign(_did);
-    else selectGarment("denim-gomlek");
+    // Mevcut GLB modellerini öğren (yoksa sessizce prosedürel), sonra ilk garmenti kur
+    fetch("models/manifest.json")
+      .then(r => (r.ok ? r.json() : []))
+      .then(list => studio.setAvailableModels(list))
+      .catch(() => {})
+      .finally(() => {
+        const _did = new URLSearchParams(location.search).get("d");
+        if (_did) loadDesign(_did);
+        else selectGarment("denim-gomlek");
+      });
   })();
   </script>
 </body>
