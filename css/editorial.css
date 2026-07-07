@@ -1,0 +1,92 @@
+/* ============================================================
+   LOOMR — Editorial yön (bold fashion-magazine)
+   Full-bleed foto + dev overlay tipografi + sıcak kırmızı/turuncu accent
+   Özgün kompozisyon — sadece index.html'e bağlı (prova)
+   ============================================================ */
+:root {
+  --acc: #D93B29;        /* sıcak vermilyon (kırmızı-turuncu) */
+  --acc-deep: #A82817;
+  --ed-cream: #F4EFE7;
+  --ed-ink: #16110F;
+}
+
+.ed { background: var(--ed-cream); color: var(--ed-ink); }
+.ed-mono { font-family: "Space Mono", ui-monospace, monospace; font-size: .72rem; letter-spacing: .22em; text-transform: uppercase; }
+.ed-disp { font-family: "Anton", "Archivo", Impact, sans-serif; text-transform: uppercase; font-weight: 400; line-height: .86; letter-spacing: -0.005em; }
+.ed-serif { font-family: "Fraunces", Georgia, serif; }
+.acc { color: var(--acc); }
+
+/* ---------- Top bar ---------- */
+.ed-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 60; display: flex; align-items: center; justify-content: space-between;
+  padding: 1rem clamp(1.1rem, 3vw, 2.4rem); mix-blend-mode: difference; color: #fff; }
+.ed-bar__logo { font-family: "Anton", sans-serif; text-transform: uppercase; font-size: 1.35rem; letter-spacing: .04em; }
+.ed-bar nav { display: flex; gap: 1.6rem; }
+.ed-bar nav a { color: #fff; }
+@media (max-width: 760px){ .ed-bar nav { display: none; } }
+
+/* ---------- Hero (full-bleed) ---------- */
+.ed-hero { position: relative; min-height: 100svh; display: grid; grid-template-rows: 1fr auto; overflow: hidden; background: #16110F; }
+.ed-hero__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 30%; filter: saturate(1.1) contrast(1.03); }
+.ed-hero::after { content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(20,12,10,.55) 0%, rgba(20,12,10,.05) 30%, rgba(20,12,10,.15) 60%, rgba(20,12,10,.85) 100%); }
+.ed-hero__inner { position: relative; z-index: 2; align-self: end; color: #F7F2EA; padding: clamp(1.4rem, 4vw, 3rem); width: 100%; }
+.ed-hero__eyebrow { display: flex; gap: 1.2rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem; color: rgba(247,242,234,.85); }
+.ed-hero__eyebrow .star { color: var(--acc); letter-spacing: .3em; }
+.ed-hero h1 { font-family: "Anton", sans-serif; text-transform: uppercase; font-weight: 400; line-height: .84;
+  font-size: clamp(3.2rem, 13vw, 13rem); letter-spacing: -0.01em; margin: 0; }
+.ed-hero h1 .em { font-family: "Fraunces", serif; font-style: italic; text-transform: none; font-weight: 300; color: var(--acc); letter-spacing: -0.02em; }
+.ed-hero__foot { display: flex; justify-content: space-between; align-items: end; gap: 1.5rem; margin-top: 1.6rem; flex-wrap: wrap; }
+.ed-hero__foot p { max-width: 40ch; color: rgba(247,242,234,.8); font-size: .95rem; margin: 0; }
+.ed-cta { display: inline-flex; align-items: center; gap: .6rem; background: var(--acc); color: #fff; padding: .95rem 1.6rem;
+  font-family: "Space Mono", monospace; font-size: .74rem; letter-spacing: .16em; text-transform: uppercase; border-radius: 100px; transition: background .3s, transform .3s; }
+.ed-cta:hover { background: #fff; color: var(--ed-ink); transform: translateY(-2px); }
+.ed-cta--ghost { background: transparent; border: 1px solid rgba(255,255,255,.5); color: #fff; }
+.ed-cta--ghost:hover { background: #fff; color: var(--ed-ink); }
+
+/* ---------- Marquee ticker (accent) ---------- */
+.ed-ticker { background: var(--acc); color: #fff; overflow: hidden; border-block: 1px solid var(--acc-deep); }
+.ed-ticker__track { display: flex; gap: 2.5rem; white-space: nowrap; padding-block: .7rem; animation: edscroll 32s linear infinite; }
+.ed-ticker__track span { font-family: "Anton", sans-serif; text-transform: uppercase; font-size: 1.1rem; letter-spacing: .02em; }
+.ed-ticker__track span::after { content: "✦"; margin-left: 2.5rem; }
+@keyframes edscroll { to { transform: translateX(-50%); } }
+
+/* ---------- Manifesto ---------- */
+.ed-manifesto { padding: clamp(3.5rem, 9vw, 8rem) clamp(1.2rem, 4vw, 3rem); border-bottom: 1px solid #E3D9CD; }
+.ed-manifesto__label { margin-bottom: 2rem; color: var(--acc); }
+.ed-manifesto h2 { font-family: "Fraunces", serif; font-weight: 300; font-size: clamp(1.9rem, 5.2vw, 4.6rem); line-height: 1.02; letter-spacing: -0.02em; max-width: 18ch; }
+.ed-manifesto h2 b { font-weight: 500; }
+.ed-manifesto h2 .u { font-style: italic; color: var(--acc); }
+
+/* ---------- Editorial grid (kartlar) ---------- */
+.ed-grid { display: grid; grid-template-columns: 1fr; gap: 1px; background: #E3D9CD; border-block: 1px solid #E3D9CD; }
+@media (min-width: 720px){ .ed-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1080px){ .ed-grid { grid-template-columns: repeat(3, 1fr); } }
+.ed-cell { background: var(--ed-cream); padding: clamp(1.6rem, 3vw, 2.4rem); min-height: 240px; display: flex; flex-direction: column; justify-content: space-between; text-decoration: none; color: inherit; transition: background .3s; position: relative; }
+.ed-cell:hover { background: #fff; }
+.ed-cell:hover .ed-cell__no { color: var(--acc); }
+.ed-cell__no { font-family: "Anton", sans-serif; font-size: 2.2rem; color: #C9BCAD; transition: color .3s; }
+.ed-cell h3 { font-family: "Fraunces", serif; font-weight: 400; font-size: 1.5rem; margin: 1rem 0 .4rem; }
+.ed-cell p { font-size: .86rem; color: #6E645B; margin: 0; line-height: 1.5; }
+.ed-cell__arrow { position: absolute; top: 1.6rem; right: 1.6rem; opacity: 0; transform: translateX(-6px); transition: .3s; color: var(--acc); font-family: "Space Mono", monospace; }
+.ed-cell:hover .ed-cell__arrow { opacity: 1; transform: none; }
+
+/* ---------- Full-bleed editorial split ---------- */
+.ed-split { display: grid; grid-template-columns: 1fr; background: var(--ed-ink); color: var(--ed-cream); }
+@media (min-width: 900px){ .ed-split { grid-template-columns: 1.1fr 1fr; } }
+.ed-split__img { position: relative; min-height: 60vh; }
+.ed-split__img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ed-split__txt { padding: clamp(2.5rem, 6vw, 5.5rem); display: grid; align-content: center; gap: 1.4rem; }
+.ed-split__txt h2 { font-family: "Anton", sans-serif; text-transform: uppercase; font-weight: 400; font-size: clamp(2.4rem, 6vw, 5rem); line-height: .9; }
+.ed-split__txt h2 .acc { color: var(--acc); }
+.ed-split__txt p { color: rgba(244,239,231,.72); max-width: 44ch; }
+
+/* ---------- CTA kapanış ---------- */
+.ed-close { background: var(--acc); color: #fff; text-align: center; padding: clamp(3.5rem, 9vw, 8rem) 1.2rem; }
+.ed-close h2 { font-family: "Anton", sans-serif; text-transform: uppercase; font-weight: 400; font-size: clamp(2.6rem, 9vw, 8rem); line-height: .88; margin: 0 0 1.6rem; }
+.ed-close h2 .em { font-family: "Fraunces", serif; font-style: italic; text-transform: none; }
+.ed-close .ed-cta { background: #fff; color: var(--acc-deep); }
+.ed-close .ed-cta:hover { background: var(--ed-ink); color: #fff; }
+
+/* ---------- Footer ---------- */
+.ed-foot { background: var(--ed-ink); color: rgba(244,239,231,.6); padding: 3rem clamp(1.2rem,4vw,3rem) 2rem; display: flex; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
+.ed-foot .ed-bar__logo { color: var(--ed-cream); }
