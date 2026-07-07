@@ -3,6 +3,7 @@
   "use strict";
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const bg = document.querySelector(".ed-hero__bg");
+  const inner = document.querySelector(".ed-hero__inner");
   const pxEls = [...document.querySelectorAll("[data-px]")];
   let ticking = false;
 
@@ -11,13 +12,23 @@
     const y = window.scrollY || window.pageYOffset;
     const vh = window.innerHeight;
 
-    // hero arka plan parallax (yavaş kayar)
-    if (bg && y < vh * 1.3) bg.style.transform = "translate3d(0," + (y * 0.32).toFixed(1) + "px,0)";
+    if (y < vh * 1.4) {
+      // hero arka plan: güçlü parallax + hafif zoom-in
+      if (bg) {
+        const sc = 1 + Math.min(y, vh) / vh * 0.14;
+        bg.style.transform = "translate3d(0," + (y * 0.5).toFixed(1) + "px,0) scale(" + sc.toFixed(3) + ")";
+      }
+      // hero içerik (başlık): daha hızlı yukarı süzülür + solar (ön katman)
+      if (inner) {
+        inner.style.transform = "translate3d(0," + (-y * 0.22).toFixed(1) + "px,0)";
+        inner.style.opacity = Math.max(0, 1 - y / (vh * 0.72)).toFixed(3);
+      }
+    }
 
     // genel parallax öğeleri (kendi hızlarıyla)
     for (const el of pxEls) {
       const r = el.getBoundingClientRect();
-      if (r.bottom < -240 || r.top > vh + 240) continue;
+      if (r.bottom < -300 || r.top > vh + 300) continue;
       const sp = parseFloat(el.dataset.px) || 0.15;
       const off = r.top + r.height / 2 - vh / 2;
       el.style.transform = "translate3d(0," + (-off * sp).toFixed(1) + "px,0)";
