@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOOMR — Sourcing</title>
+  <meta name="description" content="LOOMR Sourcing — düğme, fermuar, etiket, jakron, baskı, nakış, aksesuar ve ambalaj kataloğu.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
+  <style>
+    .src-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1.1rem; padding-block:1rem 3rem; }
+    .src-card { background:var(--white); border:1px solid var(--line); border-radius:8px; overflow:hidden; display:flex; flex-direction:column; transition:transform .4s var(--ease), box-shadow .4s var(--ease); }
+    .src-card:hover { transform:translateY(-4px); box-shadow:0 20px 44px -32px rgba(95,22,31,.5); }
+    .src-ic { height:96px; display:grid; place-items:center; font-size:2.4rem; background:var(--paper-2); }
+    .src-body { padding:1.1rem 1.2rem 1.2rem; display:flex; flex-direction:column; gap:.5rem; flex:1; }
+    .src-cat { font-size:.64rem; letter-spacing:.14em; text-transform:uppercase; color:var(--clay); font-weight:700; }
+    .src-body h3 { font-size:1.05rem; }
+    .src-body .m { font-size:.8rem; color:var(--stone); }
+    .src-spec { display:flex; justify-content:space-between; font-size:.76rem; color:var(--ink-soft); margin-top:auto; padding-top:.6rem; border-top:1px dashed var(--line); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap nav">
+      <a href="index.html" class="brand">LOOMR<span>.</span></a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html#vision">Vizyon</a></li>
+          <li><a href="tasarim.html">Design Studio</a></li>
+          <li><a href="kumas.html">Fabric Hub</a></li>
+          <li><a href="lookbook.html">Lookbook</a></li>
+          <li><a href="koleksiyon-olustur.html">Collection Builder</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <a href="giris.html" class="btn btn--ghost">Workspace'e Gir</a>
+        <button class="nav-toggle" aria-label="Menü">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">Sourcing</p>
+      <h1>Aksesuar & malzeme kataloğu.</h1>
+      <p>Düğme, fermuar, etiket, jakron, baskı, nakış ve ambalaj — MOQ ve terminle,
+         doğru tedarikçiye bağlı. Ürününü tamamla.</p>
+      <div class="filters" id="filters"><button class="fchip active" data-f="all">Tümü</button></div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="src-grid" id="items"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <footer class="mini-footer">
+    LOOMR — Emre Korkmaz Textile Design Studio · İstanbul · Londra · Milano · Berlin
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    const CATS = { dugme:"Düğme", fermuar:"Fermuar", etiket:"Etiket & Jakron", baski:"Baskı & Nakış", aksesuar:"Aksesuar", ambalaj:"Ambalaj" };
+    const ITEMS = [
+      { ad:"Shank Metal Düğme", kat:"dugme", ic:"⬤", malz:"Antik pirinç", moq:"1.000 ad", termin:"12 gün" },
+      { ad:"Sedef Düğme 4-delik", kat:"dugme", ic:"◍", malz:"Doğal sedef", moq:"2.000 ad", termin:"15 gün" },
+      { ad:"Corozo Düğme", kat:"dugme", ic:"⬤", malz:"Corozo (fildişi ceviz)", moq:"1.500 ad", termin:"18 gün" },
+      { ad:"YKK Metal Fermuar", kat:"fermuar", ic:"⇕", malz:"Pirinç, 5mm", moq:"3.000 ad", termin:"14 gün" },
+      { ad:"Gizli Fermuar", kat:"fermuar", ic:"⇕", malz:"Naylon spiral", moq:"5.000 ad", termin:"10 gün" },
+      { ad:"Reçme (jean) Fermuar", kat:"fermuar", ic:"⇕", malz:"Pirinç, kilitli", moq:"3.000 ad", termin:"16 gün" },
+      { ad:"Dokuma Etiket", kat:"etiket", ic:"▭", malz:"Saten/damask", moq:"2.000 ad", termin:"12 gün" },
+      { ad:"Deri Jakron", kat:"etiket", ic:"◲", malz:"Vegan deri, gofre", moq:"1.000 ad", termin:"18 gün" },
+      { ad:"Baskılı Beden Etiketi", kat:"etiket", ic:"▤", malz:"Saten, tek renk", moq:"5.000 ad", termin:"8 gün" },
+      { ad:"Serigrafi Baskı", kat:"baski", ic:"◨", malz:"Su bazlı boya", moq:"300 ad", termin:"10 gün" },
+      { ad:"3D Kabartma Nakış", kat:"baski", ic:"✦", malz:"Polyester iplik", moq:"200 ad", termin:"14 gün" },
+      { ad:"Perçin & Çıtçıt", kat:"aksesuar", ic:"⊙", malz:"Antik pirinç", moq:"3.000 ad", termin:"12 gün" },
+      { ad:"Kanca-Toka Seti", kat:"aksesuar", ic:"⚭", malz:"Nikel-free metal", moq:"2.000 ad", termin:"15 gün" },
+      { ad:"Askı Bandı", kat:"aksesuar", ic:"≋", malz:"Dokuma pamuk", moq:"5.000 ad", termin:"9 gün" },
+      { ad:"Geri Dönüş. Poşet", kat:"ambalaj", ic:"▢", malz:"%100 geri dön. LDPE", moq:"5.000 ad", termin:"10 gün" },
+      { ad:"Karton Etiket (swing)", kat:"ambalaj", ic:"◳", malz:"FSC karton", moq:"3.000 ad", termin:"8 gün" },
+    ];
+
+    const filters = document.getElementById("filters");
+    filters.insertAdjacentHTML("beforeend", Object.entries(CATS).map(([k,v]) => `<button class="fchip" data-f="${k}">${v}</button>`).join(""));
+
+    const grid = document.getElementById("items");
+    grid.innerHTML = ITEMS.map(it => `
+      <article class="src-card" data-kat="${it.kat}">
+        <div class="src-ic">${it.ic}</div>
+        <div class="src-body">
+          <span class="src-cat">${CATS[it.kat]}</span>
+          <h3>${it.ad}</h3>
+          <div class="m">${it.malz}</div>
+          <div class="src-spec"><span>MOQ ${it.moq}</span><span>${it.termin}</span></div>
+          <button class="btn" style="padding:.5rem .9rem;font-size:.66rem;margin-top:.4rem" data-req="${it.ad}">Numune İste</button>
+        </div>
+      </article>`).join("");
+
+    filters.addEventListener("click", e => {
+      const c = e.target.closest(".fchip"); if (!c) return;
+      document.querySelectorAll(".fchip").forEach(x => x.classList.remove("active"));
+      c.classList.add("active");
+      document.querySelectorAll(".src-card").forEach(card => {
+        card.style.display = (c.dataset.f === "all" || card.dataset.kat === c.dataset.f) ? "" : "none";
+      });
+    });
+
+    const toast = document.getElementById("toast"); let tmr;
+    grid.addEventListener("click", e => {
+      const b = e.target.closest("[data-req]"); if (!b) return;
+      toast.innerHTML = `✓ <b>${b.dataset.req}</b> için numune talebin alındı.`;
+      toast.classList.add("show"); clearTimeout(tmr); tmr = setTimeout(() => toast.classList.remove("show"), 3200);
+    });
+  </script>
+</body>
+</html>
