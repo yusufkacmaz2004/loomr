@@ -149,7 +149,7 @@
       this.renderer.setSize(w, h, false);
       this.renderer.outputEncoding = THREE.sRGBEncoding;
       this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      this.renderer.toneMappingExposure = 1.05;
+      this.renderer.toneMappingExposure = 0.92;
       this._lastW = w; this._lastH = h;
       container.appendChild(this.renderer.domElement);
 
@@ -158,10 +158,10 @@
       this.scene.environment = pmrem.fromEquirectangular(envEquirect()).texture;
 
       // ışık
-      this.scene.add(new THREE.HemisphereLight(0xfff6ec, 0x9a8f86, 0.55));
-      const key = new THREE.DirectionalLight(0xffffff, 1.1); key.position.set(5, 7, 8); this.scene.add(key);
-      const rim = new THREE.DirectionalLight(0xffe6cc, 0.6); rim.position.set(-6, 3, -5); this.scene.add(rim);
-      const fill = new THREE.DirectionalLight(0xffffff, 0.28); fill.position.set(0, -4, 6); this.scene.add(fill);
+      this.scene.add(new THREE.HemisphereLight(0xfff6ec, 0x9a8f86, 0.42));
+      const key = new THREE.DirectionalLight(0xffffff, 0.9); key.position.set(5, 7, 8); this.scene.add(key);
+      const rim = new THREE.DirectionalLight(0xffe6cc, 0.5); rim.position.set(-6, 3, -5); this.scene.add(rim);
+      const fill = new THREE.DirectionalLight(0xffffff, 0.22); fill.position.set(0, -4, 6); this.scene.add(fill);
 
       const shadow = new THREE.Mesh(
         new THREE.PlaneGeometry(8, 8),
@@ -250,11 +250,6 @@
           btn.position.set(0, y, fz + 0.03);
           this.group.add(btn);
         }
-        // göğüs cebi (ön)
-        const pk = new THREE.Mesh(new THREE.BoxGeometry(0.66, 0.72, 0.05), this.mat);
-        pk.position.set(-0.66, 0.6, fz - 0.02); this.group.add(pk);
-        if (jacket) { const p2 = pk.clone(); p2.position.x = 0.66; this.group.add(p2); }
-
         this.group.position.y = -0.15;
       } else {
         // pantolon / short
@@ -302,7 +297,7 @@
       this.mat.bumpMap = tex;
       this.mat.bumpScale = type === "wool" ? 0.08 : type === "twill" ? 0.06 : type === "satin" ? 0.015 : 0.04;
       this.mat.roughness = f ? f.roughness : 0.82;
-      this.mat.envMapIntensity = f ? 0.35 + (f.sheen || 0) * 0.9 : 0.55;
+      this.mat.envMapIntensity = f ? 0.18 + (f.sheen || 0) * 0.6 : 0.3;
       this.mat.needsUpdate = true;
     }
 
