@@ -180,6 +180,7 @@
 
   <script src="js/lib/three.min.js"></script>
   <script src="js/lib/OrbitControls.js"></script>
+  <script src="js/lib/GLTFLoader.js"></script>
   <script src="js/loomr-data.js"></script>
   <script src="js/loomr-api.js"></script>
   <script src="js/garment-3d.js"></script>
@@ -239,7 +240,7 @@
       const g = D.garment(id);
       if (!g) return;
       state.garment = g;
-      studio.setGarment(g.mesh);
+      studio.setGarment(g.mesh, g.id);
       document.getElementById("gnote").textContent = g.desc;
       document.getElementById("stageBadge").textContent = g.ad;
       gpick.querySelectorAll(".gitem").forEach(b => b.classList.toggle("sel", b.dataset.g === id));

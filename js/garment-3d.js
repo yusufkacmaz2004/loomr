@@ -206,8 +206,54 @@
       });
     }
 
-    setGarment(key) {
+    // GLB varsa gerçek modeli, yoksa prosedürel garmenti kur
+    setGarment(meshKey, garmentId) {
+      this.garmentKey = meshKey;
+      this._garmentId = garmentId || null;
+      if (garmentId && THREE.GLTFLoader) {
+        this._loadGLB(garmentId, () => this._buildProcedural(meshKey));
+      } else {
+        this._buildProcedural(meshKey);
+      }
+      return this;
+    }
+
+    _loadGLB(id, fallback) {
+      const url = `models/${id}.glb`;
+      const loader = new THREE.GLTFLoader();
+      fetch(url)
+        .then(r => (r.ok ? r.arrayBuffer() : Promise.reject()))
+        .then(buf => loader.parse(buf, "", g => this._mountGLB(g), () => fallback()))
+        .catch(() => fallback());
+    }
+
+    _mountGLB(gltf) {
+      while (this.group.children.length) { const m = this.group.children.pop(); m.geometry && m.geometry.dispose(); }
+      const obj = gltf.scene;
+      this._glbMats = [];
+      obj.traverse(m => {
+        if (m.isMesh && m.material) {
+          m.material = m.material.clone();
+          m.material.side = THREE.DoubleSide;
+          m.material.envMapIntensity = 0.5;
+          this._glbMats.push(m.material);
+        }
+      });
+      const size = new THREE.Box3().setFromObject(obj).getSize(new THREE.Vector3());
+      obj.scale.setScalar(6.6 / (size.y || 1));
+      const c = new THREE.Box3().setFromObject(obj).getCenter(new THREE.Vector3());
+      obj.position.sub(c);
+      this.group.position.set(0, 0, 0);
+      this.group.add(obj);
+      this._isGLB = true;
+      this._applyFabricToMaterial();
+      this.setColor(this.colorHex);
+      this.resetView();
+    }
+
+    _buildProcedural(key) {
       this.garmentKey = key;
+      this._isGLB = false; this._glbMats = null;
       while (this.group.children.length) {
         const m = this.group.children.pop();
         m.geometry && m.geometry.dispose();
@@ -299,9 +345,21 @@
       this.mat.roughness = f ? f.roughness : 0.82;
       this.mat.envMapIntensity = f ? 0.18 + (f.sheen || 0) * 0.6 : 0.3;
       this.mat.needsUpdate = true;
+      if (this._isGLB && this._glbMats) {
+        this._glbMats.forEach(m => {
+          m.bumpMap = tex; m.bumpScale = this.mat.bumpScale;
+          if (m.roughness !== undefined) m.roughness = this.mat.roughness;
+          m.needsUpdate = true;
+        });
+      }
     }
 
-    setColor(hex) { this.colorHex = hex; this.mat.color.set(hex); return this; }
+    setColor(hex) {
+      this.colorHex = hex;
+      this.mat.color.set(hex);
+      if (this._isGLB && this._glbMats) this._glbMats.forEach(m => { m.color && m.color.set(hex); });
+      return this;
+    }
 
     resetView() { this.camera.position.set(0, 0.2, 14); this.controls.target.set(0, -0.2, 0); this.controls.update(); }
     toggleTurntable(on) { this.controls.autoRotate = on !== undefined ? on : !this.controls.autoRotate; return this.controls.autoRotate; }

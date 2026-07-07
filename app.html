@@ -114,6 +114,12 @@
         <div class="panel__head" style="padding:0 0 .8rem;border:0"><h3>Koleksiyonların</h3><a href="koleksiyon-olustur.html" class="link-arrow">Yeni koleksiyon →</a></div>
         <div class="mod-grid" id="mw-col"></div>
       </div>
+      <div id="mw-samples-wrap" hidden style="margin-top:2rem">
+        <div class="panel__head" style="padding:0 0 .8rem;border:0"><h3>Numune Talepleri</h3><a href="kumas.html" class="link-arrow">Fabric Hub →</a></div>
+        <div style="overflow-x:auto"><table class="tbl">
+          <thead><tr><th>Ref</th><th>Kumaş</th><th>Durum</th></tr></thead>
+          <tbody id="mw-samples"></tbody></table></div>
+      </div>
     </section>
 
     <!-- ===== Production Live ===== -->
@@ -220,13 +226,13 @@
   <script>
   (async function () {
     const D = window.LOOMR_DATA, API = window.LoomrAPI;
-    let designs = [], techpacks = [], collections = [];
+    let designs = [], techpacks = [], collections = [], samples = [];
     try {
-      [designs, techpacks, collections] = await Promise.all([
-        API.designs.list(), API.techpacks.list(), API.collections.list(),
+      [designs, techpacks, collections, samples] = await Promise.all([
+        API.designs.list(), API.techpacks.list(), API.collections.list(), API.samples.list(),
       ]);
     } catch (e) { return; }
-    if (!(designs.length || techpacks.length || collections.length)) return; // veri yoksa demo kalsın
+    if (!(designs.length || techpacks.length || collections.length || samples.length)) return; // veri yoksa demo kalsın
 
     document.getElementById("mywork").hidden = false;
 
@@ -266,6 +272,15 @@
           <span class="status live">${c.ref || c.season || "Koleksiyon"}</span>
           <h4>${c.name || c.ad || "Koleksiyon"}</h4>
           <p>${c.season || ""} · ${n} ürün</p></a>`;
+      }).join("");
+    }
+
+    if (samples.length) {
+      document.getElementById("mw-samples-wrap").hidden = false;
+      document.getElementById("mw-samples").innerHTML = samples.slice(0, 12).map(s => {
+        const f = D.fabric(s.fabric_id) || {};
+        return `<tr><td>${s.ref || ""}</td><td>${f.ad || s.fabric_id}</td>
+          <td><span class="badge badge--wip">${s.status || "talep"}</span></td></tr>`;
       }).join("");
     }
   })();
