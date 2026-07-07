@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOOMR — İletişim</title>
+  <meta name="description" content="LOOMR İletişim — tasarımcı, modelist, kalite ve üretimle mesajlaş, e-posta gönder, numune talep et.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
+  <style>
+    .cx-grid { display:grid; gap:1.4rem; grid-template-columns:1fr; }
+    @media(min-width:900px){ .cx-grid { grid-template-columns:1.1fr 1fr; } }
+    .cx-list { display:grid; gap:.7rem; }
+    .cx-card { display:flex; align-items:center; gap:1rem; background:var(--white); border:1px solid var(--line); border-radius:8px; padding:1rem 1.2rem; transition:border .25s; }
+    .cx-card:hover { border-color:var(--line-strong); }
+    .cx-av { width:44px; height:44px; border-radius:50%; background:var(--ink); color:var(--paper); display:grid; place-items:center; font-family:var(--serif); font-size:1.05rem; flex:none; }
+    .cx-card.online .cx-av { background:var(--clay); }
+    .cx-info { flex:1; min-width:0; }
+    .cx-info b { display:block; font-size:.95rem; }
+    .cx-info span { font-size:.76rem; color:var(--stone); }
+    .cx-act { display:flex; gap:.5rem; }
+    .cx-btn { font-size:.7rem; letter-spacing:.06em; text-transform:uppercase; font-weight:600; padding:.45rem .8rem; border-radius:4px; border:1px solid var(--line-strong); background:var(--white); color:var(--ink-soft); cursor:pointer; transition:all .2s; text-decoration:none; }
+    .cx-btn:hover { border-color:var(--clay); color:var(--clay); }
+    .cx-btn.primary { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+    .cx-btn.primary:hover { background:var(--clay); border-color:var(--clay); color:var(--paper); }
+    .compose { background:var(--white); border:1px solid var(--line); border-radius:8px; padding:1.4rem 1.5rem; position:sticky; top:90px; }
+    .compose h3 { font-size:1.15rem; margin:0 0 1rem; }
+    .compose label { display:block; font-size:.7rem; letter-spacing:.14em; text-transform:uppercase; font-weight:600; color:var(--ink-soft); margin:.9rem 0 .4rem; }
+    .compose select, .compose input, .compose textarea { width:100%; padding:.75rem .9rem; border:1px solid var(--line-strong); border-radius:4px; font:inherit; background:var(--paper); color:var(--ink); outline:none; }
+    .compose textarea { min-height:120px; resize:vertical; }
+    .compose .btn { width:100%; justify-content:center; margin-top:1.2rem; }
+    .cx-sub { font-family:var(--sans); font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; color:var(--stone); font-weight:600; margin:1.6rem 0 .8rem; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap nav">
+      <a href="index.html" class="brand">LOOMR<span>.</span></a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html#vision">Vizyon</a></li>
+          <li><a href="tasarim.html">Design Studio</a></li>
+          <li><a href="kumas.html">Fabric Hub</a></li>
+          <li><a href="lookbook.html">Lookbook</a></li>
+          <li><a href="koleksiyon-olustur.html">Collection Builder</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <a href="giris.html" class="btn btn--ghost">Workspace'e Gir</a>
+        <button class="nav-toggle" aria-label="Menü">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">İletişim</p>
+      <h1>İşin özü: doğru insanla konuşmak.</h1>
+      <p>Tasarımcı, modelist, kalite ve üretimle tek yerden mesajlaş; tek tıkla
+         e-posta gönder ya da numune talep et.</p>
+    </div>
+  </section>
+
+  <div class="wrap cx-grid" style="padding-block:1rem 4rem">
+    <div>
+      <div class="cx-sub">LOOMR Ekibi</div>
+      <div class="cx-list" id="team"></div>
+      <p style="font-size:.8rem;color:var(--stone);margin-top:1.2rem;line-height:1.6">
+        Modelist, fabrika ve tedarikçilerle iletişimi <b>LOOMR yürütür</b> — üretim ağımız
+        markalara kapalıdır. Numune, kalıp ve üretim taleplerini ekibimize ilet, biz doğru
+        atölyeye yönlendirelim.
+      </p>
+    </div>
+
+    <div>
+      <div class="compose">
+        <h3>Hızlı mesaj</h3>
+        <label for="to">Alıcı</label>
+        <select id="to"></select>
+        <label for="subj">Konu</label>
+        <input type="text" id="subj" placeholder="örn. SS27 numune onayı">
+        <label for="msg">Mesaj</label>
+        <textarea id="msg" placeholder="Merhaba,"></textarea>
+        <button class="btn" id="send">E-posta Gönder →</button>
+        <p style="font-size:.76rem;color:var(--stone);margin:.9rem 0 0">
+          Gönder'e bastığında varsayılan e-posta uygulaman hazır mesajla açılır.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <footer class="mini-footer">
+    LOOMR — Emre Korkmaz Textile Design Studio · İstanbul · Londra · Milano · Berlin
+  </footer>
+
+  <script src="js/loomr-data.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const D = window.LOOMR_DATA;
+    const slug = s => s.toLowerCase().replace(/ç/g,"c").replace(/ğ/g,"g").replace(/ı/g,"i").replace(/ö/g,"o").replace(/ş/g,"s").replace(/ü/g,"u").replace(/[^a-z]/g,"");
+    const initials = n => n.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase();
+
+    const TEAM = [
+      { ad:"Funda Korkmaz", rol:"Baş Tasarımcı", mail:"funda@loomr.studio", online:true },
+      { ad:"Üretim Masası", rol:"Üretim Koordinasyonu", mail:"uretim@loomr.studio", online:true },
+      { ad:"Kalite Kontrol", rol:"QC & Denetim", mail:"kalite@loomr.studio", online:false },
+      { ad:"Tedarik", rol:"Kumaş & Aksesuar", mail:"tedarik@loomr.studio", online:true },
+    ];
+    const ALL = [...TEAM];
+
+    function card(c) {
+      const mailto = `mailto:${c.mail}?subject=${encodeURIComponent("LOOMR · " + c.ad)}`;
+      return `<div class="cx-card ${c.online?"online":""}">
+        <span class="cx-av">${initials(c.ad)}</span>
+        <div class="cx-info"><b>${c.ad}</b><span>${c.rol} · ${c.mail}</span></div>
+        <div class="cx-act">
+          <button class="cx-btn" data-msg="${c.ad}">Mesaj</button>
+          <a class="cx-btn primary" href="${mailto}">E-posta</a>
+        </div>
+      </div>`;
+    }
+    document.getElementById("team").innerHTML = TEAM.map(card).join("");
+
+    // alıcı seçenekleri
+    document.getElementById("to").innerHTML = ALL.map((c,i) => `<option value="${i}">${c.ad} — ${c.rol}</option>`).join("");
+
+    // "Mesaj" → composer'a alıcı seç + odak
+    document.body.addEventListener("click", e => {
+      const b = e.target.closest("[data-msg]"); if (!b) return;
+      const idx = ALL.findIndex(c => c.ad === b.dataset.msg);
+      if (idx >= 0) document.getElementById("to").value = idx;
+      document.getElementById("subj").focus();
+      window.scrollTo({ top: document.querySelector(".compose").offsetTop - 90, behavior:"smooth" });
+    });
+
+    // Gönder → mailto
+    document.getElementById("send").addEventListener("click", () => {
+      const c = ALL[+document.getElementById("to").value];
+      const subj = document.getElementById("subj").value || "LOOMR mesajı";
+      const msg = document.getElementById("msg").value || "";
+      window.location.href = `mailto:${c.mail}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(msg + "\n\n— LOOMR Workspace")}`;
+      const toast = document.getElementById("toast");
+      toast.innerHTML = `✓ <b>${c.ad}</b> için e-posta hazırlandı.`;
+      toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"), 3000);
+    });
+  </script>
+</body>
+</html>

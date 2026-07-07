@@ -132,7 +132,16 @@
       const b = e.target.closest("[data-sample]");
       if (!b) return;
       const rec = await API.samples.request(b.dataset.sample);
-      toast.innerHTML = `✓ <b>${b.dataset.ad}</b> numune talebi alındı${rec && rec.ref ? " — " + rec.ref : ""}. 48 saat içinde kargoda.`;
+      const f = D.fabric(b.dataset.sample) || {};
+      const ref = rec && rec.ref ? rec.ref : "";
+      // Talebi kaydet + LOOMR tedarik ekibine e-posta hazırla
+      const subject = `Numune Talebi — ${b.dataset.ad}${ref ? " (" + ref + ")" : ""}`;
+      const body =
+        `Merhaba LOOMR Tedarik ekibi,\n\n${b.dataset.ad} kumaşından numune talep ediyorum.\n` +
+        `Kompozisyon: ${f.komp || "-"}\nGramaj: ${f.gsm || "-"} GSM\nMenşei: ${f.mensei || "-"}\n` +
+        `Talep no: ${ref}\n\nTeşekkürler.`;
+      window.location.href = `mailto:tedarik@loomr.studio?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      toast.innerHTML = `✓ <b>${b.dataset.ad}</b> numune talebi alındı${ref ? " — " + ref : ""}. E-posta hazırlandı.`;
       toast.classList.add("show");
       clearTimeout(tmr);
       tmr = setTimeout(() => toast.classList.remove("show"), 3800);

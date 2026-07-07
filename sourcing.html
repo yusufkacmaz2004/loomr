@@ -47,8 +47,12 @@
     <div class="wrap">
       <p class="eyebrow">Sourcing</p>
       <h1>Aksesuar & malzeme kataloğu.</h1>
-      <p>Düğme, fermuar, etiket, jakron, baskı, nakış ve ambalaj — MOQ ve terminle,
-         doğru tedarikçiye bağlı. Ürününü tamamla.</p>
+      <p>Düğme, fermuar, etiket, jakron, baskı, nakış ve ambalaj — MOQ ve terminle.
+         Katalog başlangıç noktan; nihai seçim <b>LOOMR stilistleriyle</b> birlikte,
+         markanın stiline göre küratörlenir.</p>
+      <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:.4rem">
+        <a class="btn" href="iletisim.html" style="padding:.7rem 1.2rem;font-size:.72rem">Stilistle görüş →</a>
+      </div>
       <div class="filters" id="filters"><button class="fchip active" data-f="all">Tümü</button></div>
     </div>
   </section>
@@ -113,7 +117,10 @@
     const toast = document.getElementById("toast"); let tmr;
     grid.addEventListener("click", e => {
       const b = e.target.closest("[data-req]"); if (!b) return;
-      toast.innerHTML = `✓ <b>${b.dataset.req}</b> için numune talebin alındı.`;
+      const subject = `Aksesuar Numune Talebi — ${b.dataset.req}`;
+      const body = `Merhaba LOOMR Tedarik ekibi,\n\n${b.dataset.req} için numune / stilist önerisi talep ediyorum.\n\nTeşekkürler.`;
+      window.location.href = `mailto:tedarik@loomr.studio?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      toast.innerHTML = `✓ <b>${b.dataset.req}</b> talebin alındı — e-posta hazırlandı.`;
       toast.classList.add("show"); clearTimeout(tmr); tmr = setTimeout(() => toast.classList.remove("show"), 3200);
     });
   </script>
