@@ -72,6 +72,16 @@
 .stock-ok { font-size: .72rem; color: #3A6349; font-weight: 600; letter-spacing: .06em; }
 .stock-low { font-size: .72rem; color: var(--clay-deep); font-weight: 600; letter-spacing: .06em; }
 
+/* ---------- Denim Fabric Book bandı ---------- */
+.fabric-book { border-bottom: 1px solid var(--line); padding-block: clamp(2rem, 4vw, 3.5rem); }
+.fabric-book__grid { display: grid; gap: 2rem; align-items: center; }
+.fabric-book__txt h2 { margin: .3rem 0 .8rem; }
+.fabric-book__txt .muted { max-width: 46ch; margin-bottom: 1.2rem; }
+.fabric-book__img { display: block; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 30px 60px -40px rgba(95,22,31,.5); }
+.fabric-book__img img { width: 100%; display: block; transition: transform 1s var(--ease); }
+.fabric-book__img:hover img { transform: scale(1.02); }
+@media (min-width: 860px) { .fabric-book__grid { grid-template-columns: 1fr 1.05fr; gap: 3rem; } }
+
 /* Toast */
 .toast {
   position: fixed; bottom: 1.6rem; left: 50%; transform: translate(-50%, 120%);
