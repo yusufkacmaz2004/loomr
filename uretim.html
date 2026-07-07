@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOOMR — Production Live</title>
+  <meta name="description" content="LOOMR Production Live — üretimdeki siparişlerin canlı aşama takibi: kalıptan sevkiyata.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
+  <style>
+    .po-meta { display:flex; gap:1.4rem; flex-wrap:wrap; font-size:.82rem; color:var(--stone); padding:0 1.4rem 1rem; }
+    .po-meta b { color:var(--ink-soft); font-weight:600; }
+    .panel__head h3 small { color:var(--stone); font-weight:400; font-family:var(--sans); font-size:.8rem; letter-spacing:.06em; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap nav">
+      <a href="index.html" class="brand">LOOMR<span>.</span></a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html#vision">Vizyon</a></li>
+          <li><a href="tasarim.html">Design Studio</a></li>
+          <li><a href="kumas.html">Fabric Hub</a></li>
+          <li><a href="lookbook.html">Lookbook</a></li>
+          <li><a href="koleksiyon-olustur.html">Collection Builder</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <a href="giris.html" class="btn btn--ghost">Workspace'e Gir</a>
+        <button class="nav-toggle" aria-label="Menü">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">Production Live</p>
+      <h1>Üretim, canlı.</h1>
+      <p>Her sipariş kalıptan sevkiyata dokuz aşamadan geçer. Nerede olduklarını
+         gerçek zamanlı izle; gecikmeleri erken yakala.</p>
+    </div>
+  </section>
+
+  <div class="wrap" style="padding-bottom:4rem">
+    <div id="poList"></div>
+  </div>
+
+  <footer class="mini-footer">
+    LOOMR — Emre Korkmaz Textile Design Studio · İstanbul · Londra · Milano · Berlin
+  </footer>
+
+  <script src="js/loomr-data.js"></script>
+  <script src="js/loomr-api.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+  (async function () {
+    const D = window.LOOMR_DATA, API = window.LoomrAPI;
+    const STAGES = ["Kalıp","Numune","Kumaş","Kesim","Dikim","Ütü","Kalite","Paketleme","Sevkiyat"];
+
+    // temsili aktif siparişler
+    const orders = [
+      { urun:"Oversize Keten Gömlek", po:"PO#1042", kumas:"%100 Keten · 185 GSM", fabrika:"İzmir · TR", stage:4 },
+      { urun:"Crop Yün Blazer",       po:"PO#1044", kumas:"Yün-Kaşmir",           fabrika:"Biella · IT", stage:6 },
+      { urun:"Raw-Hem Denim Ceket",   po:"PO#1043", kumas:"13oz Selvedge Denim",  fabrika:"Guimarães · PT", stage:1 },
+      { urun:"Pileli Midi Etek",      po:"PO#1045", kumas:"Geri Dön. Poli-Twill", fabrika:"Denizli · TR", stage:2 },
+    ];
+
+    // modeliste iletilen gerçek föyler → yeni üretim emri (Kalıp aşaması)
+    try {
+      const tps = await API.techpacks.list();
+      tps.filter(t => t.status === "modeliste_iletildi").slice(0, 4).forEach(t => {
+        const g = t.garment || D.garment(t.garment_id) || {}, f = t.fabric || D.fabric(t.fabric_id) || {};
+        orders.unshift({ urun: g.ad || "Ürün", po: t.ref, kumas: f.ad || "", fabrika: (t.modelist && t.modelist.sehir) || "Atölye", stage: 0 });
+      });
+    } catch (e) {}
+
+    const badge = st => {
+      if (st >= 8) return '<span class="badge badge--ok">Sevkiyatta</span>';
+      if (st >= 6) return '<span class="badge badge--ok">Kalite</span>';
+      if (st >= 3) return '<span class="badge badge--wip">Üretimde</span>';
+      return '<span class="badge badge--wait">Hazırlık</span>';
+    };
+
+    document.getElementById("poList").innerHTML = orders.map(o => `
+      <section class="panel">
+        <div class="panel__head">
+          <h3>${o.urun} <small>· ${o.po}</small></h3>
+          ${badge(o.stage)}
+        </div>
+        <div class="po-meta">
+          <span><b>Kumaş:</b> ${o.kumas}</span>
+          <span><b>Fabrika:</b> ${o.fabrika}</span>
+          <span><b>Aşama:</b> ${STAGES[o.stage]}</span>
+        </div>
+        <div class="steps">
+          ${STAGES.map((s, i) => `
+            <div class="step ${i < o.stage ? "done" : i === o.stage ? "now" : ""}">
+              <span class="dot"></span><span class="t">${s}</span>
+            </div>`).join("")}
+        </div>
+      </section>`).join("");
+  })();
+  </script>
+</body>
+</html>
