@@ -26,15 +26,15 @@
 
 /* ---------- Hero (full-bleed) ---------- */
 .ed-hero { position: relative; min-height: 100svh; display: grid; grid-template-rows: 1fr auto; overflow: hidden; background: #16110F; }
-.ed-hero__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 30%; filter: saturate(1.1) contrast(1.03); }
+.ed-hero__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 8%; filter: saturate(1.08) contrast(1.03); }
 .ed-hero::after { content: ""; position: absolute; inset: 0;
   background: linear-gradient(180deg, rgba(20,12,10,.55) 0%, rgba(20,12,10,.05) 30%, rgba(20,12,10,.15) 60%, rgba(20,12,10,.85) 100%); }
 .ed-hero__inner { position: relative; z-index: 2; align-self: end; color: #F7F2EA; padding: clamp(1.4rem, 4vw, 3rem); width: 100%; }
 .ed-hero__eyebrow { display: flex; gap: 1.2rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem; color: rgba(247,242,234,.85); }
 .ed-hero__eyebrow .star { color: var(--acc); letter-spacing: .3em; }
-.ed-hero h1 { font-family: "Anton", sans-serif; text-transform: uppercase; font-weight: 400; line-height: .84;
-  font-size: clamp(3.2rem, 13vw, 13rem); letter-spacing: -0.01em; margin: 0; }
-.ed-hero h1 .em { font-family: "Fraunces", serif; font-style: italic; text-transform: none; font-weight: 300; color: var(--acc); letter-spacing: -0.02em; }
+.ed-hero h1 { font-family: "Anton", sans-serif; text-transform: uppercase; font-weight: 400; line-height: .86;
+  font-size: clamp(2.3rem, 9.6vw, 9.5rem); letter-spacing: -0.02em; margin: 0; }
+.ed-hero h1 .em { display: inline-block; font-family: "Archivo", sans-serif; font-style: italic; text-transform: none; font-weight: 600; font-stretch: 100%; color: var(--acc); letter-spacing: -0.01em; font-size: .5em; line-height: 1; margin-top: .16em; }
 .ed-hero__foot { display: flex; justify-content: space-between; align-items: end; gap: 1.5rem; margin-top: 1.6rem; flex-wrap: wrap; }
 .ed-hero__foot p { max-width: 40ch; color: rgba(247,242,234,.8); font-size: .95rem; margin: 0; }
 .ed-cta { display: inline-flex; align-items: center; gap: .6rem; background: var(--acc); color: #fff; padding: .95rem 1.6rem;
@@ -90,3 +90,10 @@
 /* ---------- Footer ---------- */
 .ed-foot { background: var(--ed-ink); color: rgba(244,239,231,.6); padding: 3rem clamp(1.2rem,4vw,3rem) 2rem; display: flex; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
 .ed-foot .ed-bar__logo { color: var(--ed-cream); }
+
+/* ---------- Display fontu: geniş-kalın grotesk (Archivo Expanded Black) ---------- */
+.ed-disp, .ed-bar__logo, .ed-hero h1, .ed-ticker__track span, .ed-cell__no, .ed-split__txt h2, .ed-close h2 {
+  font-family: "Archivo", Impact, sans-serif;
+  font-weight: 900;
+  font-stretch: 125%;
+}
