@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOOMR — Tedarikçi Ağı</title>
+  <meta name="description" content="LOOMR Tedarikçi Ağı — doğrulanmış fabrikalar ve modelistler; uzmanlık, MOQ, kapasite, sertifika, termin ve puan.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
+  <style>
+    .net-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:1.2rem; padding-block:1rem 3rem; }
+    .net-card { background:var(--white); border:1px solid var(--line); border-radius:8px; padding:1.4rem 1.5rem; display:flex; flex-direction:column; gap:.85rem; transition:transform .4s var(--ease), box-shadow .4s var(--ease); }
+    .net-card:hover { transform:translateY(-4px); box-shadow:0 24px 50px -35px rgba(95,22,31,.5); }
+    .net-top { display:flex; justify-content:space-between; align-items:baseline; gap:.6rem; }
+    .net-top h3 { font-size:1.25rem; }
+    .net-rate { font-size:.82rem; font-weight:600; color:var(--gold); white-space:nowrap; }
+    .net-city { font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--clay); font-weight:600; }
+    .net-chips { display:flex; gap:.4rem; flex-wrap:wrap; }
+    .net-card .spec-list { grid-template-columns:1fr; }
+    .net-card .cert-row { margin-top:auto; }
+    .sec-head { display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap; margin-top:1rem; }
+    .sec-head h2 { font-size:clamp(1.5rem,3vw,2.2rem); }
+    .sec-head .count { font-size:.8rem; color:var(--stone); }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap nav">
+      <a href="index.html" class="brand">LOOMR<span>.</span></a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html#vision">Vizyon</a></li>
+          <li><a href="tasarim.html">Design Studio</a></li>
+          <li><a href="kumas.html">Fabric Hub</a></li>
+          <li><a href="lookbook.html">Lookbook</a></li>
+          <li><a href="koleksiyon-olustur.html">Collection Builder</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <a href="giris.html" class="btn btn--ghost">Workspace'e Gir</a>
+        <button class="nav-toggle" aria-label="Menü">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">Tedarikçi Ağı</p>
+      <h1>Doğrulanmış üretim ağı.</h1>
+      <p>7 ülkede fabrikalar ve modelistler — uzmanlık, MOQ, kapasite, sertifika,
+         termin ve puanla. Teknik föyünü tek tıkla doğru ele ilet.</p>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="sec-head"><h2>Fabrikalar</h2><span class="count" id="facCount"></span></div>
+    <div class="net-grid" id="factories"></div>
+
+    <div class="sec-head"><h2>Modelistler</h2><span class="count" id="mlCount"></span></div>
+    <div class="net-grid" id="modelists"></div>
+  </div>
+
+  <footer class="mini-footer">
+    LOOMR — Emre Korkmaz Textile Design Studio · İstanbul · Londra · Milano · Berlin
+  </footer>
+
+  <script src="js/loomr-data.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    const D = window.LOOMR_DATA;
+    const TYPE_ADI = { pantolon:"Pantolon", short:"Short", ceket:"Ceket", gomlek:"Gömlek" };
+
+    document.getElementById("factories").innerHTML = D.FACTORIES.map(f => `
+      <article class="net-card">
+        <div class="net-top"><h3>${f.ad}</h3><span class="net-rate">★ ${f.puan}</span></div>
+        <div class="net-city">${f.sehir}</div>
+        <div class="net-chips">${f.uzmanlik.map(u => `<span class="chip">${u}</span>`).join("")}</div>
+        <dl class="spec-list">
+          <div><dt>MOQ</dt><dd>${f.moq}</dd></div>
+          <div><dt>Kapasite</dt><dd>${f.kapasite}</dd></div>
+          <div><dt>Termin</dt><dd>${f.termin}</dd></div>
+        </dl>
+        <div class="cert-row">${f.sert.map(s => `<span class="chip">${s}</span>`).join("")}</div>
+      </article>`).join("");
+    document.getElementById("facCount").textContent = D.FACTORIES.length + " fabrika";
+
+    document.getElementById("modelists").innerHTML = D.MODELISTS.map(m => `
+      <article class="net-card">
+        <div class="net-top"><h3>${m.ad}</h3><span class="net-rate">★ ${m.puan}</span></div>
+        <div class="net-city">${m.sehir} · ${m.not}</div>
+        <div class="net-chips">
+          ${m.uzmanlik.map(u => `<span class="chip">${TYPE_ADI[u] || u}</span>`).join("")}
+          ${m.denim ? '<span class="chip">Denim</span>' : ""}
+        </div>
+        <dl class="spec-list"><div><dt>Numune termini</dt><dd>${m.termin}</dd></div></dl>
+        <a class="link-arrow" href="tasarim.html">Föy gönder →</a>
+      </article>`).join("");
+    document.getElementById("mlCount").textContent = D.MODELISTS.length + " modelist";
+  </script>
+</body>
+</html>

@@ -184,6 +184,16 @@
     { id: "ml-04", ad: "Clara Voss",  sehir: "Berlin",   uzmanlik: ["gomlek", "ceket"],   denim: false, puan: 4.9, termin: "4–6 gün", not: "Dokuma & drape" }
   ];
 
+  /* ---------- Fabrika / tedarikçi ağı ---------- */
+  const FACTORIES = [
+    { id: "fac-izmir", ad: "Ege Konfeksiyon", sehir: "İzmir · Türkiye", uzmanlik: ["Örme", "Dokuma gömlek", "Keten"], moq: "300 adet", kapasite: "40k / ay", sert: ["GOTS", "OEKO-TEX", "SEDEX"], puan: 4.8, termin: "18 gün" },
+    { id: "fac-corlu", ad: "Marmara Denim", sehir: "Çorlu · Türkiye", uzmanlik: ["Denim", "Yıkama", "Pantolon"], moq: "500 adet", kapasite: "60k / ay", sert: ["BCI", "GRS", "OEKO-TEX"], puan: 4.7, termin: "22 gün" },
+    { id: "fac-guim", ad: "Atlântico Mills", sehir: "Guimarães · Portekiz", uzmanlik: ["Selvedge denim", "Premium ceket"], moq: "400 adet", kapasite: "25k / ay", sert: ["GOTS", "GRS"], puan: 4.9, termin: "28 gün" },
+    { id: "fac-biella", ad: "Biella Sartoria", sehir: "Biella · İtalya", uzmanlik: ["Tailoring", "Yün blazer", "Palto"], moq: "150 adet", kapasite: "12k / ay", sert: ["RWS", "OEKO-TEX"], puan: 4.9, termin: "30 gün" },
+    { id: "fac-denizli", ad: "Denizli Tekstil", sehir: "Denizli · Türkiye", uzmanlik: ["Poplin", "Sürdürülebilir", "Baskı"], moq: "350 adet", kapasite: "55k / ay", sert: ["GOTS", "GRS", "FSC"], puan: 4.6, termin: "16 gün" },
+    { id: "fac-porto", ad: "Norte Knit", sehir: "Porto · Portekiz", uzmanlik: ["Örme", "Sweat", "Jersey"], moq: "300 adet", kapasite: "30k / ay", sert: ["OEKO-TEX", "amfori BSCI"], puan: 4.7, termin: "20 gün" }
+  ];
+
   /* En uygun modelisti seç (garment tipine ve denim'e göre) */
   function suggestModelist(garment) {
     if (!garment) return MODELISTS[0];
@@ -206,5 +216,5 @@
     suggestModelist
   };
 
-  global.LOOMR_DATA = { COLORS, FABRICS, FABRIC_FAMILIES, GARMENTS, MODELISTS, ...helpers };
+  global.LOOMR_DATA = { COLORS, FABRICS, FABRIC_FAMILIES, GARMENTS, MODELISTS, FACTORIES, ...helpers };
 })(typeof window !== "undefined" ? window : this);
