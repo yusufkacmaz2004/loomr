@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOOMR — Giriş</title>
+  <meta name="description" content="LOOMR Workspace'e giriş yapın.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
+  <style>
+    body { margin: 0; }
+    .login { min-height: 100vh; display: grid; grid-template-columns: 1fr; background: var(--ink); }
+    .login__media { position: relative; min-height: 34vh; }
+    .login__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
+    .login__panel { display: flex; align-items: center; justify-content: center; background: var(--paper); padding: clamp(2rem, 6vw, 4rem); }
+    .login__card { width: 100%; max-width: 380px; }
+    .login__brand { font-family: var(--serif); font-size: 1.6rem; letter-spacing: .18em; margin-bottom: 2.2rem; }
+    .login__brand span { color: var(--clay); }
+    .login__card h1 { font-size: 1.9rem; margin: 0 0 .4rem; }
+    .login__card .sub { color: var(--stone); font-size: .92rem; margin: 0 0 1.8rem; }
+    .fld { margin-bottom: 1rem; }
+    .fld label { display: block; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; color: var(--ink-soft); margin-bottom: .4rem; }
+    .fld input { width: 100%; padding: .85rem 1rem; border: 1px solid var(--line-strong); border-radius: 4px; font: inherit; background: var(--white); color: var(--ink); outline: none; transition: border .25s; }
+    .fld input:focus { border-color: var(--clay); }
+    .login__row { display: flex; justify-content: space-between; align-items: center; font-size: .8rem; margin: .2rem 0 1.4rem; }
+    .login__row a { color: var(--clay); }
+    .login .btn { width: 100%; justify-content: center; }
+    .login__or { display: flex; align-items: center; gap: 1rem; color: var(--stone); font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; margin: 1.3rem 0; }
+    .login__or::before, .login__or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+    .btn--social { background: var(--white); color: var(--ink); border-color: var(--line-strong); }
+    .btn--social:hover { background: var(--paper-2); color: var(--ink); border-color: var(--line-strong); transform: none; }
+    .login__foot { text-align: center; font-size: .85rem; color: var(--stone); margin-top: 1.6rem; }
+    .login__foot a { color: var(--ink); font-weight: 600; }
+    .login__back { display: inline-block; margin-top: 2rem; font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; color: var(--stone); }
+    .login__back:hover { color: var(--clay); }
+    @media (min-width: 820px) {
+      .login { grid-template-columns: 1.05fr 1fr; }
+      .login__media { min-height: auto; }
+    }
+  </style>
+</head>
+<body>
+  <main class="login">
+    <div class="login__media">
+      <img src="img/brand-key.png" alt="LOOMR — Emre Korkmaz Textile Design Studio">
+    </div>
+    <div class="login__panel">
+      <div class="login__card">
+        <a href="index.html" class="login__brand">LOOMR<span>.</span></a>
+        <h1>Workspace'e gir.</h1>
+        <p class="sub">Markanın komuta merkezine hoş geldin.</p>
+
+        <form id="loginForm" novalidate>
+          <div class="fld">
+            <label for="email">E-posta</label>
+            <input type="email" id="email" placeholder="sen@markan.com" autocomplete="email">
+          </div>
+          <div class="fld">
+            <label for="pass">Parola</label>
+            <input type="password" id="pass" placeholder="••••••••" autocomplete="current-password">
+          </div>
+          <div class="login__row">
+            <label style="display:flex;align-items:center;gap:.4rem;text-transform:none;letter-spacing:0;font-weight:400;color:var(--stone)">
+              <input type="checkbox" style="width:auto"> Beni hatırla
+            </label>
+            <a href="#">Parolamı unuttum</a>
+          </div>
+          <button type="submit" class="btn">Giriş Yap →</button>
+        </form>
+
+        <div class="login__or">veya</div>
+        <a href="app.html" class="btn btn--social">Google ile devam et</a>
+
+        <p class="login__foot">Hesabın yok mu? <a href="index.html#cta">Demo talep et</a></p>
+        <a href="index.html" class="login__back">← Ana sayfaya dön</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      // Demo: gerçek kimlik doğrulama yok — doğrudan workspace'e geç
+      location.href = "app.html";
+    });
+  </script>
+</body>
+</html>
