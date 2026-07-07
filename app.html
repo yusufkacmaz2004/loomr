@@ -91,6 +91,31 @@
       </div>
     </section>
 
+    <!-- ===== Senin çalışmaların (kayıtlı veri — Design Studio / Collection Builder) ===== -->
+    <section id="mywork" hidden>
+      <div class="page-head">
+        <div>
+          <p class="eyebrow">Çalışma Alanın</p>
+          <h1 style="font-size:1.8rem">Kaydettiklerin.</h1>
+          <p>Design Studio ve Collection Builder'da oluşturdukların burada canlı.</p>
+        </div>
+      </div>
+      <div id="mw-designs-wrap" hidden>
+        <div class="panel__head" style="padding:0 0 .8rem;border:0"><h3>3D Tasarımların</h3><a href="tasarim.html" class="link-arrow">Yeni tasarım →</a></div>
+        <div class="mod-grid" id="mw-designs"></div>
+      </div>
+      <div id="mw-tp-wrap" hidden style="margin-top:2rem">
+        <div class="panel__head" style="padding:0 0 .8rem;border:0"><h3>Teknik Föyler</h3></div>
+        <div style="overflow-x:auto"><table class="tbl">
+          <thead><tr><th>Ref</th><th>Ürün</th><th>Kumaş</th><th>Modelist</th><th>Durum</th></tr></thead>
+          <tbody id="mw-tp"></tbody></table></div>
+      </div>
+      <div id="mw-col-wrap" hidden style="margin-top:2rem">
+        <div class="panel__head" style="padding:0 0 .8rem;border:0"><h3>Koleksiyonların</h3><a href="koleksiyon-olustur.html" class="link-arrow">Yeni koleksiyon →</a></div>
+        <div class="mod-grid" id="mw-col"></div>
+      </div>
+    </section>
+
     <!-- ===== Production Live ===== -->
     <section id="production" class="panel">
       <div class="panel__head">
@@ -189,6 +214,61 @@
     </a>
   </main>
 
+  <script src="js/loomr-data.js"></script>
+  <script src="js/loomr-api.js"></script>
   <script src="js/main.js"></script>
+  <script>
+  (async function () {
+    const D = window.LOOMR_DATA, API = window.LoomrAPI;
+    let designs = [], techpacks = [], collections = [];
+    try {
+      [designs, techpacks, collections] = await Promise.all([
+        API.designs.list(), API.techpacks.list(), API.collections.list(),
+      ]);
+    } catch (e) { return; }
+    if (!(designs.length || techpacks.length || collections.length)) return; // veri yoksa demo kalsın
+
+    document.getElementById("mywork").hidden = false;
+
+    if (designs.length) {
+      document.getElementById("mw-designs-wrap").hidden = false;
+      document.getElementById("mw-designs").innerHTML = designs.slice(0, 8).map(d => {
+        const g = D.garment(d.garment_id), f = D.fabric(d.fabric_id);
+        const thumb = d.thumb
+          ? `<img src="${d.thumb}" alt="" style="width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--paper-2);display:block">`
+          : `<div style="aspect-ratio:4/3;background:var(--paper-2)"></div>`;
+        return `<div class="mod-card" style="padding:0;overflow:hidden">${thumb}
+          <div style="padding:.9rem 1.1rem 1.1rem">
+            <div class="status live" style="margin-bottom:.3rem">${d.ref || ""}</div>
+            <h4 style="font-size:1rem;margin:0">${d.name || (g && g.ad) || "Tasarım"}</h4>
+            <p style="margin:.3rem 0 0;font-size:.78rem;color:var(--stone)">${f ? f.ad : ""}</p>
+          </div></div>`;
+      }).join("");
+    }
+
+    if (techpacks.length) {
+      document.getElementById("mw-tp-wrap").hidden = false;
+      const badge = s => s === "modeliste_iletildi"
+        ? '<span class="badge badge--ok">Modeliste iletildi</span>'
+        : '<span class="badge badge--wait">Taslak</span>';
+      document.getElementById("mw-tp").innerHTML = techpacks.slice(0, 12).map(t => {
+        const g = t.garment || D.garment(t.garment_id) || {}, f = t.fabric || D.fabric(t.fabric_id) || {};
+        return `<tr><td>${t.ref || ""}</td><td>${g.ad || ""}</td><td>${f.ad || ""}</td>
+          <td>${t.modelist ? t.modelist.ad : "—"}</td><td>${badge(t.status)}</td></tr>`;
+      }).join("");
+    }
+
+    if (collections.length) {
+      document.getElementById("mw-col-wrap").hidden = false;
+      document.getElementById("mw-col").innerHTML = collections.slice(0, 8).map(c => {
+        const n = (c.items ? c.items.length : (c.meta && c.meta.adet)) || "—";
+        return `<a class="mod-card" href="koleksiyon-olustur.html">
+          <span class="status live">${c.ref || c.season || "Koleksiyon"}</span>
+          <h4>${c.name || c.ad || "Koleksiyon"}</h4>
+          <p>${c.season || ""} · ${n} ürün</p></a>`;
+      }).join("");
+    }
+  })();
+  </script>
 </body>
 </html>

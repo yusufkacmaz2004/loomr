@@ -179,6 +179,8 @@
     LOOMR — Emre Korkmaz Textile Design Studio · İstanbul · Londra · Milano · Berlin
   </footer>
 
+  <script src="js/loomr-data.js"></script>
+  <script src="js/loomr-api.js"></script>
   <script src="js/main.js"></script>
   <script>
     const state = { adim: 1, sezon: null, pazar: null, musteri: null, segment: null, adet: null, kumas: [], renk: [] };
@@ -303,11 +305,12 @@
           </div>
         </article>`).join("");
 
-      // localStorage'a kaydet
-      const kayit = { ad, ...state, items, tarih: new Date().toISOString() };
-      const eski = JSON.parse(localStorage.getItem("loomr-koleksiyonlar") || "[]");
-      eski.push(kayit);
-      localStorage.setItem("loomr-koleksiyonlar", JSON.stringify(eski));
+      // Backend'e (API açıksa REST, değilse localStorage) kalıcı kaydet
+      LoomrAPI.collections.create({
+        name: ad, season: state.sezon, market: state.pazar, segment: state.segment,
+        meta: { musteri: state.musteri, adet: +state.adet, kumas: state.kumas, renk: state.renk },
+        items,
+      }).catch(() => {});
 
       document.getElementById("wizard").hidden = true;
       document.querySelector(".page-hero").hidden = true;
