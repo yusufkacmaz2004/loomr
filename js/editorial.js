@@ -16,9 +16,15 @@
     const y = window.scrollY || window.pageYOffset;
     const vh = window.innerHeight;
 
-    if (!reduce && y < vh * 1.5 && inner) {
-      inner.style.transform = "translate3d(0," + (-y * 0.24).toFixed(1) + "px,0)";
-      inner.style.opacity = Math.max(0, 1 - y / (vh * 0.7)).toFixed(3);
+    if (!reduce && y < vh * 1.5) {
+      if (bg) {
+        const sc = 1 + Math.min(y, vh) / vh * 0.16;
+        bg.style.transform = "translate3d(0," + (y * 0.5).toFixed(1) + "px,0) scale(" + sc.toFixed(3) + ")";
+      }
+      if (inner) {
+        inner.style.transform = "translate3d(0," + (-y * 0.24).toFixed(1) + "px,0)";
+        inner.style.opacity = Math.max(0, 1 - y / (vh * 0.7)).toFixed(3);
+      }
     }
 
     if (!reduce) for (const el of pxEls) {
@@ -93,35 +99,6 @@
   requestAnimationFrame(function () {
     requestAnimationFrame(function () { document.documentElement.classList.add("ed-loaded"); });
   });
-
-  /* ---- hero fotoğrafı: interaktif spring parallax + 3D tilt + intro push-in ---- */
-  if (bg && !reduce) {
-    let nx = 0, ny = 0, sx = 0, sy = 0, vx = 0, vy = 0;
-    const t0 = performance.now();
-    if (fine) addEventListener("mousemove", function (e) {
-      nx = (e.clientX / window.innerWidth - 0.5) * 2;
-      ny = (e.clientY / window.innerHeight - 0.5) * 2;
-    }, { passive: true });
-    (function hero() {
-      const now = performance.now();
-      const y = window.scrollY || window.pageYOffset;
-      const vh = window.innerHeight;
-      let p = Math.min(1, (now - t0) / 1500); p = 1 - Math.pow(1 - p, 3); // easeOutCubic
-      if (fine) {
-        vx = (vx + (nx - sx) * 0.055) * 0.82; sx += vx;
-        vy = (vy + (ny - sy) * 0.055) * 0.82; sy += vy;
-      }
-      if (y < vh * 1.5) {
-        const zoom = 1.1 + (1 - p) * 0.16 + Math.min(y, vh) / vh * 0.09;
-        const tx = sx * 26, ty = y * 0.5 + sy * 26 + (1 - p) * -20;
-        bg.style.transform = "perspective(1400px) translate3d(" + tx.toFixed(1) + "px," + ty.toFixed(1) +
-          "px,0) scale(" + zoom.toFixed(3) + ") rotateX(" + (-sy * 2).toFixed(2) + "deg) rotateY(" + (sx * 2.3).toFixed(2) + "deg)";
-      }
-      requestAnimationFrame(hero);
-    })();
-  } else if (bg) {
-    bg.style.transform = "scale(1.03)";
-  }
 
   addEventListener("scroll", onScroll, { passive: true });
   addEventListener("resize", update);
