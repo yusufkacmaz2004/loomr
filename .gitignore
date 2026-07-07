@@ -13,3 +13,6 @@ npm-debug.log*
 Thumbs.db
 *.log
 .vscode/
+
+# Buyuk 3D modelleri (web icin sikistirilmadan commit edilmez)
+models/*.glb
