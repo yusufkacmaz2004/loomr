@@ -136,6 +136,35 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .ed-
 .ed-foot { background: var(--ed-ink); color: rgba(244,239,231,.6); padding: 3rem clamp(1.2rem,4vw,3rem) 2rem; display: flex; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
 .ed-foot .ed-bar__logo { color: var(--ed-cream); }
 
+/* ---------- Sayfa başlığı (Hakkımızda vb.) ---------- */
+.ed-page-head { position: relative; background: var(--ed-ink); color: var(--ed-cream); overflow: hidden;
+  padding: clamp(7rem, 15vw, 12rem) clamp(1.4rem, 4vw, 3rem) clamp(2.5rem, 6vw, 5rem); }
+.ed-page-head::before { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 100% at 100% 0%, rgba(217,59,41,.4), transparent 55%); }
+.ed-page-head__in { position: relative; z-index: 1; }
+.ed-page-head .eyebrow, .ed-page-head .ed-mono { color: var(--acc); }
+.ed-page-head h1 { font-family: "Archivo", sans-serif; font-weight: 900; font-stretch: 125%; text-transform: uppercase;
+  font-size: clamp(3rem, 12vw, 10rem); line-height: .84; letter-spacing: -0.02em; margin: 1rem 0 0; }
+.ed-page-head p { color: rgba(244,239,231,.75); max-width: 52ch; margin: 1.6rem 0 0; font-size: clamp(1rem, 1.5vw, 1.25rem); font-weight: 300; }
+
+/* ---------- Karşılaştırma satırları (LOOMR = ...) ---------- */
+.ed-compare { border-top: 1px solid #E3D9CD; }
+.ed-compare__row { display: grid; grid-template-columns: 1fr; gap: .4rem; padding: 1.5rem clamp(1.4rem, 4vw, 3rem); border-bottom: 1px solid #E3D9CD; align-items: baseline; }
+@media (min-width: 640px) { .ed-compare__row { grid-template-columns: 12rem 1fr; gap: 1.6rem; } }
+.ed-compare__row b { font-family: "Archivo", sans-serif; font-weight: 900; font-stretch: 112%; text-transform: uppercase; font-size: 1.35rem; }
+.ed-compare__row span { color: #6E645B; font-size: .98rem; }
+.ed-compare__row:hover { background: #fff; }
+.ed-compare__row:hover b { color: var(--acc); }
+
+/* ---------- Stüdyo bandı ---------- */
+.ed-studio { display: grid; grid-template-columns: 1fr; background: var(--ed-cream); }
+@media (min-width: 900px) { .ed-studio { grid-template-columns: 1fr 1fr; } }
+.ed-studio__img { position: relative; min-height: 52vh; overflow: hidden; }
+.ed-studio__img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ed-studio__txt { padding: clamp(2.5rem, 6vw, 5rem); display: grid; align-content: center; gap: 1rem; }
+.ed-studio__txt h2 { font-family: "Fraunces", serif; font-weight: 300; font-size: clamp(1.8rem, 4vw, 3.2rem); line-height: 1.05; }
+.ed-studio__txt .row { display: flex; justify-content: space-between; gap: 1rem; padding: .8rem 0; border-bottom: 1px dashed #D9CEC0; font-size: .92rem; }
+.ed-studio__txt .row b { font-weight: 600; }
+
 /* ---------- Display fontu: geniş-kalın grotesk (Archivo Expanded Black) ---------- */
 .ed-disp, .ed-bar__logo, .ed-hero h1, .ed-ticker__track span, .ed-cell__no, .ed-split__txt h2, .ed-close h2 {
   font-family: "Archivo", Impact, sans-serif;
