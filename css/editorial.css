@@ -102,6 +102,19 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .ed-
 .ed-cell__arrow { position: absolute; top: 1.6rem; right: 1.6rem; opacity: 0; transform: translateX(-6px); transition: .3s; color: var(--acc); font-family: "Space Mono", monospace; }
 .ed-cell:hover .ed-cell__arrow { opacity: 1; transform: none; }
 
+/* ---------- Modül butonları (6) ---------- */
+.ed-btns { display: grid; grid-template-columns: 1fr; background: var(--ed-ink); gap: 1px; }
+@media (min-width: 640px) { .ed-btns { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1000px) { .ed-btns { grid-template-columns: 1fr 1fr 1fr; } }
+.ed-btn { display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: clamp(1.7rem, 3.4vw, 2.8rem) clamp(1.4rem, 3vw, 2.4rem);
+  background: var(--ed-ink); color: var(--ed-cream);
+  font-family: "Archivo", sans-serif; font-weight: 900; font-stretch: 112%; text-transform: uppercase;
+  font-size: clamp(1.15rem, 2vw, 1.7rem); letter-spacing: -0.01em; line-height: 1; transition: background .3s var(--ease), color .3s; }
+.ed-btn span { color: var(--acc); font-family: "Space Mono", monospace; font-size: 1.1em; transition: transform .3s var(--ease), color .3s; }
+.ed-btn:hover { background: var(--acc); color: #fff; }
+.ed-btn:hover span { color: #fff; transform: translate(5px, -5px); }
+
 /* ---------- Full-bleed editorial split ---------- */
 .ed-split { display: grid; grid-template-columns: 1fr; background: var(--ed-ink); color: var(--ed-cream); }
 @media (min-width: 900px){ .ed-split { grid-template-columns: 1.1fr 1fr; } }
