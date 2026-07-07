@@ -7,70 +7,91 @@
   <meta name="description" content="LOOMR Analitik — tasarımların, teknik föylerin, koleksiyonların ve numunelerin canlı özeti.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/pages.css">
+  <link href="https://fonts.googleapis.com/css2?family=Allura&family=Archivo:ital,wdth,wght@0,62.5..125,100..900;1,62.5..125,100..900&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/editorial.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
   <style>
-    .an-kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:6px; overflow:hidden; margin-bottom:2rem; }
-    .an-kpi { background:var(--white); padding:1.3rem 1.4rem; }
-    .an-kpi .v { font-family:var(--serif); font-size:2.2rem; line-height:1; }
-    .an-kpi .t { font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--stone); margin-top:.4rem; }
+    *,*::before,*::after{box-sizing:border-box}
+    html{overflow-x:clip}
+    body{margin:0;overflow-x:clip;font-family:"Archivo","Inter",sans-serif;background:var(--ed-cream);color:var(--ed-ink);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+
+    .an-wrap { padding:clamp(2rem,5vw,3.4rem) clamp(1.2rem,4vw,3rem) clamp(3.5rem,8vw,6rem); }
+
+    /* ---- KPI band (dark ink, accent numbers — matches homepage stats) ---- */
+    .an-kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:1px; background:var(--ed-ink); border:1px solid var(--ed-ink); margin-bottom:2.4rem; }
+    .an-kpi { background:var(--ed-ink); color:var(--ed-cream); padding:1.6rem 1.4rem; }
+    .an-kpi .v { font-family:"Archivo",sans-serif; font-weight:900; font-stretch:125%; font-size:clamp(2.2rem,4vw,3.2rem); line-height:1; color:var(--acc); }
+    .an-kpi .t { font-family:"Space Mono",monospace; font-size:.6rem; letter-spacing:.16em; text-transform:uppercase; color:rgba(244,239,231,.6); margin-top:.6rem; }
+
     .an-grid { display:grid; gap:1.2rem; grid-template-columns:1fr; }
     @media(min-width:820px){ .an-grid { grid-template-columns:1fr 1fr; } }
-    .an-card { background:var(--white); border:1px solid var(--line); border-radius:8px; padding:1.4rem 1.5rem; }
-    .an-card h3 { font-size:1.15rem; margin:0 0 1.1rem; }
-    .bar-row { display:grid; grid-template-columns:8.5rem 1fr 2rem; align-items:center; gap:.7rem; margin-bottom:.6rem; font-size:.85rem; }
-    .bar-row .lbl { color:var(--ink-soft); }
-    .bar-track { background:var(--paper-2); border-radius:100px; height:12px; overflow:hidden; }
+    .an-card { background:#fff; border:1px solid #E3D9CD; border-radius:6px; padding:1.6rem 1.7rem; }
+    .an-card h3 { font-family:"Fraunces",serif; font-weight:400; font-size:1.3rem; margin:0 0 1.3rem; }
+
+    .bar-row { display:grid; grid-template-columns:8.5rem 1fr 2rem; align-items:center; gap:.7rem; margin-bottom:.7rem; font-size:.85rem; }
+    .bar-row .lbl { color:#6E645B; }
+    .bar-track { background:#EFE8DE; border-radius:100px; height:12px; overflow:hidden; }
     .bar-fill { height:100%; border-radius:100px; transition:width .8s var(--ease); }
-    .bar-row .num { font-weight:600; text-align:right; }
-    .an-empty { text-align:center; padding:3rem 1rem; color:var(--stone); }
+    .bar-row .num { font-family:"Space Mono",monospace; font-weight:700; text-align:right; }
+    .muted { color:#6E645B; }
+
+    .an-empty { text-align:center; padding:3rem 1rem; color:#6E645B; grid-column:1/-1; }
+    .an-empty h3 { font-family:"Fraunces",serif; }
     .an-legend { display:flex; gap:1.2rem; flex-wrap:wrap; margin-top:1rem; font-size:.8rem; }
     .an-legend span { display:flex; align-items:center; gap:.4rem; }
     .an-legend i { width:12px; height:12px; border-radius:3px; display:inline-block; }
     .donut-wrap { display:flex; align-items:center; gap:1.6rem; flex-wrap:wrap; }
+
+    /* ---- Buttons (editorial CTA) ---- */
+    .btn { display:inline-flex; align-items:center; gap:.5rem; background:var(--acc); color:#fff; padding:.85rem 1.5rem;
+      font-family:"Space Mono",monospace; font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; border-radius:100px;
+      border:1px solid var(--acc); cursor:pointer; transition:background .3s, transform .3s, color .3s; }
+    .btn:hover { background:var(--ed-ink); border-color:var(--ed-ink); color:#fff; transform:translateY(-2px); }
+    .btn--ghost { background:transparent; color:var(--ed-ink); border-color:#D9CEC0; }
+    .btn--ghost:hover { background:var(--ed-ink); border-color:var(--ed-ink); color:#fff; }
   </style>
 </head>
-<body>
-  <header class="site-header">
-    <div class="wrap nav">
-      <a href="index.html" class="brand">LOOMR<span>.</span></a>
-      <nav>
-        <ul class="nav-links">
-          <li><a href="index.html#vision">Vizyon</a></li>
-          <li><a href="tasarim.html">Design Studio</a></li>
-          <li><a href="kumas.html">Fabric Hub</a></li>
-          <li><a href="lookbook.html">Lookbook</a></li>
-          <li><a href="koleksiyon-olustur.html">Collection Builder</a></li>
-        </ul>
-      </nav>
-      <div class="nav-actions">
-        <a href="giris.html" class="btn btn--ghost">Workspace'e Gir</a>
-        <button class="nav-toggle" aria-label="Menü">☰</button>
-      </div>
+<body class="ed">
+
+  <div class="ed-cursor" aria-hidden="true"></div>
+
+  <!-- TOP BAR -->
+  <div class="ed-bar">
+    <a href="index.html" class="ed-bar__logo">LOOMR</a>
+    <nav class="ed-mono">
+      <a href="vizyon.html">Vizyon</a>
+      <a href="tasarim.html">Stüdyo</a>
+      <a href="kumas.html">Kumaş</a>
+      <a href="giris.html">Workspace</a>
+    </nav>
+    <a href="giris.html" class="ed-mono">Giriş ↗</a>
+  </div>
+
+  <!-- PAGE HEAD -->
+  <header class="ed-page-head">
+    <div class="ed-page-head__in">
+      <div class="ed-mono">✦ ✦ ✦ &nbsp; Analitik</div>
+      <h1>Nabız</h1>
+      <p>Tasarımların, teknik föylerin, koleksiyonların ve numune taleplerin — canlı özet.</p>
     </div>
   </header>
 
-  <section class="page-hero">
-    <div class="wrap">
-      <p class="eyebrow">Analitik</p>
-      <h1>Çalışmanın nabzı.</h1>
-      <p>Tasarımların, teknik föylerin, koleksiyonların ve numune taleplerin — canlı özet.</p>
-    </div>
-  </section>
-
-  <div class="wrap" style="padding-bottom:4rem">
+  <div class="an-wrap">
     <div id="anContent"></div>
   </div>
 
-  <footer class="mini-footer">
-    LOOMR — Emre Korkmaz Textile Design Studio · İstanbul · Londra · Milano · Berlin
+  <!-- FOOTER -->
+  <footer class="ed-foot ed-mono">
+    <span class="ed-bar__logo">LOOMR</span>
+    <span>Emre Korkmaz Textile Design Studio</span>
+    <span>İstanbul · Londra · Milano · Berlin · © 2026</span>
   </footer>
 
   <script src="js/loomr-data.js"></script>
   <script src="js/loomr-api.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/editorial.js"></script>
   <script>
   (async function () {
     const D = window.LOOMR_DATA, API = window.LoomrAPI;
@@ -95,7 +116,7 @@
     }
 
     // ---- toplama ----
-    const FAM_COLOR = { denim:"#2C3A55", viskon:"#C9B59A", polyester:"#6E7052", yun:"#5F1E27", tencel:"#5E7793" };
+    const FAM_COLOR = { denim:"#2C3A55", viskon:"#C9B59A", polyester:"#6E7052", yun:"#9E2314", tencel:"#5E7793" };
     const TYPE_ADI = { pantolon:"Pantolon", short:"Short", ceket:"Ceket", gomlek:"Gömlek" };
     const countBy = (arr, fn) => arr.reduce((m, x) => { const k = fn(x); if (k) m[k] = (m[k]||0)+1; return m; }, {});
 
@@ -130,14 +151,14 @@
       const legend = entries.map(([k,v]) => `<span><i style="background:${colorFn(k)}"></i>${labelFn?labelFn(k):k} · ${v}</span>`).join("");
       return `<div class="donut-wrap">
         <svg width="140" height="140" viewBox="0 0 140 140" aria-hidden="true">${arcs}
-          <text x="70" y="66" text-anchor="middle" font-family="Fraunces,serif" font-size="26" fill="#150B0B">${total}</text>
+          <text x="70" y="66" text-anchor="middle" font-family="Fraunces,serif" font-size="26" fill="#16110F">${total}</text>
           <text x="70" y="86" text-anchor="middle" font-size="9" letter-spacing="1.5" fill="#8B807A">TOPLAM</text>
         </svg>
         <div class="an-legend" style="flex-direction:column;gap:.5rem">${legend}</div></div>`;
     }
 
-    const famC = k => FAM_COLOR[k] || "#8E2430";
-    const typeShades = { pantolon:"#8E2430", short:"#A9434F", ceket:"#5F161F", gomlek:"#C2A05E" };
+    const famC = k => FAM_COLOR[k] || "#9E2314";
+    const typeShades = { pantolon:"#9E2314", short:"#C7331E", ceket:"#5F161F", gomlek:"#C2A05E" };
 
     root.innerHTML = `
       <div class="an-kpis">
@@ -149,7 +170,7 @@
       </div>
       <div class="an-grid">
         <div class="an-card"><h3>Kumaş Ailesine Göre Tasarım</h3>${bars(byFamily, famC, k => (D.FABRIC_FAMILIES.find(x=>x.id===k)||{}).ad || k)}</div>
-        <div class="an-card"><h3>Garment Tipine Göre</h3>${bars(byType, k=>typeShades[k]||"#8E2430", k=>TYPE_ADI[k]||k)}</div>
+        <div class="an-card"><h3>Garment Tipine Göre</h3>${bars(byType, k=>typeShades[k]||"#9E2314", k=>TYPE_ADI[k]||k)}</div>
         <div class="an-card"><h3>Denim / Dokuma Dağılımı</h3>${donut(byConstr, k=>k==="denim"?"#2C3A55":"#A97B50", k=>k==="denim"?"Denim":"Dokuma")}</div>
         <div class="an-card"><h3>Teknik Föy Durumu</h3>${donut(tpStatus, k=>k==="modeliste_iletildi"?"#3A6349":"#C2A05E", k=>k==="modeliste_iletildi"?"Modeliste İletildi":"Taslak")}</div>
       </div>`;

@@ -7,50 +7,144 @@
   <meta name="description" content="LOOMR Fabric Hub — kompozisyon, GSM, sertifika, MOQ, termin ve Pantone eşleşmesiyle her kumaş yaşayan bir kayıt. Numune talep edin.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/pages.css">
+  <link href="https://fonts.googleapis.com/css2?family=Allura&family=Archivo:ital,wdth,wght@0,62.5..125,100..900;1,62.5..125,100..900&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/editorial.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    html{overflow-x:clip}
+    body{margin:0;overflow-x:clip;font-family:"Archivo","Inter",sans-serif;background:var(--ed-cream);color:var(--ed-ink);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+
+    /* ---- Editorial palette köprüsü (eski değişkenler → editorial) ---- */
+    :root{
+      --stone:#6E645B; --line:#E3D9CD; --line-strong:#D9CEC0; --white:#fff;
+      --paper:var(--ed-cream); --ink:var(--ed-ink); --clay:var(--acc);
+      --clay-deep:var(--acc-deep); --gold:var(--acc); --serif:"Fraunces",Georgia,serif;
+      --maxw:1320px;
+    }
+
+    .wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1.2rem,4vw,3rem)}
+
+    /* Sayfa başlığı boyut ayarı (uzun Türkçe başlık) */
+    .ed-page-head h1{font-size:clamp(2.6rem,9vw,7rem)}
+    .ed-page-head p{color:rgba(244,239,231,.78)}
+
+    /* ---- Editorial buton (JS .btn kullanıyor) ---- */
+    .btn{display:inline-flex;align-items:center;gap:.55rem;background:var(--acc);color:#fff;border:1px solid var(--acc);
+      padding:.9rem 1.5rem;font-family:"Space Mono",monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+      border-radius:100px;cursor:pointer;transition:background .3s,color .3s,transform .3s,border-color .3s}
+    .btn:hover{background:var(--ed-ink);border-color:var(--ed-ink);color:#fff;transform:translateY(-2px)}
+    .btn--ghost{background:transparent;color:var(--ed-ink);border-color:var(--ed-ink)}
+    .btn--ghost:hover{background:var(--ed-ink);color:#fff}
+    .link-arrow{display:inline-flex;align-items:center;gap:.55rem;font-family:"Space Mono",monospace;font-size:.72rem;
+      letter-spacing:.14em;text-transform:uppercase;color:var(--acc);border-bottom:1px solid var(--acc);padding-bottom:2px;transition:gap .3s var(--ease)}
+    .link-arrow:hover{gap:.95rem}
+
+    /* ---- Filtre bandı ---- */
+    .filter-bar{position:sticky;top:0;z-index:40;background:var(--ed-cream);border-bottom:1px solid var(--line);
+      backdrop-filter:blur(6px)}
+    .filter-bar .wrap{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap;padding-block:1rem}
+    .filter-bar__lbl{color:var(--stone)}
+    .filters{display:flex;gap:.55rem;flex-wrap:wrap}
+    .fchip{border:1px solid var(--ed-ink);background:transparent;border-radius:100px;
+      padding:.5rem 1.2rem;font-family:"Space Mono",monospace;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;
+      color:var(--ed-ink);cursor:pointer;transition:all .3s}
+    .fchip:hover{background:var(--ed-ink);color:var(--ed-cream)}
+    .fchip.active{background:var(--acc);border-color:var(--acc);color:#fff}
+
+    /* ---- Denim Fabric Book bandı ---- */
+    .fabric-book{background:var(--ed-ink);color:var(--ed-cream)}
+    .fabric-book__grid{display:grid;gap:2.5rem;align-items:center;padding-block:clamp(3rem,6vw,5rem)}
+    @media (min-width:860px){.fabric-book__grid{grid-template-columns:1fr 1.05fr;gap:4rem}}
+    .fabric-book__txt .ed-mono{color:var(--acc);margin-bottom:1rem}
+    .fabric-book__txt h2{font-family:var(--serif);font-weight:300;font-size:clamp(1.8rem,4vw,3.2rem);line-height:1.05;letter-spacing:-.01em;margin:0 0 1rem;max-width:16ch}
+    .fabric-book__txt .muted{color:rgba(244,239,231,.7);max-width:46ch;margin:0 0 1.6rem;line-height:1.6}
+    .fabric-book__txt .link-arrow{color:var(--acc);border-color:var(--acc)}
+    .fabric-book__img{display:block;border-radius:6px;overflow:hidden;box-shadow:0 40px 80px -50px rgba(0,0,0,.8)}
+    .fabric-book__img img{width:100%;transition:transform 1s var(--ease)}
+    .fabric-book__img:hover img{transform:scale(1.03)}
+
+    /* ---- Fabric grid ---- */
+    .fabrics-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+      padding-block:clamp(2.4rem,5vw,3.6rem) 1.4rem;border-bottom:1px solid var(--line)}
+    .fabrics-head h2{font-family:var(--serif);font-weight:300;font-size:clamp(1.6rem,3.4vw,2.6rem);margin:.4rem 0 0}
+    .fabrics-head .ed-mono{color:var(--acc)}
+    .fabrics-head span.count{color:var(--stone)}
+
+    .fabric-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.4rem;padding-block:2.2rem 5rem}
+    .fabric-card{background:var(--white);border:1px solid var(--line);border-radius:6px;overflow:hidden;
+      display:flex;flex-direction:column;transition:transform .4s var(--ease),box-shadow .4s var(--ease),border-color .4s}
+    .fabric-card:hover{transform:translateY(-5px);border-color:var(--line-strong);box-shadow:0 30px 60px -40px rgba(158,35,20,.5)}
+    .fabric-card .swatch{height:150px;position:relative}
+    .fabric-card .swatch .pantone{position:absolute;right:.85rem;bottom:-.9rem;background:var(--white);border:1px solid var(--line);
+      border-radius:100px;padding:.4rem .8rem;font-family:"Space Mono",monospace;font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;
+      box-shadow:0 10px 24px -14px rgba(0,0,0,.4)}
+    .fabric-card .body{padding:1.8rem 1.5rem 1.5rem;display:flex;flex-direction:column;gap:1rem;flex:1}
+    .fabric-card .origin{font-family:"Space Mono",monospace;font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--acc)}
+    .fabric-card h3{font-family:var(--serif);font-weight:400;font-size:1.5rem;margin:.35rem 0 0;line-height:1.1}
+    .spec-list{display:grid;grid-template-columns:1fr 1fr;gap:.45rem 1.1rem;font-size:.82rem}
+    .spec-list div{display:flex;justify-content:space-between;gap:.5rem;border-bottom:1px dashed var(--line);padding-bottom:.35rem}
+    .spec-list dt{font-family:"Space Mono",monospace;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--stone)}
+    .spec-list dd{margin:0;font-weight:600}
+    .cert-row{display:flex;gap:.4rem;flex-wrap:wrap}
+    .cert-row .chip{font-family:"Space Mono",monospace;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;
+      border:1px solid var(--line-strong);border-radius:100px;padding:.28rem .7rem;color:var(--stone)}
+    .fabric-card .actions{margin-top:auto;padding-top:.4rem;display:flex;gap:.6rem;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .stock-ok{font-family:"Space Mono",monospace;font-size:.66rem;color:#3A6349;letter-spacing:.06em;text-transform:uppercase}
+    .stock-low{font-family:"Space Mono",monospace;font-size:.66rem;color:var(--acc-deep);letter-spacing:.06em;text-transform:uppercase}
+
+    /* ---- Toast ---- */
+    .toast{position:fixed;bottom:1.6rem;left:50%;transform:translate(-50%,140%);background:var(--ed-ink);color:var(--ed-cream);
+      border-radius:100px;padding:.9rem 1.8rem;font-family:"Space Mono",monospace;font-size:.72rem;letter-spacing:.04em;z-index:90;
+      transition:transform .5s var(--ease);box-shadow:0 24px 60px -24px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.14);max-width:90vw}
+    .toast.show{transform:translate(-50%,0)}
+    .toast b{color:var(--acc)}
+  </style>
 </head>
-<body>
+<body class="ed">
 
-  <header class="site-header">
-    <div class="wrap nav">
-      <a href="index.html" class="brand">LOOMR<span>.</span></a>
-      <nav>
-        <ul class="nav-links">
-          <li><a href="index.html#vision">Vizyon</a></li>
-          <li><a href="tasarim.html">Design Studio</a></li>
-          <li><a href="kumas.html">Fabric Hub</a></li>
-          <li><a href="lookbook.html">Lookbook</a></li>
-          <li><a href="koleksiyon-olustur.html">Collection Builder</a></li>
-        </ul>
-      </nav>
-      <div class="nav-actions">
-        <a href="giris.html" class="btn btn--ghost">Workspace'e Gir</a>
-        <button class="nav-toggle" aria-label="Menü">☰</button>
-      </div>
-    </div>
-  </header>
+  <div class="ed-cursor" aria-hidden="true"></div>
 
-  <section class="page-hero">
-    <div class="wrap">
-      <p class="eyebrow">Fabric Hub</p>
+  <!-- TOP BAR -->
+  <div class="ed-bar">
+    <a href="index.html" class="ed-bar__logo">LOOMR</a>
+    <nav class="ed-mono">
+      <a href="vizyon.html">Vizyon</a>
+      <a href="tasarim.html">Stüdyo</a>
+      <a href="kumas.html">Kumaş</a>
+      <a href="giris.html">Workspace</a>
+    </nav>
+    <a href="giris.html" class="ed-mono">Giriş ↗</a>
+  </div>
+
+  <!-- PAGE HEAD -->
+  <header class="ed-page-head">
+    <div class="ed-page-head__in">
+      <div class="ed-mono">✦ ✦ ✦ &nbsp; Fabric Hub</div>
       <h1>Kumaş Kütüphanesi</h1>
       <p>Her kumaş yaşayan bir kayıt: kompozisyon, gramaj, en, sertifikalar, MOQ,
          termin ve Pantone eşleşmesi. Beğendiğinizde tek tıkla numune talep edin.</p>
+    </div>
+  </header>
 
+  <!-- FİLTRE BANDI -->
+  <div class="filter-bar">
+    <div class="wrap">
+      <span class="ed-mono filter-bar__lbl">Aile ↔</span>
       <div class="filters" id="filters">
         <button class="fchip active" data-f="all">Tümü</button>
       </div>
     </div>
-  </section>
+  </div>
 
+  <!-- DENIM FABRIC BOOK -->
   <section class="fabric-book">
     <div class="wrap fabric-book__grid">
       <div class="fabric-book__txt">
-        <p class="eyebrow">Denim Fabric Book</p>
-        <h2 class="h3">Denim kütüphanemiz, tek katalogda.</h2>
+        <p class="ed-mono">Denim Fabric Book</p>
+        <h2>Denim kütüphanemiz, tek katalogda.</h2>
         <p class="muted">Raw, selvedge, stretch, Japon ve sürdürülebilir denim —
           yıkama kütüphanesi, dokuma yapıları, gramaj rehberi ve 2026/27 renk paleti.
           Alıcı favorileriyle birlikte tek bakışta.</p>
@@ -63,13 +157,23 @@
   </section>
 
   <div class="wrap">
+    <div class="fabrics-head">
+      <div>
+        <div class="ed-mono">Kütüphane</div>
+        <h2>Kumaş kayıtları</h2>
+      </div>
+      <span class="ed-mono count">Numune ücretsiz</span>
+    </div>
     <div class="fabric-grid" id="fabrics"></div>
   </div>
 
   <div class="toast" id="toast"></div>
 
-  <footer class="mini-footer">
-    LOOMR — Emre Korkmaz Textile Design Studio · İstanbul · Londra · Milano · Berlin
+  <!-- FOOTER -->
+  <footer class="ed-foot ed-mono">
+    <span class="ed-bar__logo">LOOMR</span>
+    <span>Emre Korkmaz Textile Design Studio</span>
+    <span>İstanbul · Londra · Milano · Berlin · © 2026</span>
   </footer>
 
   <script src="js/loomr-data.js"></script>
@@ -107,7 +211,7 @@
           <div class="cert-row">${f.sert.map(s => `<span class="chip">${s}</span>`).join("")}</div>
           <div class="actions">
             <span class="${f.stokOk ? "stock-ok" : "stock-low"}">${f.stokOk ? "● Stokta" : "● Sınırlı stok"}</span>
-            <button class="btn" style="padding:.55rem 1rem; font-size:.68rem;" data-sample="${f.id}" data-ad="${f.ad}">Numune Talep Et</button>
+            <button class="btn" style="padding:.55rem 1rem; font-size:.66rem;" data-sample="${f.id}" data-ad="${f.ad}">Numune Talep Et</button>
           </div>
         </div>
       </article>
@@ -140,5 +244,6 @@
       tmr = setTimeout(() => toast.classList.remove("show"), 3800);
     });
   </script>
+  <script src="js/editorial.js"></script>
 </body>
 </html>

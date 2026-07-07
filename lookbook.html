@@ -7,92 +7,130 @@
   <meta name="description" content="LOOMR Studio kampanya ve koleksiyon arşivi — tüm lookbook tek sayfada.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/pages.css">
+  <link href="https://fonts.googleapis.com/css2?family=Allura&family=Archivo:ital,wdth,wght@0,62.5..125,100..900;1,62.5..125,100..900&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/editorial.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
-</head>
-<body>
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    html{overflow-x:clip}
+    body{margin:0;overflow-x:clip;font-family:"Archivo","Inter",sans-serif;background:var(--ed-cream);color:var(--ed-ink);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
 
-  <header class="site-header">
-    <div class="wrap nav">
-      <a href="index.html" class="brand">LOOMR<span>.</span></a>
-      <nav>
-        <ul class="nav-links">
-          <li><a href="index.html#vision">Vizyon</a></li>
-          <li><a href="tasarim.html">Design Studio</a></li>
-          <li><a href="kumas.html">Fabric Hub</a></li>
-          <li><a href="lookbook.html">Lookbook</a></li>
-          <li><a href="koleksiyon-olustur.html">Collection Builder</a></li>
-        </ul>
-      </nav>
-      <div class="nav-actions">
-        <a href="giris.html" class="btn btn--ghost">Workspace'e Gir</a>
-        <button class="nav-toggle" aria-label="Menü">☰</button>
-      </div>
+    /* ---- Filtre çubuğu ---- */
+    .lb-filters { display:flex; flex-wrap:wrap; gap:.6rem; padding:clamp(1.6rem,4vw,2.6rem) clamp(1.2rem,4vw,3rem) 0; }
+    .fchip { font-family:"Space Mono",monospace; font-size:.68rem; letter-spacing:.16em; text-transform:uppercase;
+      padding:.6rem 1.1rem; border-radius:100px; border:1px solid #D9CEC0; background:transparent; color:#6E645B; cursor:pointer; transition:all .25s var(--ease); }
+    .fchip:hover { border-color:var(--ed-ink); color:var(--ed-ink); }
+    .fchip.active { background:var(--ed-ink); border-color:var(--ed-ink); color:var(--ed-cream); }
+
+    /* ---- Editorial masonry grid ---- */
+    .lookbook-gallery { columns:1; column-gap:1rem; padding:clamp(1.6rem,4vw,2.6rem) clamp(1.2rem,4vw,3rem) clamp(3rem,7vw,6rem); }
+    @media(min-width:560px){ .lookbook-gallery{ columns:2; } }
+    @media(min-width:960px){ .lookbook-gallery{ columns:3; column-gap:1.2rem; } }
+    @media(min-width:1400px){ .lookbook-gallery{ columns:4; } }
+    .gcard { position:relative; break-inside:avoid; margin-bottom:1rem; overflow:hidden; border-radius:4px; cursor:zoom-in; background:#EFE8DE; box-shadow:0 24px 50px -42px rgba(20,12,10,.7); }
+    .gcard img { width:100%; height:auto; transition:transform 1.1s var(--ease), filter .5s; }
+    .gcard:hover img { transform:scale(1.05); }
+    .gcard.hidden { display:none; }
+    .gcard::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,transparent 45%,rgba(20,12,10,.72)); opacity:0; transition:opacity .4s var(--ease); }
+    .gcard:hover::after { opacity:1; }
+    .gcard__label { position:absolute; left:0; right:0; bottom:0; z-index:2; display:flex; align-items:baseline; justify-content:space-between; gap:.6rem;
+      padding:1.1rem 1.1rem; opacity:0; transform:translateY(8px); transition:opacity .4s var(--ease), transform .4s var(--ease); }
+    .gcard:hover .gcard__label { opacity:1; transform:none; }
+    .gcard__label b { font-family:"Fraunces",serif; font-weight:400; font-size:1.05rem; color:#fff; }
+    .gcard__label span { font-family:"Space Mono",monospace; font-size:.58rem; letter-spacing:.16em; text-transform:uppercase; color:var(--acc); }
+
+    /* ---- Lightbox ---- */
+    .lightbox { display:none; position:fixed; inset:0; z-index:200; background:rgba(20,12,10,.94); flex-direction:column;
+      align-items:center; justify-content:center; gap:1rem; padding:2rem; }
+    .lightbox.open { display:flex; }
+    .lightbox img { max-width:min(92vw,900px); max-height:80vh; object-fit:contain; border-radius:4px; box-shadow:0 40px 100px rgba(0,0,0,.6); }
+    .lightbox figcaption { color:var(--ed-cream); font-family:"Fraunces",serif; font-size:1.15rem; letter-spacing:.02em; }
+    .lb-btn { position:absolute; width:52px; height:52px; border-radius:50%; border:1px solid rgba(255,255,255,.4);
+      background:rgba(255,255,255,.06); color:#fff; font-size:1.5rem; line-height:1; cursor:pointer; display:grid; place-items:center; transition:all .25s; }
+    .lb-btn:hover { background:var(--acc); border-color:var(--acc); }
+    .lb-close { top:1.4rem; right:1.4rem; }
+    .lb-prev { left:1.4rem; top:50%; transform:translateY(-50%); }
+    .lb-next { right:1.4rem; top:50%; transform:translateY(-50%); }
+  </style>
+</head>
+<body class="ed">
+
+  <div class="ed-cursor" aria-hidden="true"></div>
+
+  <!-- TOP BAR -->
+  <div class="ed-bar">
+    <a href="index.html" class="ed-bar__logo">LOOMR</a>
+    <nav class="ed-mono">
+      <a href="vizyon.html">Vizyon</a>
+      <a href="tasarim.html">Stüdyo</a>
+      <a href="kumas.html">Kumaş</a>
+      <a href="giris.html">Workspace</a>
+    </nav>
+    <a href="giris.html" class="ed-mono">Giriş ↗</a>
+  </div>
+
+  <!-- PAGE HEAD -->
+  <header class="ed-page-head">
+    <div class="ed-page-head__in">
+      <div class="ed-mono">✦ ✦ ✦ &nbsp; Dijital Showroom</div>
+      <h1>Lookbook</h1>
+      <p>LOOMR Studio'nun tüm kampanya, koleksiyon ve editorial çekimleri —
+         bir görsele tıklayarak tam ekran incele.</p>
     </div>
   </header>
 
-  <section class="page-hero">
-    <div class="wrap">
-      <p class="eyebrow">Dijital Showroom</p>
-      <h1>Lookbook Arşivi</h1>
-      <p>LOOMR Studio'nun tüm kampanya, koleksiyon ve editorial çekimleri.
-         Bir görsele tıklayarak tam ekran inceleyebilirsiniz.</p>
+  <!-- FILTERS -->
+  <div class="lb-filters" role="tablist">
+    <button class="fchip active" data-cat="all">Tümü</button>
+    <button class="fchip" data-cat="koleksiyon">Koleksiyonlar</button>
+    <button class="fchip" data-cat="kampanya">Kampanya</button>
+    <button class="fchip" data-cat="editorial">Editorial</button>
+    <button class="fchip" data-cat="backstage">Backstage</button>
+  </div>
 
-      <div class="filters" role="tablist">
-        <button class="fchip active" data-cat="all">Tümü</button>
-        <button class="fchip" data-cat="koleksiyon">Koleksiyonlar</button>
-        <button class="fchip" data-cat="kampanya">Kampanya</button>
-        <button class="fchip" data-cat="editorial">Editorial</button>
-        <button class="fchip" data-cat="backstage">Backstage</button>
-      </div>
-    </div>
-  </section>
+  <div class="lookbook-gallery" id="gallery">
+    <!-- Koleksiyonlar -->
+    <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-summer-2026.png" alt="Summer Collection 2026 — Luxury Resort Wear" loading="lazy"><figcaption class="gcard__label"><b>Summer 2026</b><span>Resort</span></figcaption></figure>
+    <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-winter.png" alt="Winter Collection" loading="lazy"><figcaption class="gcard__label"><b>Winter</b><span>Koleksiyon</span></figcaption></figure>
+    <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-summer.png" alt="Summer Collection — teras çekimi" loading="lazy"><figcaption class="gcard__label"><b>Summer</b><span>Keten</span></figcaption></figure>
+    <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-oversize-2026.png" alt="Oversize Collection 2026" loading="lazy"><figcaption class="gcard__label"><b>Oversize 2026</b><span>Sezon</span></figcaption></figure>
+    <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-tailored.png" alt="Tailored Effortless — Oversize Suit 2026" loading="lazy"><figcaption class="gcard__label"><b>Tailored Effortless</b><span>2026</span></figcaption></figure>
+    <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-denim-2026.png" alt="Denim Collection 2026" loading="lazy"><figcaption class="gcard__label"><b>Denim 2026</b><span>Premium</span></figcaption></figure>
+    <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-denim-rules.png" alt="Denim Without Rules" loading="lazy"><figcaption class="gcard__label"><b>Denim Without Rules</b><span>Lookbook</span></figcaption></figure>
+    <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-london.png" alt="London Collection AW26" loading="lazy"><figcaption class="gcard__label"><b>London AW26</b><span>Womenswear</span></figcaption></figure>
+    <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-classic-2027.png" alt="Classic Collection Winter 2027" loading="lazy"><figcaption class="gcard__label"><b>Classic 2027</b><span>Winter</span></figcaption></figure>
+    <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-urban-relax.png" alt="Urban Relax Collection — Pantone" loading="lazy"><figcaption class="gcard__label"><b>Urban Relax</b><span>Pantone</span></figcaption></figure>
+    <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-cropped.png" alt="Cropped Confidence — beyaz takım" loading="lazy"><figcaption class="gcard__label"><b>Cropped Confidence</b><span>SS</span></figcaption></figure>
+    <figure class="gcard" data-cat="koleksiyon"><img src="img/cold-elegance-camel.jpg" alt="Cold Elegance — camel palto" loading="lazy"><figcaption class="gcard__label"><b>Cold Elegance</b><span>AW</span></figcaption></figure>
+    <figure class="gcard" data-cat="koleksiyon"><img src="img/cold-elegance-portrait.png" alt="Cold Elegance — portre" loading="lazy"><figcaption class="gcard__label"><b>Cold Elegance</b><span>Portre</span></figcaption></figure>
+    <figure class="gcard" data-cat="koleksiyon"><img src="img/cold-elegance-stool.jpg" alt="Cold Elegance — bordo &amp; krem" loading="lazy"><figcaption class="gcard__label"><b>Cold Elegance</b><span>Burgundy</span></figcaption></figure>
+    <figure class="gcard" data-cat="koleksiyon"><img src="img/refined-relaxation.png" alt="Refined Relaxation — Londra özel" loading="lazy"><figcaption class="gcard__label"><b>Refined Relaxation</b><span>London</span></figcaption></figure>
+    <figure class="gcard" data-cat="koleksiyon"><img src="img/look-tweed-suit.png" alt="Yeşil tüvit takım" loading="lazy"><figcaption class="gcard__label"><b>Tweed Suit</b><span>AW</span></figcaption></figure>
 
-  <div class="wrap">
-    <div class="lookbook-gallery" id="gallery">
-      <!-- Koleksiyonlar -->
-      <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-summer-2026.png" alt="Summer Collection 2026 — Luxury Resort Wear" loading="lazy"><figcaption class="gcard__label"><b>Summer 2026</b><span>Resort</span></figcaption></figure>
-      <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-winter.png" alt="Winter Collection" loading="lazy"><figcaption class="gcard__label"><b>Winter</b><span>Koleksiyon</span></figcaption></figure>
-      <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-summer.png" alt="Summer Collection — teras çekimi" loading="lazy"><figcaption class="gcard__label"><b>Summer</b><span>Keten</span></figcaption></figure>
-      <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-oversize-2026.png" alt="Oversize Collection 2026" loading="lazy"><figcaption class="gcard__label"><b>Oversize 2026</b><span>Sezon</span></figcaption></figure>
-      <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-tailored.png" alt="Tailored Effortless — Oversize Suit 2026" loading="lazy"><figcaption class="gcard__label"><b>Tailored Effortless</b><span>2026</span></figcaption></figure>
-      <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-denim-2026.png" alt="Denim Collection 2026" loading="lazy"><figcaption class="gcard__label"><b>Denim 2026</b><span>Premium</span></figcaption></figure>
-      <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-denim-rules.png" alt="Denim Without Rules" loading="lazy"><figcaption class="gcard__label"><b>Denim Without Rules</b><span>Lookbook</span></figcaption></figure>
-      <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-london.png" alt="London Collection AW26" loading="lazy"><figcaption class="gcard__label"><b>London AW26</b><span>Womenswear</span></figcaption></figure>
-      <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-classic-2027.png" alt="Classic Collection Winter 2027" loading="lazy"><figcaption class="gcard__label"><b>Classic 2027</b><span>Winter</span></figcaption></figure>
-      <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-urban-relax.png" alt="Urban Relax Collection — Pantone" loading="lazy"><figcaption class="gcard__label"><b>Urban Relax</b><span>Pantone</span></figcaption></figure>
-      <figure class="gcard" data-cat="koleksiyon"><img src="img/collection-cropped.png" alt="Cropped Confidence — beyaz takım" loading="lazy"><figcaption class="gcard__label"><b>Cropped Confidence</b><span>SS</span></figcaption></figure>
-      <figure class="gcard" data-cat="koleksiyon"><img src="img/cold-elegance-camel.jpg" alt="Cold Elegance — camel palto" loading="lazy"><figcaption class="gcard__label"><b>Cold Elegance</b><span>AW</span></figcaption></figure>
-      <figure class="gcard" data-cat="koleksiyon"><img src="img/cold-elegance-portrait.png" alt="Cold Elegance — portre" loading="lazy"><figcaption class="gcard__label"><b>Cold Elegance</b><span>Portre</span></figcaption></figure>
-      <figure class="gcard" data-cat="koleksiyon"><img src="img/cold-elegance-stool.jpg" alt="Cold Elegance — bordo &amp; krem" loading="lazy"><figcaption class="gcard__label"><b>Cold Elegance</b><span>Burgundy</span></figcaption></figure>
-      <figure class="gcard" data-cat="koleksiyon"><img src="img/refined-relaxation.png" alt="Refined Relaxation — Londra özel" loading="lazy"><figcaption class="gcard__label"><b>Refined Relaxation</b><span>London</span></figcaption></figure>
-      <figure class="gcard" data-cat="koleksiyon"><img src="img/look-tweed-suit.png" alt="Yeşil tüvit takım" loading="lazy"><figcaption class="gcard__label"><b>Tweed Suit</b><span>AW</span></figcaption></figure>
+    <!-- Kampanya -->
+    <figure class="gcard" data-cat="kampanya"><img src="img/redwall-standing.png" alt="LOOMR Studio — bordo salon" loading="lazy"><figcaption class="gcard__label"><b>LOOMR Studio</b><span>Kampanya</span></figcaption></figure>
+    <figure class="gcard" data-cat="kampanya"><img src="img/redwall-standing2.png" alt="LOOMR Studio — gri takım" loading="lazy"><figcaption class="gcard__label"><b>LOOMR Studio</b><span>Kampanya</span></figcaption></figure>
+    <figure class="gcard" data-cat="kampanya"><img src="img/redwall-armchair.png" alt="LOOMR Studio — koltuk" loading="lazy"><figcaption class="gcard__label"><b>Studio</b><span>Look 02</span></figcaption></figure>
+    <figure class="gcard" data-cat="kampanya"><img src="img/redwall-navy.png" alt="Lacivert takım — koltuk" loading="lazy"><figcaption class="gcard__label"><b>Navy Tailoring</b><span>Look 03</span></figcaption></figure>
+    <figure class="gcard" data-cat="kampanya"><img src="img/redwall-pinstripe.png" alt="Çizgili blazer, beyaz pantolon" loading="lazy"><figcaption class="gcard__label"><b>Pinstripe</b><span>Look 04</span></figcaption></figure>
+    <figure class="gcard" data-cat="kampanya"><img src="img/redwall-knot.jpg" alt="Bağlamalı gömlek, bej takım" loading="lazy"><figcaption class="gcard__label"><b>Sunlit</b><span>Look 05</span></figcaption></figure>
+    <figure class="gcard" data-cat="kampanya"><img src="img/redwall-vest.png" alt="Keten yelek, beyaz pantolon" loading="lazy"><figcaption class="gcard__label"><b>Linen Vest</b><span>Look 06</span></figcaption></figure>
+    <figure class="gcard" data-cat="kampanya"><img src="img/redwall-slit.png" alt="Yırtmaçlı beyaz etek" loading="lazy"><figcaption class="gcard__label"><b>Ivory Slit</b><span>Look 07</span></figcaption></figure>
+    <figure class="gcard" data-cat="kampanya"><img src="img/redwall-wrap.png" alt="Anvelop krem etek" loading="lazy"><figcaption class="gcard__label"><b>Wrap Skirt</b><span>Look 08</span></figcaption></figure>
 
-      <!-- Kampanya -->
-      <figure class="gcard" data-cat="kampanya"><img src="img/redwall-standing.png" alt="LOOMR Studio — bordo salon" loading="lazy"><figcaption class="gcard__label"><b>LOOMR Studio</b><span>Kampanya</span></figcaption></figure>
-      <figure class="gcard" data-cat="kampanya"><img src="img/redwall-standing2.png" alt="LOOMR Studio — gri takım" loading="lazy"><figcaption class="gcard__label"><b>LOOMR Studio</b><span>Kampanya</span></figcaption></figure>
-      <figure class="gcard" data-cat="kampanya"><img src="img/redwall-armchair.png" alt="LOOMR Studio — koltuk" loading="lazy"><figcaption class="gcard__label"><b>Studio</b><span>Look 02</span></figcaption></figure>
-      <figure class="gcard" data-cat="kampanya"><img src="img/redwall-navy.png" alt="Lacivert takım — koltuk" loading="lazy"><figcaption class="gcard__label"><b>Navy Tailoring</b><span>Look 03</span></figcaption></figure>
-      <figure class="gcard" data-cat="kampanya"><img src="img/redwall-pinstripe.png" alt="Çizgili blazer, beyaz pantolon" loading="lazy"><figcaption class="gcard__label"><b>Pinstripe</b><span>Look 04</span></figcaption></figure>
-      <figure class="gcard" data-cat="kampanya"><img src="img/redwall-knot.jpg" alt="Bağlamalı gömlek, bej takım" loading="lazy"><figcaption class="gcard__label"><b>Sunlit</b><span>Look 05</span></figcaption></figure>
-      <figure class="gcard" data-cat="kampanya"><img src="img/redwall-vest.png" alt="Keten yelek, beyaz pantolon" loading="lazy"><figcaption class="gcard__label"><b>Linen Vest</b><span>Look 06</span></figcaption></figure>
-      <figure class="gcard" data-cat="kampanya"><img src="img/redwall-slit.png" alt="Yırtmaçlı beyaz etek" loading="lazy"><figcaption class="gcard__label"><b>Ivory Slit</b><span>Look 07</span></figcaption></figure>
-      <figure class="gcard" data-cat="kampanya"><img src="img/redwall-wrap.png" alt="Anvelop krem etek" loading="lazy"><figcaption class="gcard__label"><b>Wrap Skirt</b><span>Look 08</span></figcaption></figure>
+    <!-- Editorial -->
+    <figure class="gcard" data-cat="editorial"><img src="img/hero-editorial.jpg" alt="Krem takım, çizgili gömlek" loading="lazy"><figcaption class="gcard__label"><b>Quiet Power</b><span>Editorial</span></figcaption></figure>
+    <figure class="gcard" data-cat="editorial"><img src="img/editorial-she-walks.jpg" alt="She walks. The room listens." loading="lazy"><figcaption class="gcard__label"><b>She Walks</b><span>Editorial</span></figcaption></figure>
+    <figure class="gcard" data-cat="editorial"><img src="img/editorial-success.jpg" alt="Success from every angle." loading="lazy"><figcaption class="gcard__label"><b>Success</b><span>Editorial</span></figcaption></figure>
+    <figure class="gcard" data-cat="editorial"><img src="img/editorial-classic-lines.png" alt="Classic Lines. Quiet Confidence." loading="lazy"><figcaption class="gcard__label"><b>Classic Lines</b><span>Editorial</span></figcaption></figure>
+    <figure class="gcard" data-cat="editorial"><img src="img/portrait-tweed.png" alt="Tüvit blazer portre" loading="lazy"><figcaption class="gcard__label"><b>Tweed Portrait</b><span>Editorial</span></figcaption></figure>
 
-      <!-- Editorial -->
-      <figure class="gcard" data-cat="editorial"><img src="img/hero-editorial.jpg" alt="Krem takım, çizgili gömlek" loading="lazy"><figcaption class="gcard__label"><b>Quiet Power</b><span>Editorial</span></figcaption></figure>
-      <figure class="gcard" data-cat="editorial"><img src="img/editorial-she-walks.jpg" alt="She walks. The room listens." loading="lazy"><figcaption class="gcard__label"><b>She Walks</b><span>Editorial</span></figcaption></figure>
-      <figure class="gcard" data-cat="editorial"><img src="img/editorial-success.jpg" alt="Success from every angle." loading="lazy"><figcaption class="gcard__label"><b>Success</b><span>Editorial</span></figcaption></figure>
-      <figure class="gcard" data-cat="editorial"><img src="img/editorial-classic-lines.png" alt="Classic Lines. Quiet Confidence." loading="lazy"><figcaption class="gcard__label"><b>Classic Lines</b><span>Editorial</span></figcaption></figure>
-      <figure class="gcard" data-cat="editorial"><img src="img/portrait-tweed.png" alt="Tüvit blazer portre" loading="lazy"><figcaption class="gcard__label"><b>Tweed Portrait</b><span>Editorial</span></figcaption></figure>
-
-      <!-- Backstage -->
-      <figure class="gcard" data-cat="backstage"><img src="img/bts-camera.jpg" alt="Set arkası — kamera monitörü, SS27" loading="lazy"><figcaption class="gcard__label"><b>Backstage</b><span>SS27 Çekim</span></figcaption></figure>
-      <figure class="gcard" data-cat="backstage"><img src="img/poster-aw27.png" alt="AW 2027 Luxury Collection posteri" loading="lazy"><figcaption class="gcard__label"><b>AW 2027</b><span>Poster</span></figcaption></figure>
-      <figure class="gcard" data-cat="backstage"><img src="img/poster-aw27-dark.png" alt="AW 2027 poster — karanlık" loading="lazy"><figcaption class="gcard__label"><b>AW 2027</b><span>Poster II</span></figcaption></figure>
-    </div>
+    <!-- Backstage -->
+    <figure class="gcard" data-cat="backstage"><img src="img/bts-camera.jpg" alt="Set arkası — kamera monitörü, SS27" loading="lazy"><figcaption class="gcard__label"><b>Backstage</b><span>SS27 Çekim</span></figcaption></figure>
+    <figure class="gcard" data-cat="backstage"><img src="img/poster-aw27.png" alt="AW 2027 Luxury Collection posteri" loading="lazy"><figcaption class="gcard__label"><b>AW 2027</b><span>Poster</span></figcaption></figure>
+    <figure class="gcard" data-cat="backstage"><img src="img/poster-aw27-dark.png" alt="AW 2027 poster — karanlık" loading="lazy"><figcaption class="gcard__label"><b>AW 2027</b><span>Poster II</span></figcaption></figure>
   </div>
 
   <!-- Lightbox -->
@@ -104,11 +142,14 @@
     <button class="lb-btn lb-next" aria-label="Sonraki">›</button>
   </div>
 
-  <footer class="mini-footer">
-    LOOMR — Emre Korkmaz Textile Design Studio · İstanbul · Londra · Milano · Berlin
+  <!-- FOOTER -->
+  <footer class="ed-foot ed-mono">
+    <span class="ed-bar__logo">LOOMR</span>
+    <span>Emre Korkmaz Textile Design Studio</span>
+    <span>İstanbul · Londra · Milano · Berlin · © 2026</span>
   </footer>
 
-  <script src="js/main.js"></script>
+  <script src="js/editorial.js"></script>
   <script>
     // Filtreler
     const chips = document.querySelectorAll(".fchip");

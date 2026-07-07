@@ -7,39 +7,127 @@
   <meta name="description" content="LOOMR Collection Builder — isim, sezon, pazar, fiyat, kumaş ve renk seçin; LOOMR koleksiyonunuzu oluştursun.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/pages.css">
+  <link href="https://fonts.googleapis.com/css2?family=Allura&family=Archivo:ital,wdth,wght@0,62.5..125,100..900;1,62.5..125,100..900&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/editorial.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
-</head>
-<body>
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    html{overflow-x:clip}
+    body{margin:0;overflow-x:clip;font-family:"Archivo","Inter",sans-serif;background:var(--ed-cream);color:var(--ed-ink);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
 
-  <header class="site-header">
-    <div class="wrap nav">
-      <a href="index.html" class="brand">LOOMR<span>.</span></a>
-      <nav>
-        <ul class="nav-links">
-          <li><a href="index.html#vision">Vizyon</a></li>
-          <li><a href="tasarim.html">Design Studio</a></li>
-          <li><a href="kumas.html">Fabric Hub</a></li>
-          <li><a href="lookbook.html">Lookbook</a></li>
-          <li><a href="koleksiyon-olustur.html">Collection Builder</a></li>
-        </ul>
-      </nav>
-      <div class="nav-actions">
-        <a href="giris.html" class="btn btn--ghost">Workspace'e Gir</a>
-        <button class="nav-toggle" aria-label="Menü">☰</button>
-      </div>
+    /* ---- Editorial palette köprüsü ---- */
+    :root{
+      --stone:#6E645B; --line:#E3D9CD; --line-strong:#D9CEC0; --white:#fff;
+      --paper:var(--ed-cream); --ink:var(--ed-ink); --clay:var(--acc);
+      --clay-deep:var(--acc-deep); --gold:var(--acc); --serif:"Fraunces",Georgia,serif;
+      --maxw:1320px;
+    }
+
+    .wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:clamp(1.2rem,4vw,3rem)}
+    .muted{color:var(--stone)}
+
+    .ed-page-head h1{font-size:clamp(2.6rem,9vw,7rem)}
+    .ed-page-head p{color:rgba(244,239,231,.78)}
+
+    /* ---- Editorial buton ---- */
+    .btn{display:inline-flex;align-items:center;gap:.55rem;background:var(--acc);color:#fff;border:1px solid var(--acc);
+      padding:.9rem 1.6rem;font-family:"Space Mono",monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+      border-radius:100px;cursor:pointer;transition:background .3s,color .3s,transform .3s,border-color .3s}
+    .btn:hover{background:var(--ed-ink);border-color:var(--ed-ink);color:#fff;transform:translateY(-2px)}
+    .btn--ghost{background:transparent;color:var(--ed-ink);border-color:var(--ed-ink)}
+    .btn--ghost:hover{background:var(--ed-ink);color:#fff}
+
+    /* ---- Wizard ---- */
+    .wizard{max-width:900px;margin-inline:auto;padding-block:clamp(2rem,5vw,3.4rem) 5rem}
+    .wsteps{display:flex;gap:0;margin-bottom:2.5rem}
+    .wsteps span{flex:1;text-align:center;font-family:"Space Mono",monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;
+      color:var(--stone);padding-bottom:.85rem;border-bottom:2px solid var(--line);transition:color .3s,border-color .3s}
+    .wsteps span.on{color:var(--acc);border-color:var(--acc)}
+    .wsteps span.done{color:var(--ed-ink);border-color:var(--ed-ink)}
+
+    .wpanel{background:var(--white);border:1px solid var(--line);border-radius:8px;padding:clamp(1.8rem,4vw,3rem)}
+    .wpanel h2{font-family:var(--serif);font-weight:300;font-size:clamp(1.6rem,3.2vw,2.4rem);line-height:1.05;margin:0 0 .5rem}
+    .wpanel .hint{color:var(--stone);font-size:.92rem;margin:0 0 2rem}
+
+    .field{margin-bottom:1.6rem}
+    .field label{display:block;font-family:"Space Mono",monospace;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;
+      color:var(--ed-ink);margin-bottom:.7rem}
+    .field input[type="text"]{width:100%;padding:.9rem 1rem;border:1px solid var(--line-strong);border-radius:4px;
+      font-family:"Fraunces",serif;font-size:1.05rem;background:var(--ed-cream);color:var(--ed-ink);outline:none;transition:border .3s}
+    .field input[type="text"]::placeholder{color:#B3A899;font-style:italic}
+    .field input:focus{border-color:var(--acc)}
+
+    .opt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.7rem}
+    .opt{border:1px solid var(--line-strong);border-radius:6px;padding:.95rem 1rem;cursor:pointer;text-align:center;
+      background:var(--ed-cream);font-weight:600;font-size:.9rem;transition:all .25s;user-select:none}
+    .opt small{display:block;font-family:"Space Mono",monospace;font-weight:400;color:var(--stone);font-size:.62rem;letter-spacing:.04em;margin-top:.35rem;text-transform:uppercase}
+    .opt:hover{border-color:var(--ed-ink)}
+    .opt.sel{background:var(--acc);border-color:var(--acc);color:#fff}
+    .opt.sel small{color:rgba(255,255,255,.78)}
+
+    .color-row{display:flex;gap:.8rem;flex-wrap:wrap}
+    .copt{width:48px;height:48px;border-radius:50%;cursor:pointer;border:3px solid transparent;
+      box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);transition:all .25s}
+    .copt:hover{transform:scale(1.06)}
+    .copt.sel{border-color:var(--acc);transform:scale(1.14)}
+
+    .wnav{display:flex;justify-content:space-between;margin-top:2rem;gap:1rem}
+
+    /* Özet spec-list */
+    .spec-list{display:grid;grid-template-columns:1fr;gap:.5rem;font-size:.95rem}
+    .spec-list div{display:flex;justify-content:space-between;gap:1rem;border-bottom:1px dashed var(--line);padding-bottom:.6rem}
+    .spec-list dt{font-family:"Space Mono",monospace;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--stone);align-self:center}
+    .spec-list dd{margin:0;font-weight:600;text-align:right}
+
+    /* ---- Sonuç ---- */
+    #result{background:var(--ed-cream)}
+    .result-head{text-align:center;padding-block:clamp(3rem,7vw,5rem) 1rem}
+    .result-head .eyebrow{font-family:"Space Mono",monospace;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--acc)}
+    .result-head h1{font-family:"Archivo",sans-serif;font-weight:900;font-stretch:125%;text-transform:uppercase;
+      font-size:clamp(2rem,6vw,4.4rem);line-height:.92;letter-spacing:-.02em;margin:1rem 0 .6rem}
+    .result-head .muted{max-width:52ch;margin-inline:auto}
+    .result-meta{display:flex;gap:2.2rem;justify-content:center;flex-wrap:wrap;padding-block:1.8rem 2.4rem}
+    .result-meta div{text-align:center}
+    .result-meta .n{font-family:"Archivo",sans-serif;font-weight:900;font-stretch:125%;font-size:2.2rem;line-height:1;display:block;color:var(--acc)}
+    .result-meta .l{font-family:"Space Mono",monospace;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--stone);margin-top:.4rem;display:block}
+
+    .product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.2rem;padding-bottom:3rem}
+    .product-card{background:var(--white);border:1px solid var(--line);border-radius:6px;overflow:hidden;
+      transition:transform .4s var(--ease),box-shadow .4s var(--ease)}
+    .product-card:hover{transform:translateY(-4px);box-shadow:0 26px 54px -38px rgba(158,35,20,.5)}
+    .product-card img{width:100%;aspect-ratio:3/4;object-fit:cover}
+    .product-card .pbody{padding:1.1rem 1.2rem 1.3rem}
+    .product-card h4{font-family:var(--serif);font-weight:400;font-size:1.15rem;margin:0 0 .3rem}
+    .product-card .pfab{font-family:"Space Mono",monospace;font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;color:var(--stone)}
+    .product-card .pcost{font-size:.82rem;font-weight:700;color:var(--acc);margin-top:.6rem}
+  </style>
+</head>
+<body class="ed">
+
+  <div class="ed-cursor" aria-hidden="true"></div>
+
+  <!-- TOP BAR -->
+  <div class="ed-bar">
+    <a href="index.html" class="ed-bar__logo">LOOMR</a>
+    <nav class="ed-mono">
+      <a href="vizyon.html">Vizyon</a>
+      <a href="tasarim.html">Stüdyo</a>
+      <a href="kumas.html">Kumaş</a>
+      <a href="giris.html">Workspace</a>
+    </nav>
+    <a href="giris.html" class="ed-mono">Giriş ↗</a>
+  </div>
+
+  <!-- PAGE HEAD (page-hero sınıfı JS gizleme için korunur) -->
+  <header class="ed-page-head page-hero">
+    <div class="ed-page-head__in">
+      <div class="ed-mono">✦ ✦ ✦ &nbsp; Collection Builder</div>
+      <h1>Koleksiyonunu oluştur.</h1>
+      <p>Beş adımda parametreleri belirle — LOOMR koleksiyonun tamamını hazırlasın.</p>
     </div>
   </header>
-
-  <section class="page-hero">
-    <div class="wrap center">
-      <p class="eyebrow">Collection Builder</p>
-      <h1>Koleksiyonunu oluştur.</h1>
-      <p style="margin-inline:auto">Beş adımda parametreleri belirle — LOOMR koleksiyonun tamamını hazırlasın.</p>
-    </div>
-  </section>
 
   <div class="wrap wizard" id="wizard">
     <div class="wsteps">
@@ -168,8 +256,11 @@
     </div>
   </div>
 
-  <footer class="mini-footer">
-    LOOMR — Emre Korkmaz Textile Design Studio · İstanbul · Londra · Milano · Berlin
+  <!-- FOOTER -->
+  <footer class="ed-foot ed-mono">
+    <span class="ed-bar__logo">LOOMR</span>
+    <span>Emre Korkmaz Textile Design Studio</span>
+    <span>İstanbul · Londra · Milano · Berlin · © 2026</span>
   </footer>
 
   <script src="js/loomr-data.js"></script>
@@ -317,5 +408,6 @@
 
     document.getElementById("again").addEventListener("click", () => location.reload());
   </script>
+  <script src="js/editorial.js"></script>
 </body>
 </html>

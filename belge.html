@@ -7,49 +7,74 @@
   <meta name="description" content="LOOMR Belge Merkezi — teknik föyler, koleksiyonlar ve numune talepleri tek yerde.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Allura&family=Archivo:ital,wdth,wght@0,62.5..125,100..900;1,62.5..125,100..900&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/pages.css">
   <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/editorial.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
   <style>
-    .doc-table { width:100%; border-collapse:collapse; font-size:.9rem; background:var(--white); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
-    .doc-table th { text-align:left; font-size:.64rem; letter-spacing:.14em; text-transform:uppercase; color:var(--stone); font-weight:600; padding:.9rem 1.2rem; border-bottom:1px solid var(--line); }
-    .doc-table td { padding:.9rem 1.2rem; border-bottom:1px solid var(--paper-2); }
+    *,*::before,*::after{box-sizing:border-box}
+    html{overflow-x:clip}
+    body{margin:0;overflow-x:clip;font-family:"Archivo","Inter",sans-serif;background:var(--ed-cream);color:var(--ed-ink);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+
+    .doc-wrap { padding-block: clamp(2.4rem,5vw,3.6rem) 5rem; }
+
+    /* ---- Filter chips (on dark head band) ---- */
+    .filters { display:flex; gap:.6rem; flex-wrap:wrap; margin-top:1.9rem; }
+    .fchip { font-family:"Space Mono",monospace; font-size:.62rem; letter-spacing:.14em; text-transform:uppercase; padding:.55rem 1.05rem; border-radius:100px; border:1px solid rgba(244,239,231,.35); background:transparent; color:var(--ed-cream); cursor:pointer; transition:background .25s, border-color .25s, color .25s; }
+    .fchip:hover { border-color:var(--acc); color:#fff; }
+    .fchip.active { background:var(--acc); border-color:var(--acc); color:#fff; }
+
+    /* ---- Table (editorial) ---- */
+    .doc-table { width:100%; border-collapse:collapse; font-size:.9rem; background:var(--ed-cream); border:1px solid var(--ed-ink); border-radius:0; overflow:hidden; }
+    .doc-table th { text-align:left; font-family:"Space Mono",monospace; font-size:.58rem; letter-spacing:.14em; text-transform:uppercase; color:#6E645B; font-weight:700; padding:1rem 1.2rem; border-bottom:1px solid var(--ed-ink); }
+    .doc-table td { padding:1rem 1.2rem; border-bottom:1px solid #E3D9CD; }
     .doc-table tr:last-child td { border-bottom:0; }
-    .doc-table tr:hover td { background:var(--paper); }
-    .doc-type { font-size:.66rem; letter-spacing:.08em; text-transform:uppercase; font-weight:700; padding:.25rem .6rem; border-radius:100px; }
-    .doc-type.foy { background:#F4E8D8; color:#94661F; }
-    .doc-type.kol { background:#E7E0F0; color:#5b4a86; }
-    .doc-type.num { background:#E4EEE7; color:#3A6349; }
-    .doc-empty { text-align:center; padding:3rem 1rem; color:var(--stone); background:var(--white); border:1px solid var(--line); border-radius:8px; }
-    .doc-act { color:var(--clay); font-weight:600; font-size:.82rem; }
+    .doc-table tr:hover td { background:#fff; }
+    .muted { color:#6E645B; }
+
+    .doc-type { font-family:"Space Mono",monospace; font-size:.56rem; letter-spacing:.1em; text-transform:uppercase; font-weight:700; padding:.3rem .65rem; border-radius:100px; border:1px solid transparent; }
+    .doc-type.foy { background:var(--acc); color:#fff; }
+    .doc-type.kol { background:var(--ed-ink); color:var(--ed-cream); }
+    .doc-type.num { background:transparent; color:var(--ed-ink); border-color:var(--ed-ink); }
+
+    .doc-act { font-family:"Space Mono",monospace; font-size:.64rem; letter-spacing:.1em; text-transform:uppercase; color:var(--acc); font-weight:700; transition:letter-spacing .25s; }
+    .doc-act:hover { letter-spacing:.14em; }
+
+    .doc-empty { text-align:center; padding:3.5rem 1.4rem; color:#6E645B; background:var(--ed-cream); border:1px solid var(--ed-ink); border-radius:0; }
+    .doc-empty h3 { font-family:"Fraunces",serif; font-weight:400; font-size:1.6rem; color:var(--ed-ink); }
+
+    /* CTA buttons (empty state) */
+    .doc-wrap .btn { display:inline-flex; align-items:center; gap:.6rem; background:var(--acc); color:#fff; border:1px solid var(--acc); padding:.9rem 1.5rem; font-family:"Space Mono",monospace; font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; border-radius:100px; transition:background .3s, color .3s, transform .3s; }
+    .doc-wrap .btn:hover { background:var(--ed-ink); border-color:var(--ed-ink); color:#fff; transform:translateY(-2px); }
+    .doc-wrap .btn--ghost { background:transparent; color:var(--ed-ink); border-color:var(--ed-ink); }
+    .doc-wrap .btn--ghost:hover { background:var(--ed-ink); color:#fff; }
   </style>
 </head>
-<body>
-  <header class="site-header">
-    <div class="wrap nav">
-      <a href="index.html" class="brand">LOOMR<span>.</span></a>
-      <nav>
-        <ul class="nav-links">
-          <li><a href="index.html#vision">Vizyon</a></li>
-          <li><a href="tasarim.html">Design Studio</a></li>
-          <li><a href="kumas.html">Fabric Hub</a></li>
-          <li><a href="lookbook.html">Lookbook</a></li>
-          <li><a href="koleksiyon-olustur.html">Collection Builder</a></li>
-        </ul>
-      </nav>
-      <div class="nav-actions">
-        <a href="giris.html" class="btn btn--ghost">Workspace'e Gir</a>
-        <button class="nav-toggle" aria-label="Menü">☰</button>
-      </div>
-    </div>
-  </header>
+<body class="ed">
 
-  <section class="page-hero">
-    <div class="wrap">
-      <p class="eyebrow">Belge Merkezi</p>
-      <h1>Bütün belgeler tek yerde.</h1>
+  <div class="ed-cursor" aria-hidden="true"></div>
+
+  <!-- TOP BAR -->
+  <div class="ed-bar">
+    <a href="index.html" class="ed-bar__logo">LOOMR</a>
+    <nav class="ed-mono">
+      <a href="vizyon.html">Vizyon</a>
+      <a href="tasarim.html">Stüdyo</a>
+      <a href="kumas.html">Kumaş</a>
+      <a href="giris.html">Workspace</a>
+    </nav>
+    <a href="giris.html" class="ed-mono">Giriş ↗</a>
+  </div>
+
+  <!-- PAGE HEAD -->
+  <header class="ed-page-head">
+    <div class="ed-page-head__in">
+      <div class="ed-mono">✦ ✦ ✦ &nbsp; Belge Merkezi</div>
+      <h1>Bütün belgeler<br>tek yerde.</h1>
       <p>Teknik föyler, koleksiyonlar ve numune talepleri — türüne göre süz, aç ya da yazdır.</p>
       <div class="filters" id="filters">
         <button class="fchip active" data-f="all">Tümü</button>
@@ -58,14 +83,17 @@
         <button class="fchip" data-f="num">Numune</button>
       </div>
     </div>
-  </section>
+  </header>
 
-  <div class="wrap" style="padding-bottom:4rem">
+  <div class="wrap doc-wrap">
     <div id="docContent"></div>
   </div>
 
-  <footer class="mini-footer">
-    LOOMR — Emre Korkmaz Textile Design Studio · İstanbul · Londra · Milano · Berlin
+  <!-- FOOTER -->
+  <footer class="ed-foot ed-mono">
+    <span class="ed-bar__logo">LOOMR</span>
+    <span>Emre Korkmaz Textile Design Studio</span>
+    <span>İstanbul · Londra · Milano · Berlin · © 2026</span>
   </footer>
 
   <script src="js/loomr-data.js"></script>
@@ -138,5 +166,6 @@
     });
   })();
   </script>
+  <script src="js/editorial.js"></script>
 </body>
 </html>

@@ -7,41 +7,88 @@
   <meta name="description" content="LOOMR Design Studio — garment şablonunu seç, 3D önizle, kütüphaneden kumaş ve renk uygula, teknik föyünü oluştur ve modeliste gönder.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Allura&family=Archivo:ital,wdth,wght@0,62.5..125,100..900;1,62.5..125,100..900&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/pages.css">
   <link rel="stylesheet" href="css/design.css">
+  <link rel="stylesheet" href="css/editorial.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
+  <style>
+    /* ===== Editorial re-skin — studio çevresi (canvas/JS'e dokunmadan) ===== */
+    /* Tasarım sistemi değişkenlerini editoryal palete yeniden eşle */
+    :root{
+      --clay: var(--acc);
+      --clay-deep: var(--acc-deep);
+      --ink: #16110F;
+      --ink-soft: #2A211C;
+      --paper: #F4EFE7;
+      --paper-2: #EBE3D8;
+      --line: #E3D9CD;
+      --line-strong: #D6C9BB;
+      --stone: #6E645B;
+      --sans: "Archivo", "Inter", -apple-system, sans-serif;
+    }
+    body.ed{ background: var(--paper); color: var(--ink); font-family: var(--sans); }
+
+    /* Panel başlıkları → Space Mono etiket */
+    .studio__col h4{
+      font-family: "Space Mono", ui-monospace, monospace;
+      font-size: .66rem; letter-spacing: .22em; color: var(--acc); font-weight: 700;
+    }
+    /* Garment yapı toggle */
+    .gtoggle button.on{ color: var(--acc); }
+    .gitem .gi-t, .fitem .ft{ font-family: "Archivo", sans-serif; }
+
+    /* Sahne başlığı → serif rozet */
+    .stage__badge{ font-family: "Fraunces", serif; }
+    .stage__hint{ font-family: "Space Mono", monospace; letter-spacing: .18em; }
+
+    /* Sahne araç butonları */
+    .stool{ font-family: "Space Mono", monospace; letter-spacing: .12em; }
+
+    /* Aksiyon butonları → editoryal pill */
+    .studio__cta .btn, .tp-actions .btn{
+      border-radius: 100px; font-family: "Space Mono", monospace;
+      letter-spacing: .14em; text-transform: uppercase; font-size: .72rem;
+    }
+
+    /* Teknik föy modal — editoryal ton */
+    .techpack{ border-radius: 10px; }
+    .tp-head .brand{ font-family: "Archivo", sans-serif; font-weight: 900; font-stretch: 125%; letter-spacing: .02em; }
+    .tp-head .brand span{ color: var(--acc); }
+    .tp-title{ font-family: "Archivo", sans-serif; font-weight: 900; font-stretch: 118%; text-transform: uppercase; letter-spacing: -.01em; }
+    .tp-ref, .tp-section h5{ font-family: "Space Mono", monospace; }
+    .tp-section h5{ color: var(--acc); }
+
+    /* Modal overlay arkaplanı biraz daha koyu ink */
+    .tp-overlay{ background: rgba(22,17,15,.62); }
+  </style>
 </head>
-<body>
+<body class="ed">
 
-  <header class="site-header">
-    <div class="wrap nav">
-      <a href="index.html" class="brand">LOOMR<span>.</span></a>
-      <nav>
-        <ul class="nav-links">
-          <li><a href="index.html#vision">Vizyon</a></li>
-          <li><a href="tasarim.html">Design Studio</a></li>
-          <li><a href="kumas.html">Fabric Hub</a></li>
-          <li><a href="lookbook.html">Lookbook</a></li>
-          <li><a href="koleksiyon-olustur.html">Collection Builder</a></li>
-        </ul>
-      </nav>
-      <div class="nav-actions">
-        <a href="giris.html" class="btn btn--ghost">Workspace'e Gir</a>
-        <button class="nav-toggle" aria-label="Menü">☰</button>
-      </div>
-    </div>
-  </header>
+  <div class="ed-cursor" aria-hidden="true"></div>
 
-  <section class="studio-hero">
-    <div class="wrap">
-      <p class="eyebrow">Design Studio · 3D</p>
-      <h1>Tasarla, giydir, föyle.</h1>
+  <!-- TOP BAR -->
+  <div class="ed-bar">
+    <a href="index.html" class="ed-bar__logo">LOOMR</a>
+    <nav class="ed-mono">
+      <a href="vizyon.html">Vizyon</a>
+      <a href="tasarim.html">Stüdyo</a>
+      <a href="kumas.html">Kumaş</a>
+      <a href="giris.html">Workspace</a>
+    </nav>
+    <a href="giris.html" class="ed-mono">Giriş ↗</a>
+  </div>
+
+  <!-- PAGE HEAD -->
+  <header class="ed-page-head">
+    <div class="ed-page-head__in">
+      <div class="ed-mono">✦ ✦ ✦ &nbsp; Design Studio · 3D</div>
+      <h1>3D Stüdyo</h1>
       <p>Bir garment şablonu seç, 3D olarak döndür, kütüphaneden kumaş ve renk uygula.
          Hazır olduğunda tek tıkla teknik föyünü oluştur ve modeliste gönder.</p>
     </div>
-  </section>
+  </header>
 
   <div class="studio" id="studio">
     <!-- SOL: Garment seçici -->
@@ -90,8 +137,10 @@
     </div>
   </div>
 
-  <footer class="mini-footer">
-    LOOMR — Emre Korkmaz Textile Design Studio · İstanbul · Londra · Milano · Berlin
+  <footer class="ed-foot ed-mono">
+    <span class="ed-bar__logo">LOOMR</span>
+    <span>Emre Korkmaz Textile Design Studio</span>
+    <span>İstanbul · Londra · Milano · Berlin · © 2026</span>
   </footer>
 
   <!-- ============ TEKNİK FÖY MODAL ============ -->
@@ -178,6 +227,7 @@
 
   <div class="toast" id="toast"></div>
 
+  <script src="js/editorial.js"></script>
   <script src="js/lib/three.min.js"></script>
   <script src="js/lib/OrbitControls.js"></script>
   <script src="js/lib/GLTFLoader.js"></script>

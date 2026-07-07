@@ -7,64 +7,91 @@
   <meta name="description" content="LOOMR Quality Hub — denetimler, AQL, hata oranı, ölçü uyumu ve sonuç raporları.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Allura&family=Archivo:ital,wdth,wght@0,62.5..125,100..900;1,62.5..125,100..900&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/pages.css">
   <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/editorial.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
   <style>
-    .q-kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:6px; overflow:hidden; margin:1.5rem 0 2rem; }
-    .q-kpi { background:var(--white); padding:1.3rem 1.4rem; }
-    .q-kpi .v { font-family:var(--serif); font-size:2.1rem; line-height:1; }
-    .q-kpi .t { font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--stone); margin-top:.4rem; }
-    .q-table { width:100%; border-collapse:collapse; font-size:.88rem; background:var(--white); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
-    .q-table th { text-align:left; font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--stone); font-weight:600; padding:.85rem 1.2rem; border-bottom:1px solid var(--line); }
-    .q-table td { padding:.85rem 1.2rem; border-bottom:1px solid var(--paper-2); }
+    *,*::before,*::after{box-sizing:border-box}
+    html{overflow-x:clip}
+    body{margin:0;overflow-x:clip;font-family:"Archivo","Inter",sans-serif;background:var(--ed-cream);color:var(--ed-ink);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+
+    .q-wrap { padding-block: clamp(2.4rem,5vw,3.6rem) 5rem; }
+
+    /* ---- KPI band (ink, accent numbers) ---- */
+    .q-kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px; background:var(--ed-ink); border:1px solid var(--ed-ink); border-radius:0; overflow:hidden; margin:0 0 2.4rem; }
+    .q-kpi { background:var(--ed-ink); padding:1.7rem 1.5rem; }
+    .q-kpi .v { font-family:"Archivo",sans-serif; font-weight:900; font-stretch:125%; font-size:clamp(2rem,4vw,2.8rem); line-height:1; color:var(--acc); }
+    .q-kpi .t { font-family:"Space Mono",monospace; font-size:.6rem; letter-spacing:.16em; text-transform:uppercase; color:rgba(244,239,231,.6); margin-top:.55rem; }
+
+    .q-cap { display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap; margin-bottom:1.1rem; }
+    .q-cap .l { font-family:"Space Mono",monospace; font-size:.66rem; letter-spacing:.16em; text-transform:uppercase; color:#6E645B; }
+
+    /* ---- Table (editorial) ---- */
+    .q-table { width:100%; border-collapse:collapse; font-size:.88rem; background:var(--ed-cream); border:1px solid var(--ed-ink); border-radius:0; overflow:hidden; }
+    .q-table th { text-align:left; font-family:"Space Mono",monospace; font-size:.58rem; letter-spacing:.14em; text-transform:uppercase; color:#6E645B; font-weight:700; padding:.95rem 1.2rem; border-bottom:1px solid var(--ed-ink); }
+    .q-table td { padding:.95rem 1.2rem; border-bottom:1px solid #E3D9CD; }
     .q-table tr:last-child td { border-bottom:0; }
-    .q-table tr:hover td { background:var(--paper); }
-    .q-bar { display:inline-block; width:70px; height:8px; background:var(--paper-2); border-radius:100px; overflow:hidden; vertical-align:middle; margin-right:.5rem; }
-    .q-bar i { display:block; height:100%; background:#3A6349; }
+    .q-table tr:hover td { background:#fff; }
+    .muted { color:#6E645B; }
+
+    .q-bar { display:inline-block; width:70px; height:8px; background:#E3D9CD; border-radius:100px; overflow:hidden; vertical-align:middle; margin-right:.5rem; }
+    .q-bar i { display:block; height:100%; background:var(--ed-ink); }
+
+    /* badges */
+    .badge { font-family:"Space Mono",monospace; font-size:.58rem; letter-spacing:.14em; font-weight:700; padding:.32rem .72rem; border-radius:100px; border:1px solid transparent; }
+    .badge--ok   { background:var(--ed-ink); color:var(--ed-cream); }
+    .badge--wip  { background:var(--acc); color:#fff; }
+    .badge--risk { background:var(--acc-deep); color:#fff; }
   </style>
 </head>
-<body>
-  <header class="site-header">
-    <div class="wrap nav">
-      <a href="index.html" class="brand">LOOMR<span>.</span></a>
-      <nav>
-        <ul class="nav-links">
-          <li><a href="index.html#vision">Vizyon</a></li>
-          <li><a href="tasarim.html">Design Studio</a></li>
-          <li><a href="kumas.html">Fabric Hub</a></li>
-          <li><a href="lookbook.html">Lookbook</a></li>
-          <li><a href="koleksiyon-olustur.html">Collection Builder</a></li>
-        </ul>
-      </nav>
-      <div class="nav-actions">
-        <a href="giris.html" class="btn btn--ghost">Workspace'e Gir</a>
-        <button class="nav-toggle" aria-label="Menü">☰</button>
-      </div>
-    </div>
-  </header>
+<body class="ed">
 
-  <section class="page-hero">
-    <div class="wrap">
-      <p class="eyebrow">Quality Hub</p>
-      <h1>Kalite, ölçülebilir.</h1>
+  <div class="ed-cursor" aria-hidden="true"></div>
+
+  <!-- TOP BAR -->
+  <div class="ed-bar">
+    <a href="index.html" class="ed-bar__logo">LOOMR</a>
+    <nav class="ed-mono">
+      <a href="vizyon.html">Vizyon</a>
+      <a href="tasarim.html">Stüdyo</a>
+      <a href="kumas.html">Kumaş</a>
+      <a href="giris.html">Workspace</a>
+    </nav>
+    <a href="giris.html" class="ed-mono">Giriş ↗</a>
+  </div>
+
+  <!-- PAGE HEAD -->
+  <header class="ed-page-head">
+    <div class="ed-page-head__in">
+      <div class="ed-mono">✦ ✦ ✦ &nbsp; Quality Hub</div>
+      <h1>Kalite,<br>ölçülebilir.</h1>
       <p>Her sevkiyat öncesi AQL denetimi, ölçü uyumu ve hata analizi. Sorunları
          fabrikadan çıkmadan yakala.</p>
     </div>
-  </section>
+  </header>
 
-  <div class="wrap" style="padding-bottom:4rem">
+  <div class="wrap q-wrap">
     <div class="q-kpis" id="qk"></div>
+    <div class="q-cap">
+      <span class="l">Denetim Kayıtları</span>
+      <span class="l acc">Son 30 Gün</span>
+    </div>
     <div style="overflow-x:auto"><table class="q-table">
       <thead><tr><th>Ürün</th><th>Fabrika</th><th>Tarih</th><th>AQL</th><th>Hata</th><th>Ölçü Uyumu</th><th>Sonuç</th></tr></thead>
       <tbody id="qrows"></tbody>
     </table></div>
   </div>
 
-  <footer class="mini-footer">
-    LOOMR — Emre Korkmaz Textile Design Studio · İstanbul · Londra · Milano · Berlin
+  <!-- FOOTER -->
+  <footer class="ed-foot ed-mono">
+    <span class="ed-bar__logo">LOOMR</span>
+    <span>Emre Korkmaz Textile Design Studio</span>
+    <span>İstanbul · Londra · Milano · Berlin · © 2026</span>
   </footer>
 
   <script src="js/main.js"></script>
@@ -95,9 +122,10 @@
         <td class="muted">${i.tarih}</td>
         <td>${i.aql}</td>
         <td>${i.hata}</td>
-        <td><span class="q-bar"><i style="width:${i.olcum}%;background:${i.olcum>=95?'#3A6349':i.olcum>=90?'#94661F':'#8E2430'}"></i></span>%${i.olcum}</td>
+        <td><span class="q-bar"><i style="width:${i.olcum}%;background:${i.olcum>=95?'#16110F':i.olcum>=90?'#C7331E':'#9E2314'}"></i></span>%${i.olcum}</td>
         <td>${badge(i.sonuc)}</td>
       </tr>`).join("");
   </script>
+  <script src="js/editorial.js"></script>
 </body>
 </html>

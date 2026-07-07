@@ -7,12 +7,103 @@
   <meta name="description" content="LOOMR Workspace — markanızın komuta merkezi. Koleksiyonlar, kumaşlar, numuneler, onaylar, üretim ve sevkiyat tek ekranda.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Allura&family=Archivo:ital,wdth,wght@0,62.5..125,100..900;1,62.5..125,100..900&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/editorial.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
+  <style>
+    /* ============================================================
+       Workspace — editorial re-skin (cream / ink / vermilion)
+       Palette vars re-mapped so the whole shell inherits editorial.
+       ============================================================ */
+    :root {
+      --ink:        #16110F;
+      --ink-soft:   #241312;
+      --paper:      #F4EFE7;
+      --paper-2:    #EBE3D7;
+      --line:       #E3D9CD;
+      --line-strong:#D0C1B4;
+      --clay:       #C7331E;   /* editorial accent red */
+      --clay-deep:  #9E2314;
+    }
+
+    body.app-body { font-family: "Archivo", "Inter", sans-serif; background: var(--paper); }
+
+    /* ---------- Sidebar ---------- */
+    .app-side { background: var(--ink); }
+    .app-side::before { content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(120% 60% at 0% 0%, rgba(199,51,30,.22), transparent 60%); }
+    .app-side > * { position: relative; z-index: 1; }
+    .app-side .brand { font-family: "Archivo", sans-serif; font-weight: 900; font-stretch: 125%;
+      text-transform: uppercase; letter-spacing: .04em; color: #fff; }
+    .side-group h6 { font-family: "Space Mono", monospace; letter-spacing: .24em; color: var(--stone); }
+    .side-link { font-family: "Archivo", sans-serif; font-weight: 500; }
+    .side-link.active { background: var(--clay); color: #fff; }
+    .brand-switch .avatar { font-family: "Fraunces", serif; }
+
+    /* ---------- Topbar ---------- */
+    .app-topbar { background: var(--paper); }
+    .crumb { font-family: "Space Mono", monospace; letter-spacing: .14em; }
+    .searchbar { border-radius: 100px; }
+
+    /* ---------- Page heads ---------- */
+    .eyebrow { font-family: "Space Mono", monospace; letter-spacing: .24em; color: var(--clay); }
+    .page-head h1 { font-family: "Archivo", sans-serif; font-weight: 900; font-stretch: 112%;
+      letter-spacing: -0.02em; text-transform: none; }
+    .page-head p { color: #6E645B; }
+
+    /* ---------- KPIs ---------- */
+    .kpis { border-color: var(--ink); background: var(--ink); }
+    .kpi { background: var(--ink); color: var(--paper); }
+    .kpi .v { font-family: "Archivo", sans-serif; font-weight: 900; font-stretch: 125%; line-height: 1;
+      font-size: clamp(2.2rem, 4vw, 3.2rem); color: var(--clay); }
+    .kpi .t { font-family: "Space Mono", monospace; letter-spacing: .16em; color: rgba(244,239,231,.55); margin-top: .5rem; }
+    .kpi .d { font-family: "Space Mono", monospace; color: var(--clay); }
+    .kpi .d.up { color: #7FB98F; }
+
+    /* ---------- Module cards ---------- */
+    .mod-card { border-radius: 6px; transition: transform .4s var(--ease), box-shadow .4s var(--ease), border-color .3s, background .3s; }
+    .mod-card:hover { border-color: var(--clay); box-shadow: 0 26px 50px -34px rgba(20,12,10,.55); }
+    .mod-card .ic { color: var(--clay); }
+    .mod-card h4 { font-family: "Fraunces", serif; font-weight: 400; font-size: 1.25rem; }
+    .mod-card p { color: #6E645B; }
+    .mod-card .status { font-family: "Space Mono", monospace; letter-spacing: .14em; color: var(--gold); }
+    .mod-card .status.live { color: #4a7c59; }
+
+    /* ---------- Panels / tables ---------- */
+    .panel { border-radius: 6px; }
+    .panel__head h3 { font-family: "Archivo", sans-serif; font-weight: 800; font-stretch: 100%; letter-spacing: -0.01em; }
+    .link-arrow { font-family: "Space Mono", monospace; letter-spacing: .1em; }
+    .link-arrow:hover { color: var(--clay); }
+    .tbl th { font-family: "Space Mono", monospace; letter-spacing: .16em; }
+    .tbl td { font-family: "Archivo", sans-serif; }
+    .badge { font-family: "Space Mono", monospace; font-weight: 700; letter-spacing: .06em; }
+    .badge--ok   { background: #E4EEE7; color: #3A6349; }
+    .badge--wip  { background: #F6E5DC; color: var(--clay-deep); }
+    .badge--wait { background: #EDE6DA; color: #6E645B; }
+    .badge--risk { background: #F6DAD3; color: var(--clay-deep); }
+
+    /* ---------- Production stepper ---------- */
+    .step .t { font-family: "Space Mono", monospace; letter-spacing: .12em; }
+    .step.done .dot { background: var(--clay); border-color: var(--clay); }
+    .step.done::before { background: var(--clay); }
+    .step.now .dot { border-color: var(--clay); box-shadow: 0 0 0 4px rgba(199,51,30,.22); }
+
+    /* ---------- Showroom strip ---------- */
+    .strip figcaption { font-family: "Space Mono", monospace; letter-spacing: .12em; }
+
+    /* ---------- AI dock ---------- */
+    .ai-dock { font-family: "Space Mono", monospace; letter-spacing: .04em; background: var(--ink); }
+    .ai-dock:hover { background: var(--clay); }
+    .ai-dock .pulse { background: var(--gold); }
+
+    /* keep reveal from hiding critical content if JS is slow — handled by editorial.js */
+  </style>
 </head>
 <body class="app-body">
+
+  <div class="ed-cursor" aria-hidden="true"></div>
 
   <!-- ================= KENAR MENÜ ================= -->
   <aside class="app-side">
@@ -220,6 +311,7 @@
     </a>
   </main>
 
+  <script src="js/editorial.js"></script>
   <script src="js/loomr-data.js"></script>
   <script src="js/loomr-api.js"></script>
   <script src="js/main.js"></script>

@@ -7,67 +7,107 @@
   <meta name="description" content="LOOMR Sourcing — düğme, fermuar, etiket, jakron, baskı, nakış, aksesuar ve ambalaj kataloğu.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/pages.css">
+  <link href="https://fonts.googleapis.com/css2?family=Allura&family=Archivo:ital,wdth,wght@0,62.5..125,100..900;1,62.5..125,100..900&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/editorial.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
   <style>
-    .src-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1.1rem; padding-block:1rem 3rem; }
-    .src-card { background:var(--white); border:1px solid var(--line); border-radius:8px; overflow:hidden; display:flex; flex-direction:column; transition:transform .4s var(--ease), box-shadow .4s var(--ease); }
-    .src-card:hover { transform:translateY(-4px); box-shadow:0 20px 44px -32px rgba(95,22,31,.5); }
-    .src-ic { height:96px; display:grid; place-items:center; font-size:2.4rem; background:var(--paper-2); }
-    .src-body { padding:1.1rem 1.2rem 1.2rem; display:flex; flex-direction:column; gap:.5rem; flex:1; }
-    .src-cat { font-size:.64rem; letter-spacing:.14em; text-transform:uppercase; color:var(--clay); font-weight:700; }
-    .src-body h3 { font-size:1.05rem; }
-    .src-body .m { font-size:.8rem; color:var(--stone); }
-    .src-spec { display:flex; justify-content:space-between; font-size:.76rem; color:var(--ink-soft); margin-top:auto; padding-top:.6rem; border-top:1px dashed var(--line); }
+    *,*::before,*::after{box-sizing:border-box}
+    html{overflow-x:clip}
+    body{margin:0;overflow-x:clip;font-family:"Archivo","Inter",sans-serif;background:var(--ed-cream);color:var(--ed-ink);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+
+    /* ---- Intro / actions ---- */
+    .src-intro { padding:clamp(1.8rem,4vw,2.8rem) clamp(1.2rem,4vw,3rem) 0; }
+    .src-intro p { max-width:60ch; color:#6E645B; line-height:1.7; font-size:1rem; }
+    .src-intro p b { color:var(--ed-ink); font-weight:600; }
+    .src-actions { display:flex; gap:.8rem; flex-wrap:wrap; margin-top:1.2rem; }
+
+    /* ---- Filtre çubuğu ---- */
+    .filters { display:flex; flex-wrap:wrap; gap:.6rem; padding:clamp(1.4rem,3vw,2rem) clamp(1.2rem,4vw,3rem) 0; }
+    .fchip { font-family:"Space Mono",monospace; font-size:.66rem; letter-spacing:.14em; text-transform:uppercase;
+      padding:.55rem 1rem; border-radius:100px; border:1px solid #D9CEC0; background:transparent; color:#6E645B; cursor:pointer; transition:all .25s var(--ease); }
+    .fchip:hover { border-color:var(--ed-ink); color:var(--ed-ink); }
+    .fchip.active { background:var(--ed-ink); border-color:var(--ed-ink); color:var(--ed-cream); }
+
+    /* ---- Katalog grid ---- */
+    .src-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1.1rem;
+      padding:clamp(1.4rem,3vw,2rem) clamp(1.2rem,4vw,3rem) clamp(3.5rem,8vw,6rem); }
+    .src-card { background:#fff; border:1px solid #E3D9CD; border-radius:6px; overflow:hidden; display:flex; flex-direction:column;
+      transition:transform .4s var(--ease), box-shadow .4s var(--ease), border-color .3s; }
+    .src-card:hover { transform:translateY(-4px); border-color:var(--ed-ink); box-shadow:0 24px 50px -34px rgba(20,12,10,.6); }
+    .src-ic { height:104px; display:grid; place-items:center; font-size:2.6rem; color:var(--ed-ink); background:var(--ed-cream); border-bottom:1px solid #E3D9CD; }
+    .src-card:hover .src-ic { color:var(--acc); }
+    .src-body { padding:1.2rem 1.3rem 1.3rem; display:flex; flex-direction:column; gap:.5rem; flex:1; }
+    .src-cat { font-family:"Space Mono",monospace; font-size:.6rem; letter-spacing:.16em; text-transform:uppercase; color:var(--acc); font-weight:700; }
+    .src-body h3 { font-family:"Fraunces",serif; font-weight:400; font-size:1.15rem; margin:0; }
+    .src-body .m { font-size:.8rem; color:#6E645B; }
+    .src-spec { display:flex; justify-content:space-between; font-family:"Space Mono",monospace; font-size:.66rem; letter-spacing:.04em;
+      color:var(--ed-ink); margin-top:auto; padding-top:.7rem; border-top:1px dashed #D9CEC0; }
+
+    /* ---- Buttons ---- */
+    .btn { display:inline-flex; align-items:center; gap:.5rem; background:var(--acc); color:#fff; padding:.85rem 1.5rem;
+      font-family:"Space Mono",monospace; font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; border-radius:100px;
+      border:1px solid var(--acc); cursor:pointer; transition:background .3s, transform .3s, color .3s; }
+    .btn:hover { background:var(--ed-ink); border-color:var(--ed-ink); color:#fff; transform:translateY(-2px); }
+    .btn--ghost { background:transparent; color:var(--ed-ink); border-color:#D9CEC0; }
+    .btn--ghost:hover { background:var(--ed-ink); border-color:var(--ed-ink); color:#fff; }
+
+    /* ---- Toast ---- */
+    .toast { position:fixed; left:50%; bottom:2rem; transform:translate(-50%,150%); z-index:250;
+      background:var(--ed-ink); color:var(--ed-cream); padding:.9rem 1.4rem; border-radius:100px; font-size:.86rem;
+      box-shadow:0 20px 44px -20px rgba(20,12,10,.7); transition:transform .4s var(--ease); max-width:90vw; }
+    .toast.show { transform:translate(-50%,0); }
+    .toast b { color:var(--acc); }
   </style>
 </head>
-<body>
-  <header class="site-header">
-    <div class="wrap nav">
-      <a href="index.html" class="brand">LOOMR<span>.</span></a>
-      <nav>
-        <ul class="nav-links">
-          <li><a href="index.html#vision">Vizyon</a></li>
-          <li><a href="tasarim.html">Design Studio</a></li>
-          <li><a href="kumas.html">Fabric Hub</a></li>
-          <li><a href="lookbook.html">Lookbook</a></li>
-          <li><a href="koleksiyon-olustur.html">Collection Builder</a></li>
-        </ul>
-      </nav>
-      <div class="nav-actions">
-        <a href="giris.html" class="btn btn--ghost">Workspace'e Gir</a>
-        <button class="nav-toggle" aria-label="Menü">☰</button>
-      </div>
+<body class="ed">
+
+  <div class="ed-cursor" aria-hidden="true"></div>
+
+  <!-- TOP BAR -->
+  <div class="ed-bar">
+    <a href="index.html" class="ed-bar__logo">LOOMR</a>
+    <nav class="ed-mono">
+      <a href="vizyon.html">Vizyon</a>
+      <a href="tasarim.html">Stüdyo</a>
+      <a href="kumas.html">Kumaş</a>
+      <a href="giris.html">Workspace</a>
+    </nav>
+    <a href="giris.html" class="ed-mono">Giriş ↗</a>
+  </div>
+
+  <!-- PAGE HEAD -->
+  <header class="ed-page-head">
+    <div class="ed-page-head__in">
+      <div class="ed-mono">✦ ✦ ✦ &nbsp; Sourcing</div>
+      <h1>Katalog</h1>
+      <p>Düğme, fermuar, etiket, jakron, baskı, nakış ve ambalaj — MOQ ve terminle.</p>
     </div>
   </header>
 
-  <section class="page-hero">
-    <div class="wrap">
-      <p class="eyebrow">Sourcing</p>
-      <h1>Aksesuar & malzeme kataloğu.</h1>
-      <p>Düğme, fermuar, etiket, jakron, baskı, nakış ve ambalaj — MOQ ve terminle.
-         Katalog başlangıç noktan; nihai seçim <b>LOOMR stilistleriyle</b> birlikte,
-         markanın stiline göre küratörlenir.</p>
-      <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:.4rem">
-        <a class="btn" href="iletisim.html" style="padding:.7rem 1.2rem;font-size:.72rem">Stilistle görüş →</a>
-      </div>
-      <div class="filters" id="filters"><button class="fchip active" data-f="all">Tümü</button></div>
+  <div class="src-intro">
+    <p>Katalog başlangıç noktan; nihai seçim <b>LOOMR stilistleriyle</b> birlikte,
+       markanın stiline göre küratörlenir.</p>
+    <div class="src-actions">
+      <a class="btn" href="iletisim.html">Stilistle görüş →</a>
     </div>
-  </section>
-
-  <div class="wrap">
-    <div class="src-grid" id="items"></div>
   </div>
+
+  <div class="filters" id="filters"><button class="fchip active" data-f="all">Tümü</button></div>
+
+  <div class="src-grid" id="items"></div>
 
   <div class="toast" id="toast"></div>
 
-  <footer class="mini-footer">
-    LOOMR — Emre Korkmaz Textile Design Studio · İstanbul · Londra · Milano · Berlin
+  <!-- FOOTER -->
+  <footer class="ed-foot ed-mono">
+    <span class="ed-bar__logo">LOOMR</span>
+    <span>Emre Korkmaz Textile Design Studio</span>
+    <span>İstanbul · Londra · Milano · Berlin · © 2026</span>
   </footer>
 
-  <script src="js/main.js"></script>
+  <script src="js/editorial.js"></script>
   <script>
     const CATS = { dugme:"Düğme", fermuar:"Fermuar", etiket:"Etiket & Jakron", baski:"Baskı & Nakış", aksesuar:"Aksesuar", ambalaj:"Ambalaj" };
     const ITEMS = [
@@ -101,7 +141,7 @@
           <h3>${it.ad}</h3>
           <div class="m">${it.malz}</div>
           <div class="src-spec"><span>MOQ ${it.moq}</span><span>${it.termin}</span></div>
-          <button class="btn" style="padding:.5rem .9rem;font-size:.66rem;margin-top:.4rem" data-req="${it.ad}">Numune İste</button>
+          <button class="btn btn--ghost" style="padding:.55rem 1rem;font-size:.62rem;margin-top:.6rem" data-req="${it.ad}">Numune İste</button>
         </div>
       </article>`).join("");
 

@@ -7,49 +7,100 @@
   <meta name="description" content="LOOMR Workspace'e giriş yapın.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Allura&family=Archivo:ital,wdth,wght@0,62.5..125,100..900;1,62.5..125,100..900&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/editorial.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
   <style>
-    body { margin: 0; }
-    .login { min-height: 100vh; display: grid; grid-template-columns: 1fr; background: var(--ink); }
-    .login__media { position: relative; min-height: 34vh; }
-    .login__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
-    .login__panel { display: flex; align-items: center; justify-content: center; background: var(--paper); padding: clamp(2rem, 6vw, 4rem); }
-    .login__card { width: 100%; max-width: 380px; }
-    .login__brand { font-family: var(--serif); font-size: 1.6rem; letter-spacing: .18em; margin-bottom: 2.2rem; }
-    .login__brand span { color: var(--clay); }
-    .login__card h1 { font-size: 1.9rem; margin: 0 0 .4rem; }
-    .login__card .sub { color: var(--stone); font-size: .92rem; margin: 0 0 1.8rem; }
-    .fld { margin-bottom: 1rem; }
-    .fld label { display: block; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; color: var(--ink-soft); margin-bottom: .4rem; }
-    .fld input { width: 100%; padding: .85rem 1rem; border: 1px solid var(--line-strong); border-radius: 4px; font: inherit; background: var(--white); color: var(--ink); outline: none; transition: border .25s; }
-    .fld input:focus { border-color: var(--clay); }
-    .login__row { display: flex; justify-content: space-between; align-items: center; font-size: .8rem; margin: .2rem 0 1.4rem; }
-    .login__row a { color: var(--clay); }
-    .login .btn { width: 100%; justify-content: center; }
-    .login__or { display: flex; align-items: center; gap: 1rem; color: var(--stone); font-size: .74rem; letter-spacing: .1em; text-transform: uppercase; margin: 1.3rem 0; }
-    .login__or::before, .login__or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
-    .btn--social { background: var(--white); color: var(--ink); border-color: var(--line-strong); }
-    .btn--social:hover { background: var(--paper-2); color: var(--ink); border-color: var(--line-strong); transform: none; }
-    .login__foot { text-align: center; font-size: .85rem; color: var(--stone); margin-top: 1.6rem; }
-    .login__foot a { color: var(--ink); font-weight: 600; }
-    .login__back { display: inline-block; margin-top: 2rem; font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; color: var(--stone); }
-    .login__back:hover { color: var(--clay); }
+    *,*::before,*::after{box-sizing:border-box}
+    html{overflow-x:clip}
+    body{margin:0;overflow-x:clip;font-family:"Archivo","Inter",sans-serif;background:var(--ed-cream);color:var(--ed-ink);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+
+    /* ---------- Editorial split login ---------- */
+    .login { min-height: 100svh; display: grid; grid-template-columns: 1fr; }
+
+    /* Left — bold visual / brand panel */
+    .login__media { position: relative; min-height: 42vh; background: var(--ed-ink); overflow: hidden; display: flex; }
+    .login__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 30%; filter: saturate(1.05) contrast(1.02); }
+    .login__media::after { content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(20,12,10,.72) 0%, rgba(20,12,10,.25) 42%, rgba(20,12,10,.86) 100%); }
+    .login__media-in { position: relative; z-index: 2; color: #F7F2EA; padding: clamp(1.6rem, 4vw, 3.2rem); width: 100%; display: flex; flex-direction: column; }
+    .login__logo { font-family: "Space Mono", monospace; font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; color: rgba(247,242,234,.85); transition: color .25s; align-self: flex-start; }
+    .login__logo:hover { color: var(--acc); }
+    .login__media-body { margin-top: auto; }
+    .login__eyebrow { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; color: rgba(247,242,234,.85); margin-bottom: 1.1rem; }
+    .login__eyebrow .star { color: var(--acc); letter-spacing: .3em; }
+    .login__media-body h2 { font-family: "Archivo", sans-serif; font-weight: 900; font-stretch: 125%; text-transform: uppercase; font-size: clamp(2.2rem, 5vw, 4.2rem); line-height: .9; letter-spacing: -0.02em; margin: 0; }
+    .login__media-body h2 .em { display: block; font-family: "Fraunces", serif; font-style: italic; font-weight: 300; text-transform: none; color: var(--acc); font-size: .58em; letter-spacing: 0; margin-top: .3rem; }
+    .login__cities { margin-top: 1.6rem; color: rgba(247,242,234,.7); }
+
+    /* Right — clean form panel */
+    .login__panel { display: flex; align-items: center; justify-content: center; background: var(--ed-cream); padding: clamp(2.2rem, 6vw, 4.5rem); }
+    .login__card { width: 100%; max-width: 400px; }
+    .login__kicker { color: var(--acc); margin-bottom: 1rem; }
+    .login__card h1 { font-family: "Archivo", sans-serif; font-weight: 900; font-stretch: 112%; text-transform: uppercase; letter-spacing: -0.015em; font-size: clamp(2rem, 4vw, 2.9rem); line-height: .92; margin: 0 0 .6rem; }
+    .login__card .sub { color: #6E645B; font-size: .95rem; margin: 0 0 2rem; font-family: "Fraunces", serif; font-style: italic; }
+
+    .fld { margin-bottom: 1.1rem; }
+    .fld label { display: block; font-family: "Space Mono", monospace; font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; color: #6E645B; margin-bottom: .5rem; }
+    .fld input { width: 100%; padding: .95rem 1.05rem; border: 1px solid #D9CEC0; border-radius: 4px; font: inherit; font-family: "Archivo", sans-serif; background: #fff; color: var(--ed-ink); outline: none; transition: border .25s, box-shadow .25s; }
+    .fld input::placeholder { color: #B4A89A; }
+    .fld input:focus { border-color: var(--acc); box-shadow: 0 0 0 3px rgba(199,51,30,.12); }
+
+    .login__row { display: flex; justify-content: space-between; align-items: center; font-size: .82rem; margin: .3rem 0 1.6rem; gap: 1rem; flex-wrap: wrap; }
+    .login__remember { display: flex; align-items: center; gap: .5rem; color: #6E645B; }
+    .login__remember input { width: auto; accent-color: var(--acc); }
+    .login__row a { color: var(--acc); font-family: "Space Mono", monospace; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
+
+    .login .btn { width: 100%; justify-content: center; display: inline-flex; align-items: center; gap: .6rem;
+      background: var(--acc); color: #fff; border: 1px solid var(--acc); padding: 1rem 1.6rem;
+      font-family: "Space Mono", monospace; font-size: .76rem; letter-spacing: .16em; text-transform: uppercase; border-radius: 100px;
+      transition: background .3s, color .3s, transform .3s, border-color .3s; }
+    .login .btn:hover { background: var(--ed-ink); border-color: var(--ed-ink); color: #fff; transform: translateY(-2px); }
+
+    .login__or { display: flex; align-items: center; gap: 1rem; color: #9A8F84; font-family: "Space Mono", monospace; font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; margin: 1.5rem 0; }
+    .login__or::before, .login__or::after { content: ""; flex: 1; height: 1px; background: #E3D9CD; }
+
+    .btn--social { background: #fff; color: var(--ed-ink); border-color: #D9CEC0; }
+    .btn--social:hover { background: var(--ed-ink); color: #fff; border-color: var(--ed-ink); transform: translateY(-2px); }
+
+    .login__foot { text-align: center; font-size: .9rem; color: #6E645B; margin-top: 1.8rem; }
+    .login__foot a { color: var(--acc); font-weight: 700; }
+    .login__back { display: inline-block; margin-top: 2rem; font-family: "Space Mono", monospace; font-size: .7rem; letter-spacing: .16em; text-transform: uppercase; color: #9A8F84; transition: color .25s; }
+    .login__back:hover { color: var(--acc); }
+
     @media (min-width: 820px) {
       .login { grid-template-columns: 1.05fr 1fr; }
-      .login__media { min-height: auto; }
+      .login__media { min-height: 100svh; }
     }
   </style>
 </head>
-<body>
+<body class="ed">
+
+  <div class="ed-cursor" aria-hidden="true"></div>
+
   <main class="login">
+    <!-- Sol — bold görsel / marka paneli -->
     <div class="login__media">
-      <img src="img/brand-key.png" alt="LOOMR — Emre Korkmaz Textile Design Studio">
+      <img src="img/redwall-pinstripe.png" alt="LOOMR — Emre Korkmaz Textile Design Studio">
+      <div class="login__media-in">
+        <a href="index.html" class="login__logo" aria-label="Ana sayfa">← Ana sayfa</a>
+        <div class="login__media-body">
+          <div class="login__eyebrow ed-mono">
+            <span class="star">✦ ✦ ✦</span>
+            <span>Fikirden Üretime</span>
+          </div>
+          <h2>Markanın<br>komuta<br>merkezi<span class="em">tek platformda.</span></h2>
+          <div class="login__cities ed-mono">İstanbul · Londra · Milano · Berlin</div>
+        </div>
+      </div>
     </div>
+
+    <!-- Sağ — temiz form paneli -->
     <div class="login__panel">
       <div class="login__card">
-        <a href="index.html" class="login__brand">LOOMR<span>.</span></a>
+        <div class="login__kicker ed-mono">✦ Workspace Girişi</div>
         <h1>Workspace'e gir.</h1>
         <p class="sub">Markanın komuta merkezine hoş geldin.</p>
 
@@ -63,8 +114,8 @@
             <input type="password" id="pass" placeholder="••••••••" autocomplete="current-password">
           </div>
           <div class="login__row">
-            <label style="display:flex;align-items:center;gap:.4rem;text-transform:none;letter-spacing:0;font-weight:400;color:var(--stone)">
-              <input type="checkbox" style="width:auto"> Beni hatırla
+            <label class="login__remember">
+              <input type="checkbox"> Beni hatırla
             </label>
             <a href="#">Parolamı unuttum</a>
           </div>
@@ -87,5 +138,6 @@
       location.href = "app.html";
     });
   </script>
+  <script src="js/editorial.js"></script>
 </body>
 </html>

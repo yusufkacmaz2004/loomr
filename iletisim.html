@@ -7,69 +7,91 @@
   <meta name="description" content="LOOMR İletişim — tasarımcı, modelist, kalite ve üretimle mesajlaş, e-posta gönder, numune talep et.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/pages.css">
+  <link href="https://fonts.googleapis.com/css2?family=Allura&family=Archivo:ital,wdth,wght@0,62.5..125,100..900;1,62.5..125,100..900&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/editorial.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
   <style>
-    .cx-grid { display:grid; gap:1.4rem; grid-template-columns:1fr; }
-    @media(min-width:900px){ .cx-grid { grid-template-columns:1.1fr 1fr; } }
+    *,*::before,*::after{box-sizing:border-box}
+    html{overflow-x:clip}
+    body{margin:0;overflow-x:clip;font-family:"Archivo","Inter",sans-serif;background:var(--ed-cream);color:var(--ed-ink);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+
+    .cx-grid { display:grid; gap:1.6rem; grid-template-columns:1fr; padding:clamp(2rem,5vw,3.4rem) clamp(1.2rem,4vw,3rem) clamp(3.5rem,8vw,6rem); }
+    @media(min-width:900px){ .cx-grid { grid-template-columns:1.1fr 1fr; align-items:start; } }
+    .cx-sub { font-family:"Space Mono",monospace; font-size:.68rem; letter-spacing:.2em; text-transform:uppercase; color:var(--acc); font-weight:700; margin:0 0 1.1rem; }
+    .cx-note { font-size:.84rem; color:#6E645B; margin-top:1.3rem; line-height:1.7; }
+    .cx-note b { color:var(--ed-ink); font-weight:600; }
+
     .cx-list { display:grid; gap:.7rem; }
-    .cx-card { display:flex; align-items:center; gap:1rem; background:var(--white); border:1px solid var(--line); border-radius:8px; padding:1rem 1.2rem; transition:border .25s; }
-    .cx-card:hover { border-color:var(--line-strong); }
-    .cx-av { width:44px; height:44px; border-radius:50%; background:var(--ink); color:var(--paper); display:grid; place-items:center; font-family:var(--serif); font-size:1.05rem; flex:none; }
-    .cx-card.online .cx-av { background:var(--clay); }
+    .cx-card { display:flex; align-items:center; gap:1rem; background:#fff; border:1px solid #E3D9CD; border-radius:6px; padding:1rem 1.2rem; transition:border-color .25s, transform .25s var(--ease); }
+    .cx-card:hover { border-color:var(--ed-ink); transform:translateX(3px); }
+    .cx-av { width:46px; height:46px; border-radius:50%; background:var(--ed-ink); color:var(--ed-cream); display:grid; place-items:center; font-family:"Fraunces",serif; font-size:1.05rem; flex:none; }
+    .cx-card.online .cx-av { background:var(--acc); }
     .cx-info { flex:1; min-width:0; }
-    .cx-info b { display:block; font-size:.95rem; }
-    .cx-info span { font-size:.76rem; color:var(--stone); }
+    .cx-info b { display:block; font-size:.98rem; font-weight:600; }
+    .cx-info span { font-size:.72rem; color:#6E645B; font-family:"Space Mono",monospace; letter-spacing:.02em; }
     .cx-act { display:flex; gap:.5rem; }
-    .cx-btn { font-size:.7rem; letter-spacing:.06em; text-transform:uppercase; font-weight:600; padding:.45rem .8rem; border-radius:4px; border:1px solid var(--line-strong); background:var(--white); color:var(--ink-soft); cursor:pointer; transition:all .2s; text-decoration:none; }
-    .cx-btn:hover { border-color:var(--clay); color:var(--clay); }
-    .cx-btn.primary { background:var(--ink); color:var(--paper); border-color:var(--ink); }
-    .cx-btn.primary:hover { background:var(--clay); border-color:var(--clay); color:var(--paper); }
-    .compose { background:var(--white); border:1px solid var(--line); border-radius:8px; padding:1.4rem 1.5rem; position:sticky; top:90px; }
-    .compose h3 { font-size:1.15rem; margin:0 0 1rem; }
-    .compose label { display:block; font-size:.7rem; letter-spacing:.14em; text-transform:uppercase; font-weight:600; color:var(--ink-soft); margin:.9rem 0 .4rem; }
-    .compose select, .compose input, .compose textarea { width:100%; padding:.75rem .9rem; border:1px solid var(--line-strong); border-radius:4px; font:inherit; background:var(--paper); color:var(--ink); outline:none; }
+    .cx-btn { font-family:"Space Mono",monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; font-weight:700;
+      padding:.55rem .9rem; border-radius:100px; border:1px solid #D9CEC0; background:#fff; color:#6E645B; cursor:pointer; transition:all .2s; text-decoration:none; }
+    .cx-btn:hover { border-color:var(--acc); color:var(--acc); }
+    .cx-btn.primary { background:var(--ed-ink); color:var(--ed-cream); border-color:var(--ed-ink); }
+    .cx-btn.primary:hover { background:var(--acc); border-color:var(--acc); color:#fff; }
+
+    .compose { background:#fff; border:1px solid #E3D9CD; border-radius:8px; padding:1.7rem 1.8rem; position:sticky; top:90px; }
+    .compose h3 { font-family:"Fraunces",serif; font-weight:400; font-size:1.4rem; margin:0 0 1.2rem; }
+    .compose label { display:block; font-family:"Space Mono",monospace; font-size:.62rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700; color:#6E645B; margin:1rem 0 .45rem; }
+    .compose select, .compose input, .compose textarea { width:100%; padding:.8rem .95rem; border:1px solid #D9CEC0; border-radius:4px; font:inherit; font-size:.92rem; background:var(--ed-cream); color:var(--ed-ink); outline:none; transition:border-color .2s; }
+    .compose select:focus, .compose input:focus, .compose textarea:focus { border-color:var(--acc); }
     .compose textarea { min-height:120px; resize:vertical; }
-    .compose .btn { width:100%; justify-content:center; margin-top:1.2rem; }
-    .cx-sub { font-family:var(--sans); font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; color:var(--stone); font-weight:600; margin:1.6rem 0 .8rem; }
+    .compose .btn { width:100%; justify-content:center; margin-top:1.4rem; }
+    .compose .fine { font-size:.72rem; color:#6E645B; margin:.9rem 0 0; line-height:1.6; }
+
+    .btn { display:inline-flex; align-items:center; gap:.5rem; background:var(--acc); color:#fff; padding:.9rem 1.5rem;
+      font-family:"Space Mono",monospace; font-size:.74rem; letter-spacing:.14em; text-transform:uppercase; border-radius:100px;
+      border:1px solid var(--acc); cursor:pointer; transition:background .3s, transform .3s, color .3s; }
+    .btn:hover { background:var(--ed-ink); border-color:var(--ed-ink); color:#fff; transform:translateY(-2px); }
+    .btn:disabled { opacity:.6; cursor:default; transform:none; }
+
+    /* ---- Toast ---- */
+    .toast { position:fixed; left:50%; bottom:2rem; transform:translate(-50%,150%); z-index:250;
+      background:var(--ed-ink); color:var(--ed-cream); padding:.9rem 1.4rem; border-radius:100px; font-size:.86rem;
+      box-shadow:0 20px 44px -20px rgba(20,12,10,.7); transition:transform .4s var(--ease); max-width:90vw; }
+    .toast.show { transform:translate(-50%,0); }
+    .toast b { color:var(--acc); }
   </style>
 </head>
-<body>
-  <header class="site-header">
-    <div class="wrap nav">
-      <a href="index.html" class="brand">LOOMR<span>.</span></a>
-      <nav>
-        <ul class="nav-links">
-          <li><a href="index.html#vision">Vizyon</a></li>
-          <li><a href="tasarim.html">Design Studio</a></li>
-          <li><a href="kumas.html">Fabric Hub</a></li>
-          <li><a href="lookbook.html">Lookbook</a></li>
-          <li><a href="koleksiyon-olustur.html">Collection Builder</a></li>
-        </ul>
-      </nav>
-      <div class="nav-actions">
-        <a href="giris.html" class="btn btn--ghost">Workspace'e Gir</a>
-        <button class="nav-toggle" aria-label="Menü">☰</button>
-      </div>
-    </div>
-  </header>
+<body class="ed">
 
-  <section class="page-hero">
-    <div class="wrap">
-      <p class="eyebrow">İletişim</p>
-      <h1>İşin özü: doğru insanla konuşmak.</h1>
+  <div class="ed-cursor" aria-hidden="true"></div>
+
+  <!-- TOP BAR -->
+  <div class="ed-bar">
+    <a href="index.html" class="ed-bar__logo">LOOMR</a>
+    <nav class="ed-mono">
+      <a href="vizyon.html">Vizyon</a>
+      <a href="tasarim.html">Stüdyo</a>
+      <a href="kumas.html">Kumaş</a>
+      <a href="giris.html">Workspace</a>
+    </nav>
+    <a href="giris.html" class="ed-mono">Giriş ↗</a>
+  </div>
+
+  <!-- PAGE HEAD -->
+  <header class="ed-page-head">
+    <div class="ed-page-head__in">
+      <div class="ed-mono">✦ ✦ ✦ &nbsp; İletişim</div>
+      <h1>İletişim</h1>
       <p>Tasarımcı, modelist, kalite ve üretimle tek yerden mesajlaş; tek tıkla
          e-posta gönder ya da numune talep et.</p>
     </div>
-  </section>
+  </header>
 
-  <div class="wrap cx-grid" style="padding-block:1rem 4rem">
+  <div class="cx-grid">
     <div>
-      <div class="cx-sub">LOOMR Ekibi</div>
+      <p class="cx-sub">LOOMR Ekibi</p>
       <div class="cx-list" id="team"></div>
-      <p style="font-size:.8rem;color:var(--stone);margin-top:1.2rem;line-height:1.6">
+      <p class="cx-note">
         Modelist, fabrika ve tedarikçilerle iletişimi <b>LOOMR yürütür</b> — üretim ağımız
         markalara kapalıdır. Numune, kalıp ve üretim taleplerini ekibimize ilet, biz doğru
         atölyeye yönlendirelim.
@@ -88,7 +110,7 @@
         <label for="msg">Mesaj</label>
         <textarea id="msg" placeholder="Merhaba,"></textarea>
         <button class="btn" id="send">Gönder →</button>
-        <p style="font-size:.76rem;color:var(--stone);margin:.9rem 0 0">
+        <p class="fine">
           Mesaj doğrudan LOOMR ekibine iletilir; yanıt e-postana gelir.
         </p>
       </div>
@@ -97,13 +119,16 @@
 
   <div class="toast" id="toast"></div>
 
-  <footer class="mini-footer">
-    LOOMR — Emre Korkmaz Textile Design Studio · İstanbul · Londra · Milano · Berlin
+  <!-- FOOTER -->
+  <footer class="ed-foot ed-mono">
+    <span class="ed-bar__logo">LOOMR</span>
+    <span>Emre Korkmaz Textile Design Studio</span>
+    <span>İstanbul · Londra · Milano · Berlin · © 2026</span>
   </footer>
 
   <script src="js/loomr-data.js"></script>
   <script src="js/loomr-api.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/editorial.js"></script>
   <script>
     const D = window.LOOMR_DATA, API = window.LoomrAPI;
     const slug = s => s.toLowerCase().replace(/ç/g,"c").replace(/ğ/g,"g").replace(/ı/g,"i").replace(/ö/g,"o").replace(/ş/g,"s").replace(/ü/g,"u").replace(/[^a-z]/g,"");
