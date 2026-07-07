@@ -1,0 +1,193 @@
+/* ============================================================
+   LOOMR — 3D Tasarım Stüdyosu + Teknik Föy
+   ============================================================ */
+
+.studio-hero { padding-block: clamp(2rem, 4vw, 3rem) 1rem; border-bottom: 1px solid var(--line); }
+.studio-hero .eyebrow { color: var(--clay); }
+.studio-hero h1 { font-size: clamp(2rem, 4.5vw, 3.4rem); margin-top: .4rem; }
+.studio-hero p { color: var(--stone); max-width: 60ch; margin-top: .8rem; }
+
+/* ---------- Stüdyo düzeni ---------- */
+.studio {
+  display: grid; grid-template-columns: 250px 1fr 320px; gap: 1px;
+  background: var(--line); border-block: 1px solid var(--line);
+}
+@media (min-width: 1081px) {
+  .studio { height: clamp(580px, 80vh, 800px); }
+  .studio__col { overflow-y: auto; }
+}
+.studio__col { background: var(--paper); padding: 1.4rem 1.3rem; }
+.studio__col h4 {
+  font-family: var(--sans); font-size: .7rem; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--stone); font-weight: 600; margin: 0 0 1rem;
+}
+.studio__col h4:not(:first-child) { margin-top: 1.8rem; }
+
+/* Orta sahne */
+.stage { background: var(--paper); position: relative; display: flex; flex-direction: column; }
+.stage__canvas {
+  flex: 1; position: relative; min-height: 480px; overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 50% 15%, #FBF7F1 0%, var(--paper) 55%, var(--paper-2) 100%);
+}
+.stage__canvas canvas { display: block; width: 100% !important; height: 100% !important; }
+.stage__badge {
+  position: absolute; top: 1rem; left: 1rem; z-index: 3;
+  font-family: var(--serif); font-size: .9rem; letter-spacing: .02em; color: var(--ink);
+  background: color-mix(in srgb, var(--paper) 80%, transparent); backdrop-filter: blur(6px);
+  border: 1px solid var(--line); border-radius: 3px; padding: .4rem .8rem;
+}
+.stage__hint {
+  position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%); z-index: 3;
+  font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: var(--stone);
+  pointer-events: none;
+}
+.stage__tools {
+  display: flex; gap: .4rem; padding: .7rem 1rem; border-top: 1px solid var(--line);
+  background: var(--paper); flex-wrap: wrap; align-items: center;
+}
+.stool {
+  border: 1px solid var(--line-strong); background: var(--white); border-radius: 4px;
+  padding: .5rem .8rem; font-size: .68rem; letter-spacing: .1em; text-transform: uppercase;
+  font-weight: 600; color: var(--ink-soft); cursor: pointer; transition: all .25s;
+}
+.stool:hover { border-color: var(--clay); color: var(--clay); }
+.stool.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+/* Garment seçici */
+.gpick { display: grid; gap: .5rem; }
+.gtoggle { display: flex; gap: .3rem; margin-bottom: 1rem; background: var(--paper-2); padding: .25rem; border-radius: 6px; }
+.gtoggle button {
+  flex: 1; border: 0; background: transparent; border-radius: 4px; padding: .5rem;
+  font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 600;
+  color: var(--stone); cursor: pointer; transition: all .25s;
+}
+.gtoggle button.on { background: var(--white); color: var(--clay); box-shadow: 0 2px 6px -3px rgba(0,0,0,.25); }
+.gitem {
+  display: flex; align-items: center; gap: .7rem; padding: .7rem .8rem;
+  border: 1px solid var(--line); border-radius: 6px; background: var(--white);
+  cursor: pointer; transition: all .25s; text-align: left; width: 100%;
+}
+.gitem:hover { border-color: var(--clay); transform: translateX(2px); }
+.gitem.sel { border-color: var(--clay); background: color-mix(in srgb, var(--clay) 8%, var(--white)); }
+.gitem .gi-ic { font-size: 1.2rem; width: 1.6rem; text-align: center; }
+.gitem .gi-t { font-size: .85rem; font-weight: 600; }
+.gitem .gi-s { font-size: .68rem; color: var(--stone); }
+
+/* Kumaş seçici */
+.fpick { display: grid; gap: .5rem; }
+.fitem {
+  display: flex; align-items: center; gap: .7rem; padding: .55rem .6rem;
+  border: 1px solid var(--line); border-radius: 6px; background: var(--white); cursor: pointer;
+  transition: all .25s;
+}
+.fitem:hover { border-color: var(--clay); }
+.fitem.sel { border-color: var(--clay); background: color-mix(in srgb, var(--clay) 7%, var(--white)); }
+.fitem .fsw { width: 34px; height: 34px; border-radius: 5px; flex: none; box-shadow: inset 0 0 0 1px rgba(0,0,0,.12); }
+.fitem .ft { font-size: .8rem; font-weight: 600; line-height: 1.2; }
+.fitem .fs { font-size: .66rem; color: var(--stone); }
+.ffam-tag { font-size: .58rem; letter-spacing: .12em; text-transform: uppercase; color: var(--clay); font-weight: 700; }
+
+/* Renk seçici */
+.cpick { display: flex; gap: .55rem; flex-wrap: wrap; }
+.cdot {
+  width: 38px; height: 38px; border-radius: 50%; cursor: pointer; border: 3px solid transparent;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.14); transition: all .2s; position: relative;
+}
+.cdot.sel { border-color: var(--clay); transform: scale(1.12); }
+
+/* Özet + aksiyon */
+.spec-mini { display: grid; gap: .45rem; font-size: .8rem; margin-top: .4rem; }
+.spec-mini .r { display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px dashed var(--line); padding-bottom: .35rem; }
+.spec-mini .r span { color: var(--stone); }
+.spec-mini .r b { font-weight: 600; text-align: right; }
+.studio__cta { margin-top: 1.6rem; display: grid; gap: .6rem; }
+.studio__cta .btn { width: 100%; justify-content: center; }
+
+/* ============================================================
+   Teknik Föy (modal)
+   ============================================================ */
+.tp-overlay {
+  position: fixed; inset: 0; z-index: 120; display: none;
+  background: rgba(12,4,4,.6); backdrop-filter: blur(4px);
+  padding: 2rem 1rem; overflow-y: auto;
+}
+.tp-overlay.open { display: block; }
+.techpack {
+  max-width: 900px; margin: 0 auto; background: var(--white);
+  border: 1px solid var(--line); border-radius: 8px; overflow: hidden;
+  box-shadow: 0 40px 100px -40px rgba(0,0,0,.5);
+}
+.tp-head {
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;
+  padding: 1.6rem 2rem; border-bottom: 2px solid var(--ink); background: var(--paper);
+}
+.tp-head .brand { font-family: var(--serif); font-size: 1.4rem; letter-spacing: .16em; }
+.tp-head .brand span { color: var(--clay); }
+.tp-head .tp-meta { text-align: right; font-size: .72rem; color: var(--stone); line-height: 1.7; }
+.tp-head .tp-ref { font-weight: 700; color: var(--ink); letter-spacing: .1em; }
+.tp-close {
+  position: sticky; top: 0; float: right; margin: -1rem -.5rem 0 0;
+  background: none; border: 0; font-size: 1.6rem; color: var(--stone); cursor: pointer;
+}
+.tp-body { padding: 1.8rem 2rem 2rem; }
+.tp-title { font-size: 1.8rem; margin-bottom: .3rem; }
+.tp-sub { color: var(--stone); font-size: .9rem; margin-bottom: 1.6rem; }
+.tp-grid { display: grid; grid-template-columns: 260px 1fr; gap: 1.8rem; align-items: start; }
+.tp-visual {
+  border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--paper);
+}
+.tp-visual img { width: 100%; display: block; aspect-ratio: 1/1; object-fit: cover; }
+.tp-visual .cap { padding: .5rem .7rem; font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--stone); border-top: 1px solid var(--line); }
+.tp-section { margin-bottom: 1.6rem; }
+.tp-section h5 {
+  font-size: .7rem; letter-spacing: .16em; text-transform: uppercase; color: var(--clay);
+  font-weight: 700; margin: 0 0 .7rem; padding-bottom: .4rem; border-bottom: 1px solid var(--line);
+}
+.tp-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+.tp-table th, .tp-table td { text-align: left; padding: .45rem .6rem; border-bottom: 1px solid var(--line); }
+.tp-table th { font-size: .64rem; letter-spacing: .1em; text-transform: uppercase; color: var(--stone); font-weight: 600; }
+.tp-bom { columns: 2; font-size: .82rem; }
+.tp-bom li { margin-bottom: .3rem; }
+.tp-care { display: flex; gap: .5rem; flex-wrap: wrap; }
+.tp-care span { font-size: .74rem; background: var(--paper-2); border: 1px solid var(--line); border-radius: 100px; padding: .3rem .8rem; }
+.tp-swatch-row { display: flex; align-items: center; gap: 1rem; }
+.tp-swatch { width: 60px; height: 60px; border-radius: 6px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.12); }
+
+.tp-foot {
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;
+  padding: 1.4rem 2rem; border-top: 1px solid var(--line); background: var(--paper);
+}
+.tp-actions { display: flex; gap: .7rem; flex-wrap: wrap; }
+
+/* Modelist yönlendirme kutusu */
+.modelist-box { margin-top: 1.2rem; border: 1px solid var(--line-strong); border-radius: 8px; padding: 1.2rem 1.4rem; background: var(--paper); }
+.modelist-box.sent { border-color: #3A6349; background: color-mix(in srgb, #3A6349 6%, var(--paper)); }
+.modelist-box .mb-head { display: flex; align-items: center; gap: .7rem; margin-bottom: .8rem; }
+.modelist-box .mb-av { width: 40px; height: 40px; border-radius: 50%; background: var(--ink); color: var(--paper); display: grid; place-items: center; font-family: var(--serif); }
+.modelist-box .mb-name { font-weight: 600; }
+.modelist-box .mb-meta { font-size: .74rem; color: var(--stone); }
+.modelist-box .mb-status { font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; color: #3A6349; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1080px) {
+  .studio { grid-template-columns: 220px 1fr; }
+  .studio__col--right { grid-column: 1 / -1; grid-row: 2; border-top: 1px solid var(--line); }
+}
+@media (max-width: 720px) {
+  .studio { grid-template-columns: 1fr; }
+  .studio__col { grid-column: 1 / -1 !important; }
+  .stage { grid-row: auto; min-height: 420px; }
+  .tp-grid { grid-template-columns: 1fr; }
+  .tp-bom { columns: 1; }
+}
+
+/* ---------- Yazdırma (Teknik Föy → PDF) ---------- */
+@media print {
+  body * { visibility: hidden; }
+  .tp-overlay, .tp-overlay * { visibility: visible; }
+  .tp-overlay { position: absolute; inset: 0; background: #fff; padding: 0; overflow: visible; }
+  .techpack { box-shadow: none; border: 0; max-width: 100%; }
+  .tp-close, .tp-actions { display: none !important; }
+  .modelist-box { break-inside: avoid; }
+}

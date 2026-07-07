@@ -20,8 +20,9 @@
       <nav>
         <ul class="nav-links">
           <li><a href="index.html#vision">Vizyon</a></li>
-          <li><a href="lookbook.html">Lookbook</a></li>
+          <li><a href="tasarim.html">Design Studio</a></li>
           <li><a href="kumas.html">Fabric Hub</a></li>
+          <li><a href="lookbook.html">Lookbook</a></li>
           <li><a href="koleksiyon-olustur.html">Collection Builder</a></li>
         </ul>
       </nav>
@@ -39,12 +40,8 @@
       <p>Her kumaş yaşayan bir kayıt: kompozisyon, gramaj, en, sertifikalar, MOQ,
          termin ve Pantone eşleşmesi. Beğendiğinizde tek tıkla numune talep edin.</p>
 
-      <div class="filters">
+      <div class="filters" id="filters">
         <button class="fchip active" data-f="all">Tümü</button>
-        <button class="fchip" data-f="dogal">Doğal Elyaf</button>
-        <button class="fchip" data-f="yun">Yün &amp; Karışım</button>
-        <button class="fchip" data-f="surdurulebilir">Sürdürülebilir</button>
-        <button class="fchip" data-f="denim">Denim</button>
       </div>
     </div>
   </section>
@@ -59,24 +56,22 @@
     LOOMR — Emre Korkmaz Textile Design Studio · İstanbul · Londra · Milano · Berlin
   </footer>
 
+  <script src="js/loomr-data.js"></script>
+  <script src="js/loomr-api.js"></script>
   <script src="js/main.js"></script>
   <script>
-    const FABRICS = [
-      { id: "keten-185",  ad: "Saf Keten",              komp: "%100 Keten",              gsm: 185, en: 145, renk: "#E8DFC9", pantone: "13-1006 TCX", mensei: "İzmir · Türkiye",     sert: ["GOTS", "OEKO-TEX"], moq: "300 m", termin: "15 gün", stok: "2.400 m", stokOk: true,  kat: ["dogal", "surdurulebilir"] },
-      { id: "selvedge",   ad: "Selvedge Denim 13oz",    komp: "%100 Pamuk",              gsm: 440, en: 80,  renk: "#2C3A55", pantone: "19-3923 TCX", mensei: "Guimarães · Portekiz", sert: ["BCI"],              moq: "500 m", termin: "25 gün", stok: "860 m",   stokOk: true,  kat: ["denim", "dogal"] },
-      { id: "yun-kasmir", ad: "Yün-Kaşmir Palto",       komp: "%90 Yün · %10 Kaşmir",    gsm: 380, en: 150, renk: "#A97B50", pantone: "17-1044 TCX", mensei: "Biella · İtalya",     sert: ["RWS"],              moq: "150 m", termin: "30 gün", stok: "320 m",   stokOk: false, kat: ["yun"] },
-      { id: "ipek",       ad: "İpek Şarmöz 19mm",       komp: "%100 Dut İpeği",          gsm: 82,  en: 114, renk: "#EFE0CE", pantone: "12-0605 TCX", mensei: "Como · İtalya",       sert: ["OEKO-TEX"],         moq: "100 m", termin: "20 gün", stok: "540 m",   stokOk: true,  kat: ["dogal"] },
-      { id: "tuvit",      ad: "Donegal Tüvit",          komp: "%80 Yün · %20 Poliamid",  gsm: 420, en: 150, renk: "#6B6A4E", pantone: "18-0521 TCX", mensei: "Bursa · Türkiye",     sert: ["RWS"],              moq: "200 m", termin: "22 gün", stok: "1.100 m", stokOk: true,  kat: ["yun"] },
-      { id: "geri-twill", ad: "Geri Dönüştürülmüş Twill", komp: "%100 Geri Dön. Polyester", gsm: 240, en: 148, renk: "#6E7052", pantone: "18-0426 TCX", mensei: "Denizli · Türkiye", sert: ["GRS", "OEKO-TEX"],  moq: "400 m", termin: "12 gün", stok: "3.900 m", stokOk: true,  kat: ["surdurulebilir"] },
-      { id: "poplin",     ad: "Organik Poplin",         komp: "%100 Organik Pamuk",      gsm: 120, en: 150, renk: "#F4F1E8", pantone: "11-0606 TPX", mensei: "Denizli · Türkiye",   sert: ["GOTS"],             moq: "350 m", termin: "10 gün", stok: "5.200 m", stokOk: true,  kat: ["dogal", "surdurulebilir"] },
-      { id: "flanel",     ad: "Bordo Yün Flanel",       komp: "%100 Merino Yünü",        gsm: 320, en: 150, renk: "#5F1E27", pantone: "19-1617 TPX", mensei: "Biella · İtalya",     sert: ["RWS", "OEKO-TEX"],  moq: "180 m", termin: "28 gün", stok: "240 m",   stokOk: false, kat: ["yun"] },
-      { id: "keten-vis",  ad: "Keten-Viskon Karışım",   komp: "%55 Keten · %45 Viskon",  gsm: 210, en: 140, renk: "#D9CBB2", pantone: "14-1108 TCX", mensei: "İzmir · Türkiye",     sert: ["OEKO-TEX"],         moq: "300 m", termin: "14 gün", stok: "1.750 m", stokOk: true,  kat: ["dogal"] },
-      { id: "washed-den", ad: "Light-Wash Denim",       komp: "%99 Pamuk · %1 Elastan",  gsm: 320, en: 150, renk: "#8FAECB", pantone: "646 C",       mensei: "Çorlu · Türkiye",     sert: ["BCI", "GRS"],       moq: "600 m", termin: "18 gün", stok: "2.100 m", stokOk: true,  kat: ["denim", "surdurulebilir"] },
-    ];
+    const D = window.LOOMR_DATA;
+    const API = window.LoomrAPI;
+    const FABRICS = D.FABRICS;
+
+    // Filtre çipleri — 5 aile
+    const filters = document.getElementById("filters");
+    filters.insertAdjacentHTML("beforeend", D.FABRIC_FAMILIES.map(fam =>
+      `<button class="fchip" data-f="${fam.id}">${fam.ad}</button>`).join(""));
 
     const grid = document.getElementById("fabrics");
     grid.innerHTML = FABRICS.map(f => `
-      <article class="fabric-card" data-kat="${f.kat.join(" ")}">
+      <article class="fabric-card" data-kat="${f.family}">
         <div class="swatch" style="background: linear-gradient(135deg, ${f.renk}, ${f.renk}dd 60%, ${f.renk}bb)">
           <span class="pantone">Pantone® ${f.pantone}</span>
         </div>
@@ -96,7 +91,7 @@
           <div class="cert-row">${f.sert.map(s => `<span class="chip">${s}</span>`).join("")}</div>
           <div class="actions">
             <span class="${f.stokOk ? "stock-ok" : "stock-low"}">${f.stokOk ? "● Stokta" : "● Sınırlı stok"}</span>
-            <button class="btn" style="padding:.55rem 1rem; font-size:.68rem;" data-sample="${f.ad}">Numune Talep Et</button>
+            <button class="btn" style="padding:.55rem 1rem; font-size:.68rem;" data-sample="${f.id}" data-ad="${f.ad}">Numune Talep Et</button>
           </div>
         </div>
       </article>
@@ -104,25 +99,27 @@
 
     // Filtre
     const chips = document.querySelectorAll(".fchip");
-    chips.forEach(c => c.addEventListener("click", () => {
+    filters.addEventListener("click", e => {
+      const c = e.target.closest(".fchip"); if (!c) return;
       chips.forEach(x => x.classList.remove("active"));
       c.classList.add("active");
       const f = c.dataset.f;
       document.querySelectorAll(".fabric-card").forEach(card => {
-        card.style.display = (f === "all" || card.dataset.kat.includes(f)) ? "" : "none";
+        card.style.display = (f === "all" || card.dataset.kat === f) ? "" : "none";
       });
-    }));
+    });
 
-    // Numune talebi → toast
+    // Numune talebi → backend'e kaydet (API kapalıysa localStorage) → toast
     const toast = document.getElementById("toast");
     let tmr;
-    grid.addEventListener("click", e => {
+    grid.addEventListener("click", async e => {
       const b = e.target.closest("[data-sample]");
       if (!b) return;
-      toast.innerHTML = `✓ <b>${b.dataset.sample}</b> için numune talebiniz alındı — 48 saat içinde kargoda.`;
+      const rec = await API.samples.request(b.dataset.sample);
+      toast.innerHTML = `✓ <b>${b.dataset.ad}</b> numune talebi alındı${rec && rec.ref ? " — " + rec.ref : ""}. 48 saat içinde kargoda.`;
       toast.classList.add("show");
       clearTimeout(tmr);
-      tmr = setTimeout(() => toast.classList.remove("show"), 3500);
+      tmr = setTimeout(() => toast.classList.remove("show"), 3800);
     });
   </script>
 </body>

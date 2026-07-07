@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOOMR — 3D Tasarım Stüdyosu</title>
+  <meta name="description" content="LOOMR Design Studio — garment şablonunu seç, 3D önizle, kütüphaneden kumaş ve renk uygula, teknik föyünü oluştur ve modeliste gönder.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/design.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="wrap nav">
+      <a href="index.html" class="brand">LOOMR<span>.</span></a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html#vision">Vizyon</a></li>
+          <li><a href="tasarim.html">Design Studio</a></li>
+          <li><a href="kumas.html">Fabric Hub</a></li>
+          <li><a href="lookbook.html">Lookbook</a></li>
+          <li><a href="koleksiyon-olustur.html">Collection Builder</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <a href="app.html" class="btn btn--ghost">Workspace'e Gir</a>
+        <button class="nav-toggle" aria-label="Menü">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="studio-hero">
+    <div class="wrap">
+      <p class="eyebrow">Design Studio · 3D</p>
+      <h1>Tasarla, giydir, föyle.</h1>
+      <p>Bir garment şablonu seç, 3D olarak döndür, kütüphaneden kumaş ve renk uygula.
+         Hazır olduğunda tek tıkla teknik föyünü oluştur ve modeliste gönder.</p>
+    </div>
+  </section>
+
+  <div class="studio" id="studio">
+    <!-- SOL: Garment seçici -->
+    <div class="studio__col studio__col--left">
+      <h4>Garment</h4>
+      <div class="gtoggle" id="ctoggle">
+        <button data-c="denim" class="on">Denim</button>
+        <button data-c="dokuma">Dokuma</button>
+      </div>
+      <div class="gpick" id="gpick"></div>
+
+      <h4>Şablon Notu</h4>
+      <p style="font-size:.78rem;color:var(--stone);line-height:1.5" id="gnote">—</p>
+    </div>
+
+    <!-- ORTA: 3D sahne -->
+    <div class="stage">
+      <div class="stage__canvas" id="canvas">
+        <div class="stage__badge" id="stageBadge">—</div>
+        <div class="stage__hint">Döndürmek için sürükle · yakınlaştırmak için tekerlek</div>
+      </div>
+      <div class="stage__tools">
+        <button class="stool" data-view="front">Ön</button>
+        <button class="stool" data-view="side">Yan</button>
+        <button class="stool" data-view="back">Arka</button>
+        <button class="stool" data-view="reset">Sıfırla</button>
+        <button class="stool" id="spin">↻ Turntable</button>
+      </div>
+    </div>
+
+    <!-- SAĞ: Kumaş + renk + özet -->
+    <div class="studio__col studio__col--right">
+      <h4>Kumaş Kütüphanesi</h4>
+      <div class="fpick" id="fpick"></div>
+
+      <h4>Renk</h4>
+      <div class="cpick" id="cpick"></div>
+
+      <h4>Özet</h4>
+      <div class="spec-mini" id="summary"></div>
+
+      <div class="studio__cta">
+        <button class="btn" id="toTechpack">Teknik Föye Geç →</button>
+        <button class="btn btn--ghost" id="saveDesign">Tasarımı Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="mini-footer">
+    LOOMR — Emre Korkmaz Textile Design Studio · İstanbul · Londra · Milano · Berlin
+  </footer>
+
+  <!-- ============ TEKNİK FÖY MODAL ============ -->
+  <div class="tp-overlay" id="tpOverlay">
+    <div class="techpack" id="techpack">
+      <button class="tp-close" id="tpClose" aria-label="Kapat">×</button>
+      <div class="tp-head">
+        <div class="brand">LOOMR<span>.</span></div>
+        <div class="tp-meta">
+          <div class="tp-ref" id="tpRef">TP-—</div>
+          <div id="tpDate">—</div>
+          <div>Teknik Föy · Tech Pack</div>
+        </div>
+      </div>
+      <div class="tp-body">
+        <h2 class="tp-title" id="tpTitle">—</h2>
+        <p class="tp-sub" id="tpSub">—</p>
+
+        <div class="tp-grid">
+          <div>
+            <div class="tp-visual">
+              <img id="tpImg" alt="3D önizleme">
+              <div class="cap">3D Önizleme · Ön Görünüm</div>
+            </div>
+            <div class="tp-section" style="margin-top:1.2rem">
+              <h5>Renk</h5>
+              <div class="tp-swatch-row">
+                <div class="tp-swatch" id="tpSwatch"></div>
+                <div style="font-size:.82rem">
+                  <b id="tpColorName">—</b><br>
+                  <span class="muted" id="tpPantone">—</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="tp-section">
+              <h5>Spesifikasyon</h5>
+              <table class="tp-table"><tbody id="tpSpec"></tbody></table>
+            </div>
+            <div class="tp-section">
+              <h5>Ölçü Tablosu — Baz Beden (M) · POM</h5>
+              <table class="tp-table">
+                <thead><tr><th>Nokta</th><th>Ölçü</th><th>Tolerans</th></tr></thead>
+                <tbody id="tpMeasures"></tbody>
+              </table>
+            </div>
+            <div class="tp-section">
+              <h5>Malzeme Listesi (BOM)</h5>
+              <ul class="tp-bom" id="tpBom"></ul>
+            </div>
+            <div class="tp-section">
+              <h5>Bakım</h5>
+              <div class="tp-care" id="tpCare"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modelist yönlendirme -->
+        <div class="modelist-box" id="mlBox">
+          <div class="mb-head">
+            <div class="mb-av" id="mlAv">—</div>
+            <div>
+              <div class="mb-name" id="mlName">—</div>
+              <div class="mb-meta" id="mlMeta">—</div>
+            </div>
+          </div>
+          <p style="font-size:.82rem;color:var(--ink-soft);margin:.2rem 0 0" id="mlText">
+            Föy hazır. Kalıp ve ilk numune için önerilen modeliste iletebilirsin.
+          </p>
+        </div>
+      </div>
+
+      <div class="tp-foot">
+        <span style="font-size:.74rem;color:var(--stone)" id="tpStatus">Durum: Taslak</span>
+        <div class="tp-actions">
+          <button class="btn btn--ghost" id="tpPrint">PDF / Yazdır</button>
+          <button class="btn" id="tpSend">Modeliste Gönder →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/lib/three.min.js"></script>
+  <script src="js/lib/OrbitControls.js"></script>
+  <script src="js/loomr-data.js"></script>
+  <script src="js/loomr-api.js"></script>
+  <script src="js/garment-3d.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+  (function () {
+    const D = window.LOOMR_DATA;
+    const API = window.LoomrAPI;
+    const GI = { pantolon: "👖", short: "🩳", ceket: "🧥", gomlek: "👔" };
+
+    const state = { construction: "denim", garment: null, fabric: null, color: null };
+    let currentTechpack = null;
+
+    // 3D stüdyo
+    const studio = new LoomrStudio(document.getElementById("canvas"));
+
+    /* ---------- Garment listesi ---------- */
+    const gpick = document.getElementById("gpick");
+    function renderGarments() {
+      const list = D.GARMENTS.filter(g => g.construction === state.construction);
+      gpick.innerHTML = list.map(g => `
+        <button class="gitem" data-g="${g.id}">
+          <span class="gi-ic">${GI[g.type] || "◇"}</span>
+          <span>
+            <span class="gi-t">${g.ad}</span><br>
+            <span class="gi-s">${g.desc}</span>
+          </span>
+        </button>`).join("");
+    }
+
+    /* ---------- Kumaş listesi (aileye göre) ---------- */
+    const fpick = document.getElementById("fpick");
+    function renderFabrics() {
+      let html = "";
+      for (const fam of D.FABRIC_FAMILIES) {
+        const fs = D.fabricsByFamily(fam.id);
+        html += `<div class="ffam-tag" style="margin:.4rem 0 .1rem">${fam.ad}</div>`;
+        html += fs.map(f => `
+          <button class="fitem" data-f="${f.id}">
+            <span class="fsw" style="background:${f.renk}"></span>
+            <span>
+              <span class="ft">${f.ad}</span><br>
+              <span class="fs">${f.komp} · ${f.gsm} GSM</span>
+            </span>
+          </button>`).join("");
+      }
+      fpick.innerHTML = html;
+    }
+
+    /* ---------- Renk paleti ---------- */
+    const cpick = document.getElementById("cpick");
+    cpick.innerHTML = D.COLORS.map(c =>
+      `<span class="cdot" data-c="${c.id}" style="background:${c.hex}" title="${c.ad}"></span>`).join("");
+
+    /* ---------- Seçim uygula ---------- */
+    function selectGarment(id) {
+      const g = D.garment(id);
+      if (!g) return;
+      state.garment = g;
+      studio.setGarment(g.mesh);
+      document.getElementById("gnote").textContent = g.desc;
+      document.getElementById("stageBadge").textContent = g.ad;
+      gpick.querySelectorAll(".gitem").forEach(b => b.classList.toggle("sel", b.dataset.g === id));
+      // ilk kez: varsayılan kumaş/renk
+      if (!state.fabric) selectFabric(g.defFamily ? D.fabricsByFamily(g.defFamily)[0].id : D.FABRICS[0].id);
+      else studio.setFabric(state.fabric);
+      if (!state.color) selectColor(g.defColor || D.COLORS[0].id);
+      else studio.setColor(state.color.hex);
+      renderSummary();
+    }
+    function selectFabric(id) {
+      const f = D.fabric(id);
+      if (!f) return;
+      state.fabric = f;
+      studio.setFabric(f);
+      fpick.querySelectorAll(".fitem").forEach(b => b.classList.toggle("sel", b.dataset.f === id));
+      renderSummary();
+    }
+    function selectColor(id) {
+      const c = D.color(id);
+      if (!c) return;
+      state.color = c;
+      studio.setColor(c.hex);
+      cpick.querySelectorAll(".cdot").forEach(b => b.classList.toggle("sel", b.dataset.c === id));
+      renderSummary();
+    }
+
+    function renderSummary() {
+      const { garment: g, fabric: f, color: c } = state;
+      if (!g) return;
+      document.getElementById("summary").innerHTML = [
+        ["Ürün", g.ad],
+        ["Yapı", g.construction === "denim" ? "Denim" : "Dokuma"],
+        ["Kumaş", f ? f.ad : "—"],
+        ["Kompozisyon", f ? f.komp : "—"],
+        ["Gramaj", f ? f.gsm + " GSM" : "—"],
+        ["Renk", c ? c.ad : "—"],
+      ].map(([k, v]) => `<div class="r"><span>${k}</span><b>${v}</b></div>`).join("");
+    }
+
+    /* ---------- Olaylar ---------- */
+    document.getElementById("ctoggle").addEventListener("click", e => {
+      const b = e.target.closest("button"); if (!b) return;
+      state.construction = b.dataset.c;
+      document.querySelectorAll("#ctoggle button").forEach(x => x.classList.toggle("on", x === b));
+      renderGarments();
+      // aynı tipte karşılık seç
+      const same = D.GARMENTS.find(g => g.construction === state.construction && state.garment && g.type === state.garment.type);
+      selectGarment((same || D.GARMENTS.find(g => g.construction === state.construction)).id);
+    });
+    gpick.addEventListener("click", e => { const b = e.target.closest(".gitem"); if (b) selectGarment(b.dataset.g); });
+    fpick.addEventListener("click", e => { const b = e.target.closest(".fitem"); if (b) selectFabric(b.dataset.f); });
+    cpick.addEventListener("click", e => { const b = e.target.closest(".cdot"); if (b) selectColor(b.dataset.c); });
+
+    // sahne araçları
+    document.querySelector(".stage__tools").addEventListener("click", e => {
+      const b = e.target.closest(".stool"); if (!b) return;
+      const v = b.dataset.view;
+      if (v === "front") studio.frontView();
+      else if (v === "side") studio.sideView();
+      else if (v === "back") studio.backView();
+      else if (v === "reset") studio.resetView();
+    });
+    document.getElementById("spin").addEventListener("click", e => {
+      const on = studio.toggleTurntable();
+      e.currentTarget.classList.toggle("on", on);
+    });
+
+    /* ---------- Toast ---------- */
+    const toast = document.getElementById("toast");
+    let tmr;
+    function showToast(html) {
+      toast.innerHTML = html; toast.classList.add("show");
+      clearTimeout(tmr); tmr = setTimeout(() => toast.classList.remove("show"), 3600);
+    }
+
+    /* ---------- Tasarımı kaydet ---------- */
+    document.getElementById("saveDesign").addEventListener("click", async () => {
+      const { garment: g, fabric: f, color: c } = state;
+      studio.frontView();
+      const design = await API.designs.create({
+        garment_id: g.id, fabric_id: f.id, color_id: c.id, color_hex: c.hex,
+        name: `${g.ad} · ${f.ad} · ${c.ad}`, thumb: studio.capture(),
+      });
+      showToast(`✓ Tasarım kaydedildi — <b>${design.ref}</b>`);
+    });
+
+    /* ---------- Teknik föy ---------- */
+    const overlay = document.getElementById("tpOverlay");
+    document.getElementById("toTechpack").addEventListener("click", openTechpack);
+    document.getElementById("tpClose").addEventListener("click", () => overlay.classList.remove("open"));
+    overlay.addEventListener("click", e => { if (e.target === overlay) overlay.classList.remove("open"); });
+    document.getElementById("tpPrint").addEventListener("click", () => window.print());
+
+    async function openTechpack() {
+      const { garment: g, fabric: f, color: c } = state;
+      studio.frontView();
+      const thumb = studio.capture();
+
+      // önce tasarımı, sonra föyü kalıcı kaydet
+      const design = await API.designs.create({
+        garment_id: g.id, fabric_id: f.id, color_id: c.id, color_hex: c.hex,
+        name: `${g.ad} · ${f.ad} · ${c.ad}`, thumb,
+      });
+      const tp = await API.techpacks.create({ design_id: design.ref || design.id, thumb });
+      currentTechpack = tp;
+
+      // doldur
+      document.getElementById("tpRef").textContent = tp.ref;
+      document.getElementById("tpDate").textContent = new Date().toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" });
+      document.getElementById("tpTitle").textContent = g.ad;
+      document.getElementById("tpSub").textContent = `${g.construction === "denim" ? "Denim" : "Dokuma"} · ${f.ad} · ${c.ad}`;
+      document.getElementById("tpImg").src = thumb;
+
+      document.getElementById("tpSwatch").style.background = c.hex;
+      document.getElementById("tpColorName").textContent = c.ad;
+      document.getElementById("tpPantone").textContent = "Pantone® " + c.pantone;
+
+      document.getElementById("tpSpec").innerHTML = [
+        ["Kumaş", f.ad], ["Kompozisyon", f.komp], ["Gramaj", f.gsm + " GSM"],
+        ["En", f.en + " cm"], ["Menşei", f.mensei], ["Sertifika", (f.sert || []).join(", ") || "—"],
+        ["MOQ", f.moq], ["Termin", f.termin],
+      ].map(([k, v]) => `<tr><th style="width:40%">${k}</th><td>${v}</td></tr>`).join("");
+
+      const measures = tp.measures || g.measures;
+      document.getElementById("tpMeasures").innerHTML = measures.map(m =>
+        `<tr><td>${m[0]}</td><td>${m[1]}</td><td class="muted">${m[2]}</td></tr>`).join("");
+
+      const bom = tp.bom || g.bom;
+      document.getElementById("tpBom").innerHTML = bom.map(b => `<li>${b}</li>`).join("");
+
+      const care = tp.care || [];
+      document.getElementById("tpCare").innerHTML = care.map(c2 => `<span>${c2}</span>`).join("");
+
+      // önerilen modelist
+      const ml = D.suggestModelist(g);
+      renderModelist(ml, false);
+      document.getElementById("tpStatus").textContent = "Durum: Taslak";
+      document.getElementById("tpSend").disabled = false;
+      document.getElementById("tpSend").textContent = "Modeliste Gönder →";
+
+      overlay.classList.add("open");
+      overlay.scrollTop = 0;
+    }
+
+    function renderModelist(ml, sent) {
+      const box = document.getElementById("mlBox");
+      box.classList.toggle("sent", sent);
+      document.getElementById("mlAv").textContent = ml ? ml.ad.split(" ").map(s => s[0]).join("") : "—";
+      document.getElementById("mlName").textContent = ml ? ml.ad : "—";
+      document.getElementById("mlMeta").textContent = ml ? `${ml.sehir} · ${ml.not} · ★ ${ml.puan} · Termin ${ml.termin}` : "—";
+      document.getElementById("mlText").innerHTML = sent
+        ? `<b class="mb-status">✓ Modeliste iletildi</b> — ${ml.ad}, kalıp ve ilk numune için föyü aldı. Tahmini geri dönüş: <b>${ml.termin}</b>.`
+        : `Föy hazır. Kalıp ve ilk numune için önerilen modeliste iletebilirsin.`;
+    }
+
+    document.getElementById("tpSend").addEventListener("click", async () => {
+      if (!currentTechpack) return;
+      const btn = document.getElementById("tpSend");
+      btn.disabled = true; btn.textContent = "Gönderiliyor…";
+      const out = await API.techpacks.handoff(currentTechpack.ref || currentTechpack.id);
+      const ml = (out && out.modelist) || D.suggestModelist(state.garment);
+      renderModelist(ml, true);
+      document.getElementById("tpStatus").textContent = "Durum: Modeliste iletildi";
+      btn.textContent = "✓ Gönderildi";
+      showToast(`✓ <b>${currentTechpack.ref}</b> modeliste iletildi — ${ml.ad}`);
+    });
+
+    /* ---------- Başlat ---------- */
+    renderGarments();
+    renderFabrics();
+    selectGarment("denim-gomlek");
+  })();
+  </script>
+</body>
+</html>

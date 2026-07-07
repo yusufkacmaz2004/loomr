@@ -1,0 +1,15 @@
+{
+  "name": "loomr-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "LOOMR — moda platformu backend'i (native http + node:sqlite, sifir bagimlilik)",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "engines": {
+    "node": ">=22.5.0"
+  }
+}
