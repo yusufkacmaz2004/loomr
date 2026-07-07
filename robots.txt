@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://yusufkacmaz2004.github.io/loomr/sitemap.xml
