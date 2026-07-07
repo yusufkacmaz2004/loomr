@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOOMR — Quality Hub</title>
+  <meta name="description" content="LOOMR Quality Hub — denetimler, AQL, hata oranı, ölçü uyumu ve sonuç raporları.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/app.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
+  <style>
+    .q-kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:6px; overflow:hidden; margin:1.5rem 0 2rem; }
+    .q-kpi { background:var(--white); padding:1.3rem 1.4rem; }
+    .q-kpi .v { font-family:var(--serif); font-size:2.1rem; line-height:1; }
+    .q-kpi .t { font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--stone); margin-top:.4rem; }
+    .q-table { width:100%; border-collapse:collapse; font-size:.88rem; background:var(--white); border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+    .q-table th { text-align:left; font-size:.64rem; letter-spacing:.12em; text-transform:uppercase; color:var(--stone); font-weight:600; padding:.85rem 1.2rem; border-bottom:1px solid var(--line); }
+    .q-table td { padding:.85rem 1.2rem; border-bottom:1px solid var(--paper-2); }
+    .q-table tr:last-child td { border-bottom:0; }
+    .q-table tr:hover td { background:var(--paper); }
+    .q-bar { display:inline-block; width:70px; height:8px; background:var(--paper-2); border-radius:100px; overflow:hidden; vertical-align:middle; margin-right:.5rem; }
+    .q-bar i { display:block; height:100%; background:#3A6349; }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap nav">
+      <a href="index.html" class="brand">LOOMR<span>.</span></a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html#vision">Vizyon</a></li>
+          <li><a href="tasarim.html">Design Studio</a></li>
+          <li><a href="kumas.html">Fabric Hub</a></li>
+          <li><a href="lookbook.html">Lookbook</a></li>
+          <li><a href="koleksiyon-olustur.html">Collection Builder</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <a href="giris.html" class="btn btn--ghost">Workspace'e Gir</a>
+        <button class="nav-toggle" aria-label="Menü">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="wrap">
+      <p class="eyebrow">Quality Hub</p>
+      <h1>Kalite, ölçülebilir.</h1>
+      <p>Her sevkiyat öncesi AQL denetimi, ölçü uyumu ve hata analizi. Sorunları
+         fabrikadan çıkmadan yakala.</p>
+    </div>
+  </section>
+
+  <div class="wrap" style="padding-bottom:4rem">
+    <div class="q-kpis" id="qk"></div>
+    <div style="overflow-x:auto"><table class="q-table">
+      <thead><tr><th>Ürün</th><th>Fabrika</th><th>Tarih</th><th>AQL</th><th>Hata</th><th>Ölçü Uyumu</th><th>Sonuç</th></tr></thead>
+      <tbody id="qrows"></tbody>
+    </table></div>
+  </div>
+
+  <footer class="mini-footer">
+    LOOMR — Emre Korkmaz Textile Design Studio · İstanbul · Londra · Milano · Berlin
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script>
+    const INSP = [
+      { urun:"Crop Yün Blazer",        fab:"Biella · IT",     tarih:"05 Tem 2026", aql:"1.5", hata:1,  olcum:100, sonuc:"gecti" },
+      { urun:"Oversize Keten Gömlek",  fab:"İzmir · TR",      tarih:"04 Tem 2026", aql:"2.5", hata:3,  olcum:98,  sonuc:"gecti" },
+      { urun:"İpek Slip Elbise",       fab:"Como · IT",       tarih:"03 Tem 2026", aql:"1.5", hata:2,  olcum:99,  sonuc:"gecti" },
+      { urun:"Raw-Hem Denim Ceket",    fab:"Guimarães · PT",  tarih:"02 Tem 2026", aql:"2.5", hata:7,  olcum:94,  sonuc:"revizyon" },
+      { urun:"Chino Bermuda Short",    fab:"Denizli · TR",    tarih:"01 Tem 2026", aql:"2.5", hata:4,  olcum:97,  sonuc:"gecti" },
+      { urun:"Pileli Midi Etek",       fab:"Denizli · TR",    tarih:"30 Haz 2026", aql:"4.0", hata:12, olcum:88,  sonuc:"kaldi" },
+    ];
+    const badge = s => s==="gecti" ? '<span class="badge badge--ok">Geçti</span>'
+      : s==="revizyon" ? '<span class="badge badge--wip">Revizyon</span>'
+      : '<span class="badge badge--risk">Kaldı</span>';
+
+    const gecti = INSP.filter(i=>i.sonuc==="gecti").length;
+    const oran = Math.round(INSP.reduce((s,i)=>s+i.olcum,0)/INSP.length*10)/10;
+    document.getElementById("qk").innerHTML = [
+      ["%"+oran, "Ort. Kalite"], [INSP.length, "Denetim"], [gecti, "Geçen"],
+      [INSP.filter(i=>i.sonuc==="revizyon").length, "Revizyon"], [INSP.filter(i=>i.sonuc==="kaldi").length, "Reddedilen"],
+    ].map(([v,t])=>`<div class="q-kpi"><div class="v">${v}</div><div class="t">${t}</div></div>`).join("");
+
+    document.getElementById("qrows").innerHTML = INSP.map(i => `
+      <tr>
+        <td style="font-weight:600">${i.urun}</td>
+        <td class="muted">${i.fab}</td>
+        <td class="muted">${i.tarih}</td>
+        <td>${i.aql}</td>
+        <td>${i.hata}</td>
+        <td><span class="q-bar"><i style="width:${i.olcum}%;background:${i.olcum>=95?'#3A6349':i.olcum>=90?'#94661F':'#8E2430'}"></i></span>%${i.olcum}</td>
+        <td>${badge(i.sonuc)}</td>
+      </tr>`).join("");
+  </script>
+</body>
+</html>
