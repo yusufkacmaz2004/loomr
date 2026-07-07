@@ -26,7 +26,13 @@
 
 /* ---------- Hero (full-bleed) ---------- */
 .ed-hero { position: relative; min-height: 100svh; display: grid; grid-template-rows: 1fr auto; overflow: hidden; background: #16110F; }
-.ed-hero__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 8%; filter: saturate(1.08) contrast(1.03); }
+.ed-hero__bg { position: absolute; left: 0; right: 0; top: -16%; width: 100%; height: 132%; object-fit: cover; object-position: center 8%; filter: saturate(1.08) contrast(1.03); will-change: transform; }
+
+/* ---------- Parallax + scroll reveal ---------- */
+[data-px] { will-change: transform; }
+.reveal { opacity: 0; transform: translateY(34px); transition: opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1); }
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } .ed-hero__bg { will-change: auto; } }
 .ed-hero::after { content: ""; position: absolute; inset: 0;
   background: linear-gradient(180deg, rgba(20,12,10,.55) 0%, rgba(20,12,10,.05) 30%, rgba(20,12,10,.15) 60%, rgba(20,12,10,.85) 100%); }
 .ed-hero__inner { position: relative; z-index: 2; align-self: end; color: #F7F2EA; padding: clamp(1.4rem, 4vw, 3rem); width: 100%; }
@@ -73,8 +79,8 @@
 /* ---------- Full-bleed editorial split ---------- */
 .ed-split { display: grid; grid-template-columns: 1fr; background: var(--ed-ink); color: var(--ed-cream); }
 @media (min-width: 900px){ .ed-split { grid-template-columns: 1.1fr 1fr; } }
-.ed-split__img { position: relative; min-height: 60vh; }
-.ed-split__img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ed-split__img { position: relative; min-height: 60vh; overflow: hidden; }
+.ed-split__img img { position: absolute; left: 0; right: 0; top: -10%; width: 100%; height: 120%; object-fit: cover; }
 .ed-split__txt { padding: clamp(2.5rem, 6vw, 5.5rem); display: grid; align-content: center; gap: 1.4rem; }
 .ed-split__txt h2 { font-family: "Anton", sans-serif; text-transform: uppercase; font-weight: 400; font-size: clamp(2.4rem, 6vw, 5rem); line-height: .9; }
 .ed-split__txt h2 .acc { color: var(--acc); }
