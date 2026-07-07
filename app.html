@@ -26,6 +26,8 @@
       --line-strong:#D0C1B4;
       --clay:       #C7331E;   /* editorial accent red */
       --clay-deep:  #9E2314;
+      /* warm "paper card" tone — replaces stark #FFF so cards sit on cream */
+      --white:      #FBF7F0;
     }
 
     body.app-body { font-family: "Archivo", "Inter", sans-serif; background: var(--paper); }
@@ -45,7 +47,25 @@
     /* ---------- Topbar ---------- */
     .app-topbar { background: var(--paper); }
     .crumb { font-family: "Space Mono", monospace; letter-spacing: .14em; }
+    .crumb a.crumb-home { color: var(--clay); text-decoration: none; transition: color .2s; }
+    .crumb a.crumb-home:hover { color: var(--clay-deep); text-decoration: underline; text-underline-offset: 3px; }
     .searchbar { border-radius: 100px; }
+    .topbar-actions { display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; }
+    .logout-btn {
+      display: inline-flex; align-items: center; gap: .45rem;
+      padding: .6rem 1rem; font-size: .72rem; border-radius: 100px;
+      font-family: "Space Mono", monospace; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--ink); background: transparent; border: 1px solid var(--line-strong);
+      transition: background .25s, color .25s, border-color .25s;
+    }
+    .logout-btn:hover { background: var(--clay); color: #fff; border-color: var(--clay); }
+
+    /* ---------- Sidebar logout ---------- */
+    .side-logout {
+      margin-top: auto; border-top: 1px solid rgba(255,255,255,.12); padding-top: 1rem;
+    }
+    .side-logout .side-link { color: rgba(244,239,231,.72); }
+    .side-logout .side-link:hover { background: var(--clay); color: #fff; }
 
     /* ---------- Page heads ---------- */
     .eyebrow { font-family: "Space Mono", monospace; letter-spacing: .24em; color: var(--clay); }
@@ -149,17 +169,24 @@
       <a class="side-link" href="belge.html"><span class="ic">▣</span> Belge Merkezi</a>
       <a class="side-link" href="iletisim.html"><span class="ic">✉</span> İletişim</a>
     </nav>
+
+    <nav class="side-group side-logout">
+      <a class="side-link" href="index.html" title="Workspace'ten çıkış yap"><span class="ic">⎋</span> Çıkış</a>
+    </nav>
   </aside>
 
   <!-- ================= ANA ALAN ================= -->
   <main class="app-main">
     <div class="app-topbar">
-      <span class="crumb">Workspace / <b>Atelier Nord</b> / SS27</span>
+      <span class="crumb"><a href="app.html" class="crumb-home" title="Genel Bakış'a dön">Workspace</a> / <b>Atelier Nord</b> / SS27</span>
       <label class="searchbar">
         <span>⌕</span>
         <input type="search" placeholder="Kumaş, ürün, tedarikçi, belge ara…" aria-label="Ara">
       </label>
-      <a href="koleksiyon-olustur.html" class="btn" style="padding:.6rem 1.1rem; font-size:.72rem;">+ Yeni Koleksiyon</a>
+      <div class="topbar-actions">
+        <a href="koleksiyon-olustur.html" class="btn" style="padding:.6rem 1.1rem; font-size:.72rem;">+ Yeni Koleksiyon</a>
+        <a href="index.html" class="logout-btn" title="Workspace'ten çıkış yap">⎋ Çıkış</a>
+      </div>
     </div>
 
     <!-- ===== Genel Bakış ===== -->

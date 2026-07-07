@@ -52,6 +52,10 @@
     .badge--wip  { background:var(--acc); color:#fff; }
     .badge--wait { background:transparent; color:#6E645B; border-color:#D9CEC0; }
     .badge--risk { background:var(--acc-deep); color:#fff; }
+
+    /* back-to-dashboard affordance */
+    .back-ws { display:inline-flex; align-items:center; gap:.45rem; font-family:"Space Mono",monospace; font-size:.66rem; letter-spacing:.16em; text-transform:uppercase; color:var(--ed-cream); border:1px solid rgba(244,239,231,.35); padding:.5rem .95rem; border-radius:100px; margin-bottom:1.5rem; transition:background .25s, border-color .25s, color .25s, transform .25s; }
+    .back-ws:hover { background:var(--acc); border-color:var(--acc); color:#fff; transform:translateX(-3px); }
   </style>
 </head>
 <body class="ed">
@@ -65,14 +69,15 @@
       <a href="vizyon.html">Vizyon</a>
       <a href="tasarim.html">Stüdyo</a>
       <a href="kumas.html">Kumaş</a>
-      <a href="giris.html">Workspace</a>
+      <a href="app.html">Workspace</a>
     </nav>
-    <a href="giris.html" class="ed-mono">Giriş ↗</a>
+    <a href="app.html" class="ed-mono">Workspace ↗</a>
   </div>
 
   <!-- PAGE HEAD -->
   <header class="ed-page-head">
     <div class="ed-page-head__in">
+      <a href="app.html" class="back-ws">← Workspace</a>
       <div class="ed-mono">✦ ✦ ✦ &nbsp; Production Live</div>
       <h1>Üretim,<br>canlı.</h1>
       <p>Her sipariş kalıptan sevkiyata dokuz aşamadan geçer. Nerede olduklarını

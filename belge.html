@@ -33,7 +33,7 @@
     .doc-table th { text-align:left; font-family:"Space Mono",monospace; font-size:.58rem; letter-spacing:.14em; text-transform:uppercase; color:#6E645B; font-weight:700; padding:1rem 1.2rem; border-bottom:1px solid var(--ed-ink); }
     .doc-table td { padding:1rem 1.2rem; border-bottom:1px solid #E3D9CD; }
     .doc-table tr:last-child td { border-bottom:0; }
-    .doc-table tr:hover td { background:#fff; }
+    .doc-table tbody tr:hover td { background:#EDE4D6; }
     .muted { color:#6E645B; }
 
     .doc-type { font-family:"Space Mono",monospace; font-size:.56rem; letter-spacing:.1em; text-transform:uppercase; font-weight:700; padding:.3rem .65rem; border-radius:100px; border:1px solid transparent; }
@@ -52,6 +52,10 @@
     .doc-wrap .btn:hover { background:var(--ed-ink); border-color:var(--ed-ink); color:#fff; transform:translateY(-2px); }
     .doc-wrap .btn--ghost { background:transparent; color:var(--ed-ink); border-color:var(--ed-ink); }
     .doc-wrap .btn--ghost:hover { background:var(--ed-ink); color:#fff; }
+
+    /* back-to-dashboard affordance */
+    .back-ws { display:inline-flex; align-items:center; gap:.45rem; font-family:"Space Mono",monospace; font-size:.66rem; letter-spacing:.16em; text-transform:uppercase; color:var(--ed-cream); border:1px solid rgba(244,239,231,.35); padding:.5rem .95rem; border-radius:100px; margin-bottom:1.5rem; transition:background .25s, border-color .25s, color .25s, transform .25s; }
+    .back-ws:hover { background:var(--acc); border-color:var(--acc); color:#fff; transform:translateX(-3px); }
   </style>
 </head>
 <body class="ed">
@@ -65,14 +69,15 @@
       <a href="vizyon.html">Vizyon</a>
       <a href="tasarim.html">Stüdyo</a>
       <a href="kumas.html">Kumaş</a>
-      <a href="giris.html">Workspace</a>
+      <a href="app.html">Workspace</a>
     </nav>
-    <a href="giris.html" class="ed-mono">Giriş ↗</a>
+    <a href="app.html" class="ed-mono">Workspace ↗</a>
   </div>
 
   <!-- PAGE HEAD -->
   <header class="ed-page-head">
     <div class="ed-page-head__in">
+      <a href="app.html" class="back-ws">← Workspace</a>
       <div class="ed-mono">✦ ✦ ✦ &nbsp; Belge Merkezi</div>
       <h1>Bütün belgeler<br>tek yerde.</h1>
       <p>Teknik föyler, koleksiyonlar ve numune talepleri — türüne göre süz, aç ya da yazdır.</p>

@@ -95,6 +95,26 @@
     return t;
   }
 
+  // Editoryal stüdyo fonu (sahne arka planı) — sıcak krem → derin krem sweep + ince ink vinyet
+  function studioBackdrop() {
+    const w = 64, h = 512, c = document.createElement("canvas"); c.width = w; c.height = h;
+    const x = c.getContext("2d");
+    const g = x.createLinearGradient(0, 0, 0, h);
+    g.addColorStop(0, "#F7F2EA");   // üst: yumuşak krem ışık
+    g.addColorStop(0.42, "#F4EFE7"); // editoryal krem (--ed-cream)
+    g.addColorStop(0.82, "#E9E0D2"); // derin krem taban
+    g.addColorStop(1, "#DED3C2");   // en alt: hafif gölge
+    x.fillStyle = g; x.fillRect(0, 0, w, h);
+    // ince ink vinyet (alt köşeler)
+    const vg = x.createRadialGradient(w / 2, h * 0.34, h * 0.12, w / 2, h * 0.5, h * 0.72);
+    vg.addColorStop(0, "rgba(22,17,15,0)");
+    vg.addColorStop(1, "rgba(22,17,15,0.10)");
+    x.fillStyle = vg; x.fillRect(0, 0, w, h);
+    const t = new THREE.CanvasTexture(c);
+    t.colorSpace = THREE.SRGBColorSpace || t.colorSpace;
+    return t;
+  }
+
   /* ============================================================
      Geometri yardımcıları
      ============================================================ */
@@ -142,6 +162,8 @@
       const w = container.clientWidth || 600, h = container.clientHeight || 520;
 
       this.scene = new THREE.Scene();
+      // Editoryal krem stüdyo fonu (near-white yerine tema uyumlu backdrop)
+      this.scene.background = studioBackdrop();
       this.camera = new THREE.PerspectiveCamera(32, w / h, 0.1, 100);
       this.camera.position.set(0, 0.2, 14);
 

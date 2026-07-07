@@ -62,6 +62,27 @@
 
     /* Modal overlay arkaplanı biraz daha koyu ink */
     .tp-overlay{ background: rgba(22,17,15,.62); }
+
+    /* ===== 3D sahne — editoryal stüdyo çerçevesi ===== */
+    .stage{ background: var(--paper); }
+    /* Kapsayıcı fon: WebGL yüklenene kadar tema uyumlu krem sweep, canvas ile birebir */
+    .stage__canvas{
+      background:
+        radial-gradient(120% 90% at 50% 30%, #F7F2EA 0%, #F4EFE7 46%, #E9E0D2 100%);
+    }
+    /* Canvas kenarlarına ince editoryal vinyet — sahneyi çerçeveye oturtur */
+    .stage__canvas::after{
+      content:""; position:absolute; inset:0; z-index:2; pointer-events:none;
+      box-shadow: inset 0 0 90px -30px rgba(22,17,15,.28),
+                  inset 0 -60px 90px -60px rgba(22,17,15,.22);
+    }
+    /* Rozet & ipucu editoryal palete otursun */
+    .stage__badge{
+      background: color-mix(in srgb, #F4EFE7 82%, transparent);
+      border-color: var(--line-strong); color: var(--ink);
+    }
+    .stage__hint{ color: var(--stone); }
+    .stage__tools{ background: var(--paper); border-top-color: var(--line); }
   </style>
 </head>
 <body class="ed">
@@ -75,9 +96,9 @@
       <a href="vizyon.html">Vizyon</a>
       <a href="tasarim.html">Stüdyo</a>
       <a href="kumas.html">Kumaş</a>
-      <a href="giris.html">Workspace</a>
+      <a href="app.html">Workspace</a>
     </nav>
-    <a href="giris.html" class="ed-mono">Giriş ↗</a>
+    <a href="app.html" class="ed-mono">Workspace ↗</a>
   </div>
 
   <!-- PAGE HEAD -->
@@ -463,7 +484,7 @@
     async function loadDesign(ref) {
       try {
         const d = await API.designs.get(ref);
-        if (!d || !d.garment_id) { selectGarment("denim-gomlek"); return; }
+        if (!d || !d.garment_id) { selectGarment("denim-ceket"); return; }
         const g = D.garment(d.garment_id);
         if (g) {
           state.construction = g.construction;
@@ -476,7 +497,7 @@
         if (d.fabric_id) selectFabric(d.fabric_id);
         if (d.color_id) selectColor(d.color_id);
         showToast(`✎ <b>${d.ref || ""}</b> tasarımı açıldı — düzenleyip yeniden kaydedebilirsin`);
-      } catch (e) { selectGarment("denim-gomlek"); }
+      } catch (e) { selectGarment("denim-ceket"); }
     }
 
     /* ---------- Başlat ---------- */
@@ -490,7 +511,7 @@
       .finally(() => {
         const _did = new URLSearchParams(location.search).get("d");
         if (_did) loadDesign(_did);
-        else selectGarment("denim-gomlek");
+        else selectGarment("denim-ceket");
       });
   })();
   </script>

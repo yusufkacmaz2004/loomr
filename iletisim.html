@@ -17,14 +17,19 @@
     a{color:inherit;text-decoration:none}
     img{display:block;max-width:100%}
 
-    .cx-grid { display:grid; gap:1.6rem; grid-template-columns:1fr; padding:clamp(2rem,5vw,3.4rem) clamp(1.2rem,4vw,3rem) clamp(3.5rem,8vw,6rem); }
+    .backnav { padding:clamp(1.1rem,2.6vw,1.5rem) clamp(1.2rem,4vw,3rem) 0; }
+    .backnav a { font-family:"Space Mono",monospace; font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+      color:#6E645B; display:inline-flex; align-items:center; gap:.5rem; transition:color .2s, gap .2s; }
+    .backnav a:hover { color:var(--acc); gap:.75rem; }
+
+    .cx-grid { display:grid; gap:1.6rem; grid-template-columns:1fr; padding:clamp(1.4rem,3.4vw,2.2rem) clamp(1.2rem,4vw,3rem) clamp(3.5rem,8vw,6rem); }
     @media(min-width:900px){ .cx-grid { grid-template-columns:1.1fr 1fr; align-items:start; } }
     .cx-sub { font-family:"Space Mono",monospace; font-size:.68rem; letter-spacing:.2em; text-transform:uppercase; color:var(--acc); font-weight:700; margin:0 0 1.1rem; }
     .cx-note { font-size:.84rem; color:#6E645B; margin-top:1.3rem; line-height:1.7; }
     .cx-note b { color:var(--ed-ink); font-weight:600; }
 
     .cx-list { display:grid; gap:.7rem; }
-    .cx-card { display:flex; align-items:center; gap:1rem; background:#fff; border:1px solid #E3D9CD; border-radius:6px; padding:1rem 1.2rem; transition:border-color .25s, transform .25s var(--ease); }
+    .cx-card { display:flex; align-items:center; gap:1rem; background:#FBF9F5; border:1px solid #E3D9CD; border-radius:6px; padding:1rem 1.2rem; transition:border-color .25s, transform .25s var(--ease); }
     .cx-card:hover { border-color:var(--ed-ink); transform:translateX(3px); }
     .cx-av { width:46px; height:46px; border-radius:50%; background:var(--ed-ink); color:var(--ed-cream); display:grid; place-items:center; font-family:"Fraunces",serif; font-size:1.05rem; flex:none; }
     .cx-card.online .cx-av { background:var(--acc); }
@@ -38,14 +43,18 @@
     .cx-btn.primary { background:var(--ed-ink); color:var(--ed-cream); border-color:var(--ed-ink); }
     .cx-btn.primary:hover { background:var(--acc); border-color:var(--acc); color:#fff; }
 
-    .compose { background:#fff; border:1px solid #E3D9CD; border-radius:8px; padding:1.7rem 1.8rem; position:sticky; top:90px; }
-    .compose h3 { font-family:"Fraunces",serif; font-weight:400; font-size:1.4rem; margin:0 0 1.2rem; }
-    .compose label { display:block; font-family:"Space Mono",monospace; font-size:.62rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700; color:#6E645B; margin:1rem 0 .45rem; }
-    .compose select, .compose input, .compose textarea { width:100%; padding:.8rem .95rem; border:1px solid #D9CEC0; border-radius:4px; font:inherit; font-size:.92rem; background:var(--ed-cream); color:var(--ed-ink); outline:none; transition:border-color .2s; }
-    .compose select:focus, .compose input:focus, .compose textarea:focus { border-color:var(--acc); }
+    .compose { background:var(--ed-ink); border:1px solid var(--ed-ink); border-radius:8px; padding:1.9rem 1.8rem; position:sticky; top:90px; color:var(--ed-cream);
+      box-shadow:0 30px 60px -44px rgba(20,12,10,.7); }
+    .compose h3 { font-family:"Fraunces",serif; font-weight:400; font-size:1.4rem; margin:0 0 1.2rem; color:var(--ed-cream); }
+    .compose label { display:block; font-family:"Space Mono",monospace; font-size:.62rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700; color:rgba(244,239,231,.6); margin:1rem 0 .45rem; }
+    .compose select, .compose input, .compose textarea { width:100%; padding:.8rem .95rem; border:1px solid rgba(244,239,231,.2); border-radius:4px; font:inherit; font-size:.92rem; background:rgba(255,255,255,.05); color:var(--ed-cream); outline:none; transition:border-color .2s, background .2s; }
+    .compose select:focus, .compose input:focus, .compose textarea:focus { border-color:var(--acc); background:rgba(255,255,255,.08); }
+    .compose input::placeholder, .compose textarea::placeholder { color:rgba(244,239,231,.4); }
+    .compose select option { color:var(--ed-ink); }
     .compose textarea { min-height:120px; resize:vertical; }
     .compose .btn { width:100%; justify-content:center; margin-top:1.4rem; }
-    .compose .fine { font-size:.72rem; color:#6E645B; margin:.9rem 0 0; line-height:1.6; }
+    .compose .btn:hover { background:#fff; border-color:#fff; color:var(--ed-ink); }
+    .compose .fine { font-size:.72rem; color:rgba(244,239,231,.55); margin:.9rem 0 0; line-height:1.6; }
 
     .btn { display:inline-flex; align-items:center; gap:.5rem; background:var(--acc); color:#fff; padding:.9rem 1.5rem;
       font-family:"Space Mono",monospace; font-size:.74rem; letter-spacing:.14em; text-transform:uppercase; border-radius:100px;
@@ -72,9 +81,9 @@
       <a href="vizyon.html">Vizyon</a>
       <a href="tasarim.html">Stüdyo</a>
       <a href="kumas.html">Kumaş</a>
-      <a href="giris.html">Workspace</a>
+      <a href="app.html">Workspace</a>
     </nav>
-    <a href="giris.html" class="ed-mono">Giriş ↗</a>
+    <a href="app.html" class="ed-mono">Workspace ↗</a>
   </div>
 
   <!-- PAGE HEAD -->
@@ -86,6 +95,10 @@
          e-posta gönder ya da numune talep et.</p>
     </div>
   </header>
+
+  <div class="backnav">
+    <a href="app.html">← Workspace</a>
+  </div>
 
   <div class="cx-grid">
     <div>

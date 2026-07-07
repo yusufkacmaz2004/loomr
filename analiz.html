@@ -17,6 +17,12 @@
     a{color:inherit;text-decoration:none}
     img{display:block;max-width:100%}
 
+    /* ---- Workspace'e dön ---- */
+    .ed-back { display:inline-flex; align-items:center; gap:.5rem; font-family:"Space Mono",monospace;
+      font-size:.7rem; letter-spacing:.18em; text-transform:uppercase; color:var(--acc);
+      margin-bottom:1.1rem; transition:color .25s var(--ease), gap .25s var(--ease); }
+    .ed-back:hover { color:var(--ed-cream); gap:.85rem; }
+
     .an-wrap { padding:clamp(2rem,5vw,3.4rem) clamp(1.2rem,4vw,3rem) clamp(3.5rem,8vw,6rem); }
 
     /* ---- KPI band (dark ink, accent numbers — matches homepage stats) ---- */
@@ -27,7 +33,8 @@
 
     .an-grid { display:grid; gap:1.2rem; grid-template-columns:1fr; }
     @media(min-width:820px){ .an-grid { grid-template-columns:1fr 1fr; } }
-    .an-card { background:#fff; border:1px solid #E3D9CD; border-radius:6px; padding:1.6rem 1.7rem; }
+    .an-card { background:#FBF8F2; border:1px solid #E3D9CD; border-radius:6px; padding:1.6rem 1.7rem;
+      box-shadow:0 24px 50px -46px rgba(20,12,10,.55); }
     .an-card h3 { font-family:"Fraunces",serif; font-weight:400; font-size:1.3rem; margin:0 0 1.3rem; }
 
     .bar-row { display:grid; grid-template-columns:8.5rem 1fr 2rem; align-items:center; gap:.7rem; margin-bottom:.7rem; font-size:.85rem; }
@@ -64,14 +71,15 @@
       <a href="vizyon.html">Vizyon</a>
       <a href="tasarim.html">Stüdyo</a>
       <a href="kumas.html">Kumaş</a>
-      <a href="giris.html">Workspace</a>
+      <a href="app.html">Workspace</a>
     </nav>
-    <a href="giris.html" class="ed-mono">Giriş ↗</a>
+    <a href="app.html" class="ed-mono">Workspace ↗</a>
   </div>
 
   <!-- PAGE HEAD -->
   <header class="ed-page-head">
     <div class="ed-page-head__in">
+      <a href="app.html" class="ed-back">← Workspace</a>
       <div class="ed-mono">✦ ✦ ✦ &nbsp; Analitik</div>
       <h1>Nabız</h1>
       <p>Tasarımların, teknik föylerin, koleksiyonların ve numune taleplerin — canlı özet.</p>

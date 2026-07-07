@@ -17,8 +17,14 @@
     a{color:inherit;text-decoration:none}
     img{display:block;max-width:100%}
 
+    /* ---- Back nav ---- */
+    .backnav { padding:clamp(1.1rem,2.6vw,1.5rem) clamp(1.2rem,4vw,3rem) 0; }
+    .backnav a { font-family:"Space Mono",monospace; font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; font-weight:700;
+      color:#6E645B; display:inline-flex; align-items:center; gap:.5rem; transition:color .2s, gap .2s; }
+    .backnav a:hover { color:var(--acc); gap:.75rem; }
+
     /* ---- Intro / actions ---- */
-    .src-intro { padding:clamp(1.8rem,4vw,2.8rem) clamp(1.2rem,4vw,3rem) 0; }
+    .src-intro { padding:clamp(1.4rem,3vw,2.2rem) clamp(1.2rem,4vw,3rem) 0; }
     .src-intro p { max-width:60ch; color:#6E645B; line-height:1.7; font-size:1rem; }
     .src-intro p b { color:var(--ed-ink); font-weight:600; }
     .src-actions { display:flex; gap:.8rem; flex-wrap:wrap; margin-top:1.2rem; }
@@ -33,7 +39,7 @@
     /* ---- Katalog grid ---- */
     .src-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:1.1rem;
       padding:clamp(1.4rem,3vw,2rem) clamp(1.2rem,4vw,3rem) clamp(3.5rem,8vw,6rem); }
-    .src-card { background:#fff; border:1px solid #E3D9CD; border-radius:6px; overflow:hidden; display:flex; flex-direction:column;
+    .src-card { background:#FBF9F5; border:1px solid #E3D9CD; border-radius:6px; overflow:hidden; display:flex; flex-direction:column;
       transition:transform .4s var(--ease), box-shadow .4s var(--ease), border-color .3s; }
     .src-card:hover { transform:translateY(-4px); border-color:var(--ed-ink); box-shadow:0 24px 50px -34px rgba(20,12,10,.6); }
     .src-ic { height:104px; display:grid; place-items:center; font-size:2.6rem; color:var(--ed-ink); background:var(--ed-cream); border-bottom:1px solid #E3D9CD; }
@@ -72,9 +78,9 @@
       <a href="vizyon.html">Vizyon</a>
       <a href="tasarim.html">Stüdyo</a>
       <a href="kumas.html">Kumaş</a>
-      <a href="giris.html">Workspace</a>
+      <a href="app.html">Workspace</a>
     </nav>
-    <a href="giris.html" class="ed-mono">Giriş ↗</a>
+    <a href="app.html" class="ed-mono">Workspace ↗</a>
   </div>
 
   <!-- PAGE HEAD -->
@@ -85,6 +91,10 @@
       <p>Düğme, fermuar, etiket, jakron, baskı, nakış ve ambalaj — MOQ ve terminle.</p>
     </div>
   </header>
+
+  <div class="backnav">
+    <a href="app.html">← Workspace</a>
+  </div>
 
   <div class="src-intro">
     <p>Katalog başlangıç noktan; nihai seçim <b>LOOMR stilistleriyle</b> birlikte,
