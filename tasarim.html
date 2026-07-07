@@ -408,10 +408,32 @@
       showToast(`✓ <b>${currentTechpack.ref}</b> modeliste iletildi — ${ml.ad}`);
     });
 
+    /* ---------- Kayıtlı tasarımı aç (Workspace'ten ?d=REF) ---------- */
+    async function loadDesign(ref) {
+      try {
+        const d = await API.designs.get(ref);
+        if (!d || !d.garment_id) { selectGarment("denim-gomlek"); return; }
+        const g = D.garment(d.garment_id);
+        if (g) {
+          state.construction = g.construction;
+          document.querySelectorAll("#ctoggle button").forEach(x => x.classList.toggle("on", x.dataset.c === g.construction));
+          renderGarments();
+        }
+        state.fabric = d.fabric_id ? D.fabric(d.fabric_id) : null;
+        state.color = d.color_id ? D.color(d.color_id) : null;
+        selectGarment(d.garment_id);
+        if (d.fabric_id) selectFabric(d.fabric_id);
+        if (d.color_id) selectColor(d.color_id);
+        showToast(`✎ <b>${d.ref || ""}</b> tasarımı açıldı — düzenleyip yeniden kaydedebilirsin`);
+      } catch (e) { selectGarment("denim-gomlek"); }
+    }
+
     /* ---------- Başlat ---------- */
     renderGarments();
     renderFabrics();
-    selectGarment("denim-gomlek");
+    const _did = new URLSearchParams(location.search).get("d");
+    if (_did) loadDesign(_did);
+    else selectGarment("denim-gomlek");
   })();
   </script>
 </body>

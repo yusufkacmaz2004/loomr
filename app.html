@@ -237,12 +237,12 @@
         const thumb = d.thumb
           ? `<img src="${d.thumb}" alt="" style="width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--paper-2);display:block">`
           : `<div style="aspect-ratio:4/3;background:var(--paper-2)"></div>`;
-        return `<div class="mod-card" style="padding:0;overflow:hidden">${thumb}
+        return `<a class="mod-card" href="tasarim.html?d=${d.ref || d.id}" style="padding:0;overflow:hidden">${thumb}
           <div style="padding:.9rem 1.1rem 1.1rem">
             <div class="status live" style="margin-bottom:.3rem">${d.ref || ""}</div>
             <h4 style="font-size:1rem;margin:0">${d.name || (g && g.ad) || "Tasarım"}</h4>
             <p style="margin:.3rem 0 0;font-size:.78rem;color:var(--stone)">${f ? f.ad : ""}</p>
-          </div></div>`;
+          </div></a>`;
       }).join("");
     }
 

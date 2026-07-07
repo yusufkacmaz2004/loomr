@@ -123,14 +123,7 @@
       <p class="hint">Birden fazla seçebilirsin — LOOMR ürünleri kumaşlara dağıtır.</p>
       <div class="field">
         <label>Kumaşlar <span style="color:var(--stone); text-transform:none">(Fabric Hub'dan)</span></label>
-        <div class="opt-grid" data-group="kumas">
-          <div class="opt" data-v="Saf Keten">Saf Keten<small>185 GSM · İzmir</small></div>
-          <div class="opt" data-v="Selvedge Denim">Selvedge Denim<small>13oz · Portekiz</small></div>
-          <div class="opt" data-v="Yün-Kaşmir">Yün-Kaşmir<small>380 GSM · Biella</small></div>
-          <div class="opt" data-v="İpek Şarmöz">İpek Şarmöz<small>19mm · Como</small></div>
-          <div class="opt" data-v="Donegal Tüvit">Donegal Tüvit<small>420 GSM · Bursa</small></div>
-          <div class="opt" data-v="Organik Poplin">Organik Poplin<small>120 GSM · Denizli</small></div>
-        </div>
+        <div class="opt-grid" data-group="kumas" id="kumasOpts"></div>
       </div>
       <div class="field">
         <label>Renk Paleti</label>
@@ -185,6 +178,10 @@
   <script>
     const state = { adim: 1, sezon: null, pazar: null, musteri: null, segment: null, adet: null, kumas: [], renk: [] };
     const TOPLAM = 5;
+
+    // Kumaş seçeneklerini paylaşılan kütüphaneden doldur (Fabric Hub ile aynı 5 aile)
+    document.getElementById("kumasOpts").innerHTML = LOOMR_DATA.FABRICS.map(f =>
+      `<div class="opt" data-v="${f.ad}">${f.ad}<small>${f.gsm} GSM · ${f.mensei.split(" · ")[0]}</small></div>`).join("");
 
     // Seçim davranışı
     document.querySelectorAll("[data-group]").forEach(g => {
