@@ -61,6 +61,16 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .ed-
 .reveal { opacity: 0; transform: translateY(56px); transition: opacity 1s cubic-bezier(.16,1,.3,1), transform 1s cubic-bezier(.16,1,.3,1); }
 .reveal.in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } .ed-hero__bg { will-change: auto; } }
+
+/* ---------- Hero giriş (intro) — katmanlı süzülme ---------- */
+.ed-hero__eyebrow, .ed-hero h1, .ed-hero__foot { opacity: 0; transform: translateY(48px); }
+html.ed-loaded .ed-hero__eyebrow,
+html.ed-loaded .ed-hero h1,
+html.ed-loaded .ed-hero__foot { opacity: 1; transform: none; transition: opacity 1s var(--ease), transform 1.2s var(--ease); }
+html.ed-loaded .ed-hero__eyebrow { transition-delay: .25s; }
+html.ed-loaded .ed-hero h1 { transition-delay: .42s; }
+html.ed-loaded .ed-hero__foot { transition-delay: .66s; }
+@media (prefers-reduced-motion: reduce) { .ed-hero__eyebrow, .ed-hero h1, .ed-hero__foot { opacity: 1; transform: none; } }
 .ed-hero::after { content: ""; position: absolute; inset: 0;
   background: linear-gradient(180deg, rgba(20,12,10,.55) 0%, rgba(20,12,10,.05) 30%, rgba(20,12,10,.15) 60%, rgba(20,12,10,.85) 100%); }
 .ed-hero__inner { position: relative; z-index: 2; align-self: end; color: #F7F2EA; padding: clamp(1.4rem, 4vw, 3rem); width: 100%; }
