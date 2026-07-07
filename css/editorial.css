@@ -64,8 +64,8 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .ed-
 .ed-hero__inner { position: relative; z-index: 2; align-self: end; color: #F7F2EA; padding: clamp(1.4rem, 4vw, 3rem); width: 100%; }
 .ed-hero__eyebrow { display: flex; gap: 1.2rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem; color: rgba(247,242,234,.85); }
 .ed-hero__eyebrow .star { color: var(--acc); letter-spacing: .3em; }
-.ed-hero h1 { font-family: "Anton", sans-serif; text-transform: uppercase; font-weight: 400; line-height: .86;
-  font-size: clamp(2.3rem, 9.6vw, 9.5rem); letter-spacing: -0.02em; margin: 0; }
+.ed-hero h1 { font-family: "Anton", sans-serif; text-transform: uppercase; font-weight: 400; line-height: .9;
+  font-size: clamp(1.9rem, 6.1vw, 5.6rem); letter-spacing: -0.02em; margin: 0; }
 .ed-hero h1 .em { display: inline-block; font-family: "Archivo", sans-serif; font-style: normal; text-transform: uppercase; font-weight: 900; font-stretch: 125%; color: var(--acc); letter-spacing: -0.015em; font-size: .72em; line-height: .9; margin-top: .04em; }
 .ed-hero__foot { display: flex; justify-content: space-between; align-items: end; gap: 1.5rem; margin-top: 1.6rem; flex-wrap: wrap; }
 .ed-hero__foot p { max-width: 40ch; color: rgba(247,242,234,.8); font-size: .95rem; margin: 0; }
@@ -78,7 +78,7 @@ body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .ed-
 /* ---------- Marquee ticker (accent) ---------- */
 .ed-ticker { background: var(--acc); color: #fff; overflow: hidden; border-block: 1px solid var(--acc-deep); }
 .ed-ticker__track { display: flex; gap: 2.5rem; white-space: nowrap; padding-block: .7rem; animation: edscroll 32s linear infinite; }
-.ed-ticker__track span { font-family: "Anton", sans-serif; text-transform: uppercase; font-size: 1.1rem; letter-spacing: .02em; }
+.ed-ticker__track span { font-family: "Archivo", sans-serif; font-weight: 900; font-stretch: 112%; text-transform: uppercase; font-size: 1.05rem; letter-spacing: .02em; }
 .ed-ticker__track span::after { content: "✦"; margin-left: 2.5rem; }
 @keyframes edscroll { to { transform: translateX(-50%); } }
 
