@@ -19,6 +19,7 @@
     techpacks: "loomr-techpacks",
     collections: "loomr-koleksiyonlar",
     samples: "loomr-samples",
+    messages: "loomr-messages",
   };
 
   let _online = null; // null=bilinmiyor, true/false
@@ -190,5 +191,18 @@
     },
   };
 
-  global.LoomrAPI = { online, reference, designs, techpacks, collections, samples, API_BASE };
+  /* ---------------- messages (iletişim / doğrudan gönderim) ---------------- */
+  const messages = {
+    async send(m) {
+      if (await online()) return req("POST", "/messages", m);
+      // backend yoksa yerelde kuyrukla (statik yayında)
+      const rec = lsCreate(LS.messages, "MSG", { ...m, status: "kuyrukta", delivered: false });
+      return rec;
+    },
+    async list() {
+      return (await online()) ? req("GET", "/messages") : lsGet(LS.messages).reverse();
+    },
+  };
+
+  global.LoomrAPI = { online, reference, designs, techpacks, collections, samples, messages, API_BASE };
 })(window);

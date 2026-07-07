@@ -79,15 +79,17 @@
     <div>
       <div class="compose">
         <h3>Hızlı mesaj</h3>
+        <label for="from">Senin e-postan</label>
+        <input type="email" id="from" placeholder="sen@markan.com" autocomplete="email">
         <label for="to">Alıcı</label>
         <select id="to"></select>
         <label for="subj">Konu</label>
         <input type="text" id="subj" placeholder="örn. SS27 numune onayı">
         <label for="msg">Mesaj</label>
         <textarea id="msg" placeholder="Merhaba,"></textarea>
-        <button class="btn" id="send">E-posta Gönder →</button>
+        <button class="btn" id="send">Gönder →</button>
         <p style="font-size:.76rem;color:var(--stone);margin:.9rem 0 0">
-          Gönder'e bastığında varsayılan e-posta uygulaman hazır mesajla açılır.
+          Mesaj doğrudan LOOMR ekibine iletilir; yanıt e-postana gelir.
         </p>
       </div>
     </div>
@@ -100,9 +102,10 @@
   </footer>
 
   <script src="js/loomr-data.js"></script>
+  <script src="js/loomr-api.js"></script>
   <script src="js/main.js"></script>
   <script>
-    const D = window.LOOMR_DATA;
+    const D = window.LOOMR_DATA, API = window.LoomrAPI;
     const slug = s => s.toLowerCase().replace(/ç/g,"c").replace(/ğ/g,"g").replace(/ı/g,"i").replace(/ö/g,"o").replace(/ş/g,"s").replace(/ü/g,"u").replace(/[^a-z]/g,"");
     const initials = n => n.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase();
 
@@ -115,13 +118,11 @@
     const ALL = [...TEAM];
 
     function card(c) {
-      const mailto = `mailto:${c.mail}?subject=${encodeURIComponent("LOOMR · " + c.ad)}`;
       return `<div class="cx-card ${c.online?"online":""}">
         <span class="cx-av">${initials(c.ad)}</span>
         <div class="cx-info"><b>${c.ad}</b><span>${c.rol} · ${c.mail}</span></div>
         <div class="cx-act">
-          <button class="cx-btn" data-msg="${c.ad}">Mesaj</button>
-          <a class="cx-btn primary" href="${mailto}">E-posta</a>
+          <button class="cx-btn primary" data-msg="${c.ad}">Mesaj Gönder</button>
         </div>
       </div>`;
     }
@@ -139,15 +140,28 @@
       window.scrollTo({ top: document.querySelector(".compose").offsetTop - 90, behavior:"smooth" });
     });
 
-    // Gönder → mailto
-    document.getElementById("send").addEventListener("click", () => {
+    // Gönder → doğrudan backend'e (mail servisi ayarlıysa gerçekten yollanır)
+    const toast = document.getElementById("toast");
+    function showToast(html) { toast.innerHTML = html; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"), 3400); }
+    const emailOk = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+
+    document.getElementById("send").addEventListener("click", async () => {
+      const from = document.getElementById("from").value.trim();
       const c = ALL[+document.getElementById("to").value];
-      const subj = document.getElementById("subj").value || "LOOMR mesajı";
-      const msg = document.getElementById("msg").value || "";
-      window.location.href = `mailto:${c.mail}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(msg + "\n\n— LOOMR Workspace")}`;
-      const toast = document.getElementById("toast");
-      toast.innerHTML = `✓ <b>${c.ad}</b> için e-posta hazırlandı.`;
-      toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"), 3000);
+      const subj = document.getElementById("subj").value.trim() || "LOOMR mesajı";
+      const msg = document.getElementById("msg").value.trim();
+      if (!emailOk(from)) { showToast("✗ Geçerli bir e-posta gir."); document.getElementById("from").focus(); return; }
+      if (!msg) { showToast("✗ Mesaj boş olamaz."); document.getElementById("msg").focus(); return; }
+      const btn = document.getElementById("send"); btn.disabled = true; btn.textContent = "Gönderiliyor…";
+      try {
+        const rec = await API.messages.send({ from_email: from, to_key: c.mail, to_email: c.mail, subject: subj, body: msg });
+        const delivered = rec && rec.delivered;
+        showToast(`✓ <b>${c.ad}</b>'e mesaj gönderildi${rec && rec.ref ? " — " + rec.ref : ""}${delivered ? "" : " (kaydedildi)"}.`);
+        document.getElementById("subj").value = ""; document.getElementById("msg").value = "";
+      } catch (e) {
+        showToast("✗ Gönderilemedi: " + (e.message || "hata"));
+      }
+      btn.disabled = false; btn.textContent = "Gönder →";
     });
   </script>
 </body>

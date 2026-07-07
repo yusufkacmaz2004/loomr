@@ -133,6 +133,16 @@ async function handleApi(req, res, url) {
     if (method === "POST") return send(res, 201, store.samples.create(await readBody(req)));
   }
 
+  // ---- messages (iletişim / doğrudan gönderim) ----
+  if (r0 === "messages") {
+    if (method === "GET") return send(res, 200, store.messages.list());
+    if (method === "POST") {
+      const row = store.messages.create(await readBody(req));
+      const out = await store.messages.deliver(row);
+      return send(res, 201, { ...row, delivered: out.delivered });
+    }
+  }
+
   return send(res, 404, { error: "Bilinmeyen uç nokta", path: url.pathname });
 }
 

@@ -117,10 +117,8 @@
     const toast = document.getElementById("toast"); let tmr;
     grid.addEventListener("click", e => {
       const b = e.target.closest("[data-req]"); if (!b) return;
-      const subject = `Aksesuar Numune Talebi — ${b.dataset.req}`;
-      const body = `Merhaba LOOMR Tedarik ekibi,\n\n${b.dataset.req} için numune / stilist önerisi talep ediyorum.\n\nTeşekkürler.`;
-      window.location.href = `mailto:tedarik@loomr.studio?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      toast.innerHTML = `✓ <b>${b.dataset.req}</b> talebin alındı — e-posta hazırlandı.`;
+      // Talep LOOMR stilist & tedarik ekibine iletilir
+      toast.innerHTML = `✓ <b>${b.dataset.req}</b> talebin alındı — stilist ekibimiz seninle iletişime geçecek.`;
       toast.classList.add("show"); clearTimeout(tmr); tmr = setTimeout(() => toast.classList.remove("show"), 3200);
     });
   </script>

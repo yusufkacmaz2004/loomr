@@ -77,6 +77,18 @@ CREATE TABLE IF NOT EXISTS samples (
   created_at  TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS messages (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  ref         TEXT UNIQUE,
+  from_email  TEXT NOT NULL,
+  to_key      TEXT,
+  to_email    TEXT,
+  subject     TEXT,
+  body        TEXT,
+  status      TEXT NOT NULL DEFAULT 'kaydedildi',
+  created_at  TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS events (
   id          INTEGER PRIMARY KEY AUTOINCREMENT,
   entity      TEXT NOT NULL,
@@ -336,6 +348,62 @@ const samples = {
   },
 };
 
+/* ---------------- Messages (iletişim / doğrudan gönderim) ---------------- */
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const messages = {
+  list() {
+    return db.prepare("SELECT * FROM messages ORDER BY id DESC").all();
+  },
+  create(m) {
+    if (!m.from_email || !EMAIL_RE.test(m.from_email)) throw httpErr(400, "Geçerli bir e-posta gerekli");
+    const t = now();
+    const info = db
+      .prepare(
+        `INSERT INTO messages (from_email, to_key, to_email, subject, body, status, created_at)
+         VALUES (?,?,?,?,?,?,?)`
+      )
+      .run(
+        m.from_email,
+        m.to_key || null,
+        m.to_email || null,
+        m.subject || "(konu yok)",
+        m.body || "",
+        "kaydedildi",
+        t
+      );
+    const id = Number(info.lastInsertRowid);
+    const ref = setRef("messages", "MSG", id);
+    logEvent("message", ref, "created", { from: m.from_email, to: m.to_email });
+    const row = db.prepare("SELECT * FROM messages WHERE id = ?").get(id);
+    return row;
+  },
+  // gerçek gönderim: RESEND_API_KEY ayarlıysa e-postayı yolla (native fetch, ek bağımlılık yok)
+  async deliver(row) {
+    const key = process.env.RESEND_API_KEY;
+    const to = row.to_email || process.env.LOOMR_INBOX || "hello@loomr.studio";
+    if (!key) return { delivered: false, reason: "no_api_key" };
+    try {
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from: process.env.LOOMR_FROM || "LOOMR <noreply@loomr.studio>",
+          to: [to],
+          reply_to: row.from_email,
+          subject: row.subject,
+          text: `${row.body}\n\n— ${row.from_email} (LOOMR Workspace)`,
+        }),
+      });
+      const ok = res.ok;
+      db.prepare("UPDATE messages SET status = ? WHERE id = ?").run(ok ? "gonderildi" : "hata", row.id);
+      return { delivered: ok };
+    } catch (e) {
+      db.prepare("UPDATE messages SET status = ? WHERE id = ?").run("hata", row.id);
+      return { delivered: false, reason: String(e.message || e) };
+    }
+  },
+};
+
 /* ---------------- yardımcı ---------------- */
 function safeParse(s, fallback) {
   try {
@@ -367,6 +435,7 @@ module.exports = {
   techpacks,
   collections,
   samples,
+  messages,
   stats,
   httpErr,
   DB_PATH,
