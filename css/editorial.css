@@ -8,7 +8,33 @@
   --acc-deep: #A82817;
   --ed-cream: #F4EFE7;
   --ed-ink: #16110F;
+  --ease: cubic-bezier(.16,1,.3,1);
 }
+
+/* ---------- İmleç takibi ---------- */
+.ed-cursor { position: fixed; top: 0; left: 0; width: 12px; height: 12px; border-radius: 50%; background: var(--acc); pointer-events: none; z-index: 300; mix-blend-mode: difference; transition: width .28s var(--ease), height .28s var(--ease), background .28s; }
+.ed-cursor.big { width: 60px; height: 60px; background: #fff; }
+@media (pointer: coarse) { .ed-cursor { display: none; } }
+body.has-cursor, body.has-cursor a, body.has-cursor button, body.has-cursor .ed-cell, body.has-cursor .hg-card { cursor: none; }
+
+/* ---------- Stats (sayaç bandı) ---------- */
+.ed-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--ed-ink); border-block: 1px solid var(--ed-ink); }
+@media (min-width: 760px) { .ed-stats { grid-template-columns: repeat(4, 1fr); } }
+.ed-stats__item { background: var(--ed-ink); color: var(--ed-cream); padding: clamp(2.2rem, 5vw, 3.8rem) 1.4rem; text-align: center; }
+.ed-stats__n { display: block; font-family: "Archivo", sans-serif; font-weight: 900; font-stretch: 125%; font-size: clamp(3rem, 7vw, 6rem); line-height: 1; color: var(--acc); }
+.ed-stats__l { display: block; margin-top: .6rem; color: rgba(244,239,231,.6); }
+
+/* ---------- Yatay pinned galeri ---------- */
+.h-gallery { position: relative; height: 340vh; background: var(--ed-cream); }
+.h-gallery__sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; justify-content: center; gap: 1.4rem; }
+.h-gallery__head { padding: 0 clamp(1.2rem, 4vw, 3rem); color: var(--ed-ink); font-size: .8rem; }
+.h-gallery__track { display: flex; gap: 1.5rem; padding: 0 clamp(1.2rem, 4vw, 3rem); will-change: transform; }
+.hg-card { position: relative; flex: 0 0 clamp(260px, 32vw, 440px); aspect-ratio: 3 / 4; border-radius: 6px; overflow: hidden; background: #EFE8DE; box-shadow: 0 30px 60px -45px rgba(20,12,10,.6); }
+.hg-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.1s var(--ease); }
+.hg-card:hover img { transform: scale(1.06); }
+.hg-card__cap { position: absolute; left: 1rem; bottom: 1rem; color: #fff; background: rgba(20,12,10,.5); padding: .4rem .85rem; border-radius: 100px; backdrop-filter: blur(6px); font-size: .62rem; }
+.hg-card--cta { display: grid; place-items: center; background: var(--acc); }
+.hg-card--cta .ed-disp { font-family: "Archivo", sans-serif; font-weight: 900; font-stretch: 125%; text-transform: uppercase; font-size: clamp(1.5rem, 2.6vw, 2.6rem); text-align: center; line-height: .95; color: #fff; }
 
 .ed { background: var(--ed-cream); color: var(--ed-ink); }
 .ed-mono { font-family: "Space Mono", ui-monospace, monospace; font-size: .72rem; letter-spacing: .22em; text-transform: uppercase; }
