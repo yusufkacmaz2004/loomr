@@ -179,7 +179,9 @@
         preserveDrawingBuffer: true, // capture() için
       });
       this.renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-      this.renderer.setSize(w, h);
+      this.renderer.setSize(w, h, false); // updateStyle=false → CSS boyutu yönetir
+      this._lastW = w;
+      this._lastH = h;
       this.renderer.outputEncoding = THREE.sRGBEncoding;
       container.appendChild(this.renderer.domElement);
 
@@ -391,11 +393,20 @@
     }
 
     _resize() {
-      const w = this.el.clientWidth || 600;
-      const h = this.el.clientHeight || 520;
-      this.camera.aspect = w / h;
-      this.camera.updateProjectionMatrix();
-      this.renderer.setSize(w, h);
+      // rAF ile ertele + boyut değişmediyse atla → ResizeObserver geri besleme döngüsünü kır
+      if (this._resizeQueued) return;
+      this._resizeQueued = true;
+      requestAnimationFrame(() => {
+        this._resizeQueued = false;
+        const w = Math.round(this.el.clientWidth) || 600;
+        const h = Math.round(this.el.clientHeight) || 520;
+        if (w === this._lastW && h === this._lastH) return;
+        this._lastW = w;
+        this._lastH = h;
+        this.camera.aspect = w / h;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(w, h, false);
+      });
     }
 
     _loop() {

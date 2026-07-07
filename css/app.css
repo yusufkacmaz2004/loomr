@@ -2,7 +2,7 @@
    LOOMR Workspace — app shell
    ============================================================ */
 
-.app-body { background: var(--paper); min-height: 100vh; display: grid; grid-template-columns: 250px 1fr; }
+.app-body { background: var(--paper); min-height: 100vh; display: grid; grid-template-columns: 250px minmax(0, 1fr); }
 
 /* ---------- Sidebar ---------- */
 .app-side {
@@ -41,7 +41,9 @@
 .brand-switch small { font-size: .68rem; color: var(--stone); }
 
 /* ---------- Main ---------- */
-.app-main { padding: 0 clamp(1.2rem, 3vw, 2.8rem) 4rem; }
+.app-main { padding: 0 clamp(1.2rem, 3vw, 2.8rem) 4rem; min-width: 0; overflow-x: clip; }
+/* geniş içerik (tablo/şerit) kendi kutusunda kalsın, sayfayı itmesin */
+.app-main > * { min-width: 0; }
 .app-topbar {
   display: flex; align-items: center; justify-content: space-between;
   padding-block: 1.2rem; border-bottom: 1px solid var(--line);

@@ -30,7 +30,11 @@
   background:
     radial-gradient(120% 90% at 50% 15%, #FBF7F1 0%, var(--paper) 55%, var(--paper-2) 100%);
 }
-.stage__canvas canvas { display: block; width: 100% !important; height: 100% !important; }
+/* canvas'ı akıştan çıkar: boyutu asla kapsayıcıyı/ sayfayı itmesin (ResizeObserver döngüsü engellenir) */
+.stage__canvas canvas {
+  position: absolute; inset: 0;
+  display: block; width: 100% !important; height: 100% !important;
+}
 .stage__badge {
   position: absolute; top: 1rem; left: 1rem; z-index: 3;
   font-family: var(--serif); font-size: .9rem; letter-spacing: .02em; color: var(--ink);
