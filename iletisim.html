@@ -144,7 +144,6 @@
   <script src="js/editorial.js"></script>
   <script>
     const D = window.LOOMR_DATA, API = window.LoomrAPI;
-    const slug = s => s.toLowerCase().replace(/ç/g,"c").replace(/ğ/g,"g").replace(/ı/g,"i").replace(/ö/g,"o").replace(/ş/g,"s").replace(/ü/g,"u").replace(/[^a-z]/g,"");
     const initials = n => n.split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase();
 
     const TEAM = [

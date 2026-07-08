@@ -436,11 +436,11 @@
         ["MOQ", f.moq], ["Termin", f.termin],
       ].map(([k, v]) => `<tr><th style="width:40%">${k}</th><td>${v}</td></tr>`).join("");
 
-      const measures = tp.measures || g.measures;
+      const measures = (tp.measures?.length ? tp.measures : g.measures) || [];
       document.getElementById("tpMeasures").innerHTML = measures.map(m =>
         `<tr><td>${m[0]}</td><td>${m[1]}</td><td class="muted">${m[2]}</td></tr>`).join("");
 
-      const bom = tp.bom || g.bom;
+      const bom = (tp.bom?.length ? tp.bom : g.bom) || [];
       document.getElementById("tpBom").innerHTML = bom.map(b => `<li>${b}</li>`).join("");
 
       const care = tp.care || [];

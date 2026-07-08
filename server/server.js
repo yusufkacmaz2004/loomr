@@ -40,6 +40,8 @@ function send(res, status, body, extraHeaders = {}) {
   if (body !== null && typeof body === "object") {
     headers["Content-Type"] = "application/json; charset=utf-8";
     body = JSON.stringify(body);
+  } else if (typeof body === "string" && !headers["Content-Type"]) {
+    headers["Content-Type"] = "text/plain; charset=utf-8";
   }
   res.writeHead(status, headers);
   res.end(body);
@@ -49,9 +51,16 @@ function readBody(req) {
   return new Promise((resolve, reject) => {
     let data = "";
     let size = 0;
+    let aborted = false;
     req.on("data", (c) => {
+      if (aborted) return;
       size += c.length;
-      if (size > 8 * 1024 * 1024) reject(store.httpErr(413, "Gövde çok büyük"));
+      if (size > 8 * 1024 * 1024) {
+        aborted = true;
+        reject(store.httpErr(413, "Gövde çok büyük"));
+        req.destroy();
+        return;
+      }
       data += c;
     });
     req.on("end", () => {
@@ -76,12 +85,18 @@ async function handleApi(req, res, url) {
   if (method === "GET") {
     if (r0 === "health")
       return send(res, 200, { ok: true, service: "loomr-api", db: path.basename(store.DB_PATH), stats: store.stats(), time: new Date().toISOString() });
-    if (r0 === "fabrics")
-      return send(res, 200, r1 ? store.reference.fabric(r1) || notFound(res) : store.reference.fabrics());
+    if (r0 === "fabrics") {
+      if (!r1) return send(res, 200, store.reference.fabrics());
+      const fab = store.reference.fabric(r1);
+      return fab ? send(res, 200, fab) : notFound(res);
+    }
     if (r0 === "families") return send(res, 200, store.reference.families());
     if (r0 === "colors") return send(res, 200, store.reference.colors());
-    if (r0 === "garments")
-      return send(res, 200, r1 ? store.reference.garment(r1) || notFound(res) : store.reference.garments());
+    if (r0 === "garments") {
+      if (!r1) return send(res, 200, store.reference.garments());
+      const grm = store.reference.garment(r1);
+      return grm ? send(res, 200, grm) : notFound(res);
+    }
     if (r0 === "modelists") {
       if (r1 === "suggest") {
         const g = url.searchParams.get("garment");
@@ -94,7 +109,10 @@ async function handleApi(req, res, url) {
   // ---- designs ----
   if (r0 === "designs") {
     if (method === "GET" && !r1) return send(res, 200, store.designs.list());
-    if (method === "GET" && r1) return send(res, 200, store.designs.get(r1) || notFound(res));
+    if (method === "GET" && r1) {
+      const d = store.designs.get(r1);
+      return d ? send(res, 200, d) : notFound(res);
+    }
     if (method === "POST" && !r1) return send(res, 201, store.designs.create(await readBody(req)));
     if (method === "PATCH" && r1) {
       const d = store.designs.update(r1, await readBody(req));
@@ -107,7 +125,10 @@ async function handleApi(req, res, url) {
   // ---- techpacks ----
   if (r0 === "techpacks") {
     if (method === "GET" && !r1) return send(res, 200, store.techpacks.list());
-    if (method === "GET" && r1) return send(res, 200, store.techpacks.get(r1) || notFound(res));
+    if (method === "GET" && r1) {
+      const tp = store.techpacks.get(r1);
+      return tp ? send(res, 200, tp) : notFound(res);
+    }
     if (method === "POST" && !r1) return send(res, 201, store.techpacks.create(await readBody(req)));
     if (method === "POST" && r2 === "handoff") {
       const body = await readBody(req);
@@ -153,10 +174,15 @@ function notFound(res) {
 
 /* ---------------- Statik dosya servisi ---------------- */
 function serveStatic(req, res, url) {
-  let rel = decodeURIComponent(url.pathname);
+  let rel;
+  try {
+    rel = decodeURIComponent(url.pathname);
+  } catch {
+    return send(res, 400, "Geçersiz yol");
+  }
   if (rel === "/") rel = "/index.html";
   const filePath = path.join(ROOT, path.normalize(rel));
-  if (!filePath.startsWith(ROOT)) return send(res, 403, "Yasak");
+  if (filePath !== ROOT && !filePath.startsWith(ROOT + path.sep)) return send(res, 403, "Yasak");
   fs.stat(filePath, (err, st) => {
     if (err || !st.isFile()) {
       // SPA değil; sadece bilinmeyen yol
@@ -184,12 +210,20 @@ const server = http.createServer(async (req, res) => {
     } catch (e) {
       const status = e.status || 500;
       if (status >= 500) console.error("[api]", e);
+      if (res.headersSent) return;
       send(res, status, { error: e.message || "Sunucu hatası" });
     }
     return;
   }
 
   serveStatic(req, res, url);
+});
+
+process.on("uncaughtException", (e) => {
+  console.error("[uncaughtException]", e);
+});
+process.on("unhandledRejection", (e) => {
+  console.error("[unhandledRejection]", e);
 });
 
 server.listen(PORT, () => {
