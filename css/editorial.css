@@ -88,8 +88,8 @@ html.ed-loaded .ed-hero__foot { transition-delay: .66s; }
 .ed-cta--ghost:hover { background: #fff; color: var(--ed-ink); }
 
 /* ---------- Marquee ticker (accent) ---------- */
-.ed-ticker { background: var(--acc); color: #fff; overflow: hidden; border-block: 1px solid var(--acc-deep); }
-.ed-ticker__track { display: flex; gap: 2.5rem; white-space: nowrap; padding-block: .7rem; animation: edscroll 32s linear infinite; }
+.ed-ticker { background: #877360; color: #fff; overflow: hidden; border-block: 1px solid #6b5a49; } /* hero ceketi taupe tonu */
+.ed-ticker__track { display: flex; gap: 2.5rem; white-space: nowrap; padding-block: .7rem; animation: edscroll 120s linear infinite; }
 .ed-ticker__track span { font-family: "Archivo", sans-serif; font-weight: 900; font-stretch: 112%; text-transform: uppercase; font-size: 1.05rem; letter-spacing: .02em; }
 .ed-ticker__track span::after { content: "✦"; margin-left: 2.5rem; }
 @keyframes edscroll { to { transform: translateX(-50%); } }
@@ -141,6 +141,11 @@ html.ed-loaded .ed-hero__foot { transition-delay: .66s; }
 .ed-close { background: var(--acc); color: #fff; text-align: center; padding: clamp(3.5rem, 9vw, 8rem) 1.2rem; }
 .ed-close h2 { font-family: "Anton", sans-serif; text-transform: uppercase; font-weight: 400; font-size: clamp(2.6rem, 9vw, 8rem); line-height: .88; margin: 0 0 1.6rem; }
 .ed-close h2 .em { font-family: "Fraunces", serif; font-style: italic; text-transform: none; }
+.ed-close__lead { max-width: 46ch; margin: 0 auto 2.4rem; font-size: clamp(1.05rem, 1.6vw, 1.35rem); line-height: 1.6; color: rgba(255,255,255,.9); }
+.ed-close__lead b { font-weight: 600; }
+.ed-close__flow { display: inline-block; margin: 0 auto 2.6rem; font-family: "Space Mono", monospace; text-transform: uppercase; letter-spacing: .12em; font-size: clamp(.7rem, 1.1vw, .82rem); color: rgba(255,255,255,.7); }
+.ed-close__flow span { white-space: nowrap; }
+.ed-close__flow i { font-style: normal; margin: 0 .5rem; opacity: .55; }
 .ed-close .ed-cta { background: #fff; color: var(--acc-deep); }
 .ed-close .ed-cta:hover { background: var(--ed-ink); color: #fff; }
 
