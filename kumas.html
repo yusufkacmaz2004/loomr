@@ -122,8 +122,9 @@
     <a href="index.html" class="ed-bar__logo">LOOMR</a>
     <nav class="ed-mono">
       <a href="vizyon.html">Vizyon</a>
-      <a href="tasarim.html">Stüdyo</a>
+      <a href="showroom.html">Showroom</a>
       <a href="kumas.html">Kumaş</a>
+      <a href="hizmetler.html">Hizmetler</a>
       <a href="app.html">Workspace</a>
     </nav>
     <a href="app.html" class="ed-mono">Workspace ↗</a>
@@ -189,6 +190,48 @@
     </div>
   </section>
 
+  <!-- KUMAŞ ÖZELLİKLERİ (referans taksonomi) -->
+  <style>
+    .fab-specs{ margin:2.6rem auto; }
+    .spec-blocks{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.6rem; margin-top:1.1rem; }
+    .spec-block h3{ font-family:"Space Mono",ui-monospace,monospace; font-size:.66rem; letter-spacing:.22em; color:var(--acc); font-weight:700; margin:0 0 .7rem; }
+    .spec-chips{ display:flex; flex-wrap:wrap; gap:.42rem; }
+    .spec-chips span{ border:1px solid rgba(22,17,15,.18); border-radius:100px; padding:.32rem .72rem; font-family:"Space Mono",monospace; font-size:.68rem; white-space:nowrap; }
+    .spec-rows{ display:flex; flex-direction:column; gap:.55rem; }
+    .spec-r{ display:flex; flex-direction:column; gap:.12rem; padding-bottom:.55rem; border-bottom:1px solid rgba(22,17,15,.08); }
+    .spec-r b{ font-family:"Archivo",sans-serif; font-size:.9rem; }
+    .spec-r span{ font-size:.76rem; color:#8a8378; line-height:1.45; }
+    .fabric-types{ display:grid; grid-template-columns:repeat(auto-fill,minmax(155px,1fr)); gap:1.1rem; margin-top:1.1rem; }
+    .ftype{ margin:0; }
+    .ftype img{ width:100%; aspect-ratio:1/1; object-fit:cover; display:block; border-radius:10px; }
+    .ftype .nm{ font-family:"Archivo",sans-serif; font-weight:600; font-size:.92rem; margin-top:.55rem; }
+    @media (prefers-color-scheme: dark){ .spec-chips span{ border-color:rgba(255,255,255,.2);} .spec-r{ border-color:rgba(255,255,255,.1);} }
+  </style>
+  <section class="wrap fab-specs" id="ozellikler">
+    <div class="fabrics-head">
+      <div>
+        <div class="ed-mono">Referans</div>
+        <h2>Kumaş türleri</h2>
+      </div>
+      <span class="ed-mono count">7 kumaş</span>
+    </div>
+    <div class="fabric-types" id="fabricTypes"></div>
+
+    <div class="fabrics-head" style="margin-top:2.6rem">
+      <div>
+        <div class="ed-mono">Denim</div>
+        <h2>Denim spesifikasyonu</h2>
+      </div>
+      <span class="ed-mono count">Tür · Yıkama · Gramaj</span>
+    </div>
+    <div class="spec-blocks">
+      <div class="spec-block"><h3>Denim Türleri</h3><div class="spec-chips" id="specDtypes"></div></div>
+      <div class="spec-block"><h3>Yıkama Çeşitleri</h3><div class="spec-chips" id="specWashes"></div></div>
+      <div class="spec-block"><h3>Gramaj Rehberi</h3><div class="spec-rows" id="specWeights"></div></div>
+      <div class="spec-block"><h3>Denim Kompozisyonları</h3><div class="spec-rows" id="specComps"></div></div>
+    </div>
+  </section>
+
   <div class="wrap">
     <div class="fabrics-head">
       <div>
@@ -222,10 +265,22 @@
     filters.insertAdjacentHTML("beforeend", D.FABRIC_FAMILIES.map(fam =>
       `<button class="fchip" data-f="${fam.id}">${fam.ad}</button>`).join(""));
 
+    // Numune kartı → gerçek kumaş fotoğrafı (aileye/kimliğe göre eşlenir)
+    const FAB_IMG = {
+      "poly-twill": "img/fabric-polyester.png", "poly-memory": "img/fabric-naylon.png",
+      "yun-flanel": "img/fabric-yun.png", "yun-kasmir": "img/fabric-yun.png",
+      "tencel-twill": "img/fabric-tencel.png", "tencel-denim": "img/fabric-tencel.png",
+      "viskon-dokuma": "img/fabric-modal.png", "viskon-keten": "img/fabric-keten.png"
+    };
     const grid = document.getElementById("fabrics");
-    grid.innerHTML = FABRICS.map(f => `
+    grid.innerHTML = FABRICS.map(f => {
+      const im = FAB_IMG[f.id];
+      const sw = im
+        ? `background-image:linear-gradient(180deg,rgba(0,0,0,0) 52%,rgba(0,0,0,.4)),url('${im}');background-size:cover;background-position:center;`
+        : `background:linear-gradient(135deg,${f.renk},${f.renk}dd 60%,${f.renk}bb);`;
+      return `
       <article class="fabric-card" data-kat="${f.family}">
-        <div class="swatch" style="background: linear-gradient(135deg, ${f.renk}, ${f.renk}dd 60%, ${f.renk}bb)">
+        <div class="swatch" style="${sw}">
           <span class="pantone">Pantone® ${f.pantone}</span>
         </div>
         <div class="body">
@@ -247,8 +302,24 @@
             <button class="btn" style="padding:.55rem 1rem; font-size:.66rem;" data-sample="${f.id}" data-ad="${f.ad}">Numune Talep Et</button>
           </div>
         </div>
-      </article>
-    `).join("");
+      </article>`;
+    }).join("");
+
+    // Kumaş türleri galerisi (görsel + isim), kullanıcının verdiği sırayla
+    const esc = s => String(s == null ? "" : s).replace(/"/g, "&quot;");
+    const FTORDER = ["polyester", "pamuk", "tencel", "modal", "keten", "yun", "naylon"];
+    document.getElementById("fabricTypes").innerHTML = FTORDER.map(id => {
+      const f = D.fiber(id); if (!f) return "";
+      return `<figure class="ftype"><img src="${f.img}" alt="${esc(f.ad)}" loading="lazy"><figcaption class="nm">${f.ad}</figcaption></figure>`;
+    }).join("");
+    document.getElementById("specDtypes").innerHTML = D.DENIM.types.map(t =>
+      `<span title="${esc(t.not)}">${t.ad}</span>`).join("");
+    document.getElementById("specWashes").innerHTML = D.DENIM.washes.map(w =>
+      `<span title="${esc(w.not)}">${w.ad}</span>`).join("");
+    document.getElementById("specWeights").innerHTML = D.DENIM.weights.map(w =>
+      `<div class="spec-r"><b>${w.ad}</b><span>${w.not}</span></div>`).join("");
+    document.getElementById("specComps").innerHTML = D.DENIM.comps.map(c =>
+      `<div class="spec-r"><b>${c.ad}</b><span>${c.not}</span></div>`).join("");
 
     // Filtre
     const chips = document.querySelectorAll(".fchip");

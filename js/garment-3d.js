@@ -69,9 +69,9 @@
   function shadowTexture() {
     const S = 256, c = document.createElement("canvas"); c.width = c.height = S;
     const x = c.getContext("2d");
-    const g = x.createRadialGradient(S / 2, S / 2, 6, S / 2, S / 2, S / 2);
-    g.addColorStop(0, "rgba(30,14,14,.42)"); g.addColorStop(.5, "rgba(30,14,14,.16)");
-    g.addColorStop(1, "rgba(30,14,14,0)");
+    const g = x.createRadialGradient(S / 2, S / 2, 4, S / 2, S / 2, S / 2);
+    g.addColorStop(0, "rgba(24,11,11,.52)"); g.addColorStop(.42, "rgba(24,11,11,.2)");
+    g.addColorStop(1, "rgba(24,11,11,0)");
     x.fillStyle = g; x.fillRect(0, 0, S, S);
     return new THREE.CanvasTexture(c);
   }
@@ -84,8 +84,8 @@
     g.addColorStop(0, "#fdfaf5"); g.addColorStop(.45, "#efe7db");
     g.addColorStop(.55, "#e7dccf"); g.addColorStop(1, "#cbbeae");
     x.fillStyle = g; x.fillRect(0, 0, w, h);
-    // yumuşak ışık lekeleri
-    for (const [cx, cy, r, a] of [[150, 70, 120, .5], [380, 90, 90, .35]]) {
+    // stüdyo softbox'ları (gerçekçi yansıma için parlak ışık lekeleri)
+    for (const [cx, cy, r, a] of [[150, 60, 140, .85], [380, 80, 110, .6], [270, 40, 80, .5]]) {
       const rg = x.createRadialGradient(cx, cy, 0, cx, cy, r);
       rg.addColorStop(0, `rgba(255,255,255,${a})`); rg.addColorStop(1, "rgba(255,255,255,0)");
       x.fillStyle = rg; x.fillRect(0, 0, w, h);
@@ -105,10 +105,15 @@
     g.addColorStop(0.82, "#E9E0D2"); // derin krem taban
     g.addColorStop(1, "#DED3C2");   // en alt: hafif gölge
     x.fillStyle = g; x.fillRect(0, 0, w, h);
+    // stüdyo spot parıltısı (üst-merkez sweep — lüks fotoğraf hissi)
+    const sp = x.createRadialGradient(w / 2, h * 0.30, h * 0.02, w / 2, h * 0.34, h * 0.5);
+    sp.addColorStop(0, "rgba(255,252,246,0.55)");
+    sp.addColorStop(1, "rgba(255,252,246,0)");
+    x.fillStyle = sp; x.fillRect(0, 0, w, h);
     // ince ink vinyet (alt köşeler)
     const vg = x.createRadialGradient(w / 2, h * 0.34, h * 0.12, w / 2, h * 0.5, h * 0.72);
     vg.addColorStop(0, "rgba(22,17,15,0)");
-    vg.addColorStop(1, "rgba(22,17,15,0.10)");
+    vg.addColorStop(1, "rgba(22,17,15,0.14)");
     x.fillStyle = vg; x.fillRect(0, 0, w, h);
     const t = new THREE.CanvasTexture(c);
     t.colorSpace = THREE.SRGBColorSpace || t.colorSpace;
@@ -172,7 +177,7 @@
       this.renderer.setSize(w, h, false);
       this.renderer.outputEncoding = THREE.sRGBEncoding;
       this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      this.renderer.toneMappingExposure = 0.92;
+      this.renderer.toneMappingExposure = 1.06;
       this._lastW = w; this._lastH = h;
       container.appendChild(this.renderer.domElement);
 
@@ -181,9 +186,9 @@
       this.scene.environment = pmrem.fromEquirectangular(envEquirect()).texture;
 
       // ışık
-      this.scene.add(new THREE.HemisphereLight(0xfff6ec, 0x9a8f86, 0.42));
-      const key = new THREE.DirectionalLight(0xffffff, 0.9); key.position.set(5, 7, 8); this.scene.add(key);
-      const rim = new THREE.DirectionalLight(0xffe6cc, 0.5); rim.position.set(-6, 3, -5); this.scene.add(rim);
+      this.scene.add(new THREE.HemisphereLight(0xfff6ec, 0x9a8f86, 0.55));
+      const key = new THREE.DirectionalLight(0xffffff, 1.15); key.position.set(5, 7, 8); this.scene.add(key);
+      const rim = new THREE.DirectionalLight(0xffe6cc, 0.62); rim.position.set(-6, 3, -5); this.scene.add(rim);
       const fill = new THREE.DirectionalLight(0xffffff, 0.22); fill.position.set(0, -4, 6); this.scene.add(fill);
 
       const shadow = new THREE.Mesh(
@@ -202,6 +207,9 @@
       this.controls.target.set(0, -0.2, 0);
       this.controls.autoRotateSpeed = 1.4;
 
+      this.gender = "erkek";                // parametrik kesim (erkek | kadin)
+      this.drape = 0.2;                     // kumaş karakteri (0 sert/yapılı .. 1 akıcı/dökümlü)
+      this._isDesign = false;               // gerçek 3D tasarım (GLB) modu — baked materyal korunur
       this.group = new THREE.Group();
       this.pivot = new THREE.Group();       // salınım için
       this.pivot.add(this.group);
@@ -233,14 +241,50 @@
     setAvailableModels(arr) { this._models = new Set(arr || []); return this; }
 
     // GLB varsa gerçek modeli, yoksa prosedürel garmenti kur
-    setGarment(meshKey, garmentId) {
+    setGarment(meshKey, garmentId, gender) {
+      this._isDesign = false;               // garment seçimi → düzenlenebilir moda dön
       this.garmentKey = meshKey;
       this._garmentId = garmentId || null;
+      if (gender) this.gender = gender;
       if (garmentId && this._models.has(garmentId) && THREE.GLTFLoader) {
         this._loadGLB(garmentId, () => this._buildProcedural(meshKey));
       } else {
         this._buildProcedural(meshKey);
       }
+      return this;
+    }
+
+    setGender(gender) {
+      this.gender = gender;
+      if (this.garmentKey) this.setGarment(this.garmentKey, this._garmentId, gender);
+      return this;
+    }
+
+    setDrape(v) {
+      if (typeof v === "number" && Math.abs((this.drape != null ? this.drape : 0.2) - v) < 0.001) return this;
+      this.drape = v;
+      if (this.garmentKey && !this._isGLB) this._buildProcedural(this.garmentKey);
+      return this;
+    }
+
+    // Gerçek 3D tasarım yükle (Meshy/GLB) — baked doku korunur; cb(parts) yüklenince çağrılır
+    setModel(url, cb) {
+      this._isDesign = true;
+      this._isGLB = true;
+      this.garmentKey = null;
+      this._designCb = cb || null;
+      const loader = new THREE.GLTFLoader();
+      fetch(url)
+        .then(r => (r.ok ? r.arrayBuffer() : Promise.reject()))
+        .then(buf => loader.parse(buf, "", g => this._mountGLB(g), () => {}))
+        .catch(() => {});
+      return this;
+    }
+
+    // İsimli parçaya (Blender modeli) renk uygula — baked dokuyu renkle çarpar
+    setPartColor(index, hex) {
+      const p = this._designParts && this._designParts[index];
+      if (p && p.material && p.material.color) { p.material.color.set(hex); p.material.needsUpdate = true; }
       return this;
     }
 
@@ -257,12 +301,14 @@
       while (this.group.children.length) { const m = this.group.children.pop(); m.geometry && m.geometry.dispose(); }
       const obj = gltf.scene;
       this._glbMats = [];
+      this._designParts = [];
       obj.traverse(m => {
         if (m.isMesh && m.material) {
           m.material = m.material.clone();
           m.material.side = THREE.DoubleSide;
-          m.material.envMapIntensity = 0.5;
+          m.material.envMapIntensity = this._isDesign ? 0.9 : 0.5;
           this._glbMats.push(m.material);
+          if (this._isDesign) this._designParts.push({ name: m.name || `Parça ${this._designParts.length + 1}`, material: m.material });
         }
       });
       const size = new THREE.Box3().setFromObject(obj).getSize(new THREE.Vector3());
@@ -272,9 +318,10 @@
       this.group.position.set(0, 0, 0);
       this.group.add(obj);
       this._isGLB = true;
-      this._applyFabricToMaterial();
-      this.setColor(this.colorHex);
+      // tasarım (baked) modunda renk/kumaş uygulama — modelin kendi dokusu kalır
+      if (!this._isDesign) { this._applyFabricToMaterial(); this.setColor(this.colorHex); }
       this.resetView();
+      if (this._isDesign && this._designCb) this._designCb(this._designParts.map(p => p.name));
     }
 
     _buildProcedural(key) {
@@ -287,23 +334,36 @@
       const add = (geo, mat) => { const m = new THREE.Mesh(geo, mat || this.mat); this.group.add(m); return m; };
       const hw = this._hardwareMat();
 
+      // cinsiyete göre parametrik kesim çarpanları (kadın: dar omuz + belirgin bel)
+      const fem = this.gender === "kadin";
+      // gövde profili x çarpanları (alttan üste: hem, alt-bel, bel, göğüs, omuz, boyun)
+      const facTop = fem ? [1.0, 0.9, 0.88, 0.98, 0.9, 1.0] : [1.0, 1.02, 1.0, 1.04, 1.06, 1.0];
+      const px = (arr, facs) => arr.map((p, i) => [p[0] * (facs[i] != null ? facs[i] : 1), p[1]]);
+      // kumaş karakteri: dr 0=sert/yapılı .. 1=akıcı/dökümlü
+      const dr = (typeof this.drape === "number") ? this.drape : 0.2;
+      const foldAmp = 0.55 + dr * 1.9;   // kıvrım şiddeti
+      const hemLong = dr * 0.4;          // akıcı kumaş daha uzun düşer
+      const boxy = (0.35 - dr) * 0.16;   // sert kumaş daha kutu (geniş etek)
+
       if (key === "shirt" || key === "jacket") {
         const jacket = key === "jacket";
         const flatZ = jacket ? 0.72 : 0.66;
         // gövde profili (alttan üste): hem, waist, chest, shoulder, neck
-        const prof = jacket
+        const prof = px(jacket
           ? [[1.55, -2.4], [1.5, -1.2], [1.42, 0.1], [1.55, 1.0], [1.5, 1.7], [0.62, 1.95]]
-          : [[1.35, -2.2], [1.2, -1.0], [1.32, 0.2], [1.38, 1.1], [1.28, 1.7], [0.55, 1.9]];
+          : [[1.35, -2.2], [1.2, -1.0], [1.32, 0.2], [1.38, 1.1], [1.28, 1.7], [0.55, 1.9]], facTop);
+        // kumaş karakteri: etek ucu sert kumaşta geniş/kısa, akıcıda dar/uzun
+        prof[0] = [prof[0][0] * (1 + boxy), prof[0][1] - hemLong];
         // ceket: açık ön (boşluk kameraya/öne bakar)
         const body = torso(prof, jacket ? Math.PI * 0.63 : 0, jacket ? Math.PI * 1.74 : Math.PI * 2, flatZ);
-        drape(body, jacket ? 0.02 : 0.03, 9, 0.012);
+        drape(body, (jacket ? 0.02 : 0.03) * foldAmp, 9, 0.012 * foldAmp);
         add(body);
-        const shoulderY = 1.55, shoulderX = jacket ? 1.5 : 1.32, fz = flatZ * 1.28;
+        const shoulderY = 1.55, shoulderX = (jacket ? 1.5 : 1.32) * (fem ? 0.9 : 1.06), fz = flatZ * 1.28;
 
         // kollar
         for (const s of [-1, 1]) {
           const sl = limb(jacket ? 0.5 : 0.44, jacket ? 0.4 : 0.32, 2.5, 0.85);
-          drape(sl, 0.03, 7, 0.01);
+          drape(sl, 0.03 * foldAmp, 7, 0.01 * foldAmp);
           const m = add(sl);
           m.position.set(s * (shoulderX - 0.1), shoulderY - 0.75, 0);
           m.rotation.z = s * 0.98; m.rotation.x = 0.12;
@@ -326,22 +386,24 @@
       } else {
         // pantolon / short
         const short = key === "shorts";
-        const legL = short ? 1.8 : 3.3;
+        const legL = (short ? 1.8 : 3.3) + hemLong * 1.2;
         const flatZ = 0.8, fz = flatZ * 1.3;
-        // kalça bloğu (bel → ağ) — tek temiz gövde
+        // kalça bloğu (bel → ağ) — cinsiyete göre kalça/bel oranı
+        const facHip = fem ? [1.0, 1.05, 1.08, 0.9] : [1.0, 1.0, 1.0, 1.02];
         const hip = new THREE.Mesh(
-          torso([[0.85, -0.55], [1.2, -0.05], [1.3, 0.45], [1.22, 1.05]], 0, Math.PI * 2, flatZ), this.mat);
-        hip.position.y = 1.15; drape(hip.geometry, 0.02, 8, 0.008); this.group.add(hip);
-        // bel bandı (ince)
+          torso(px([[0.85, -0.55], [1.2, -0.05], [1.3, 0.45], [1.22, 1.05]], facHip), 0, Math.PI * 2, flatZ), this.mat);
+        hip.position.y = 1.15; drape(hip.geometry, 0.02 * foldAmp, 8, 0.008 * foldAmp); this.group.add(hip);
+        // bel bandı (ince) — kadın: daha dar
+        const wbf = fem ? 0.9 : 1.0;
         const wb = new THREE.Mesh(
-          torso([[1.24, -0.14], [1.3, 0.0], [1.24, 0.16]], 0, Math.PI * 2, flatZ), this.mat);
+          torso([[1.24 * wbf, -0.14], [1.3 * wbf, 0.0], [1.24 * wbf, 0.16]], 0, Math.PI * 2, flatZ), this.mat);
         wb.position.y = 2.12; this.group.add(wb);
-        // bacaklar (ağdan aşağı, hafif konik)
+        // bacaklar (ağdan aşağı, hafif konik) — kadın: biraz daha dar ve yakın
         for (const s of [-1, 1]) {
-          const lg = limb(0.56, short ? 0.54 : 0.44, legL, 0.9);
-          drape(lg, 0.03, 8, 0.012);
+          const lg = limb(0.56 * (fem ? 0.94 : 1), (short ? 0.54 : 0.44) * (fem ? 0.94 : 1), legL, 0.9);
+          drape(lg, 0.03 * foldAmp, 8, 0.012 * foldAmp);
           const m = add(lg);
-          m.position.set(s * 0.5, 0.62 - legL / 2, 0);
+          m.position.set(s * (fem ? 0.46 : 0.5), 0.62 - legL / 2, 0);
           m.rotation.z = s * 0.04;
         }
         // düğme + perçinler (ön yüz)
@@ -359,7 +421,7 @@
       return this;
     }
 
-    setFabric(fabric) { this.fabric = fabric; this._applyFabricToMaterial(); return this; }
+    setFabric(fabric) { this.fabric = fabric; if (this._isDesign) return this; this._applyFabricToMaterial(); return this; }
 
     _applyFabricToMaterial() {
       const f = this.fabric, type = (f && f.tex) || "plain";
@@ -382,6 +444,7 @@
 
     setColor(hex) {
       this.colorHex = hex;
+      if (this._isDesign) return this;      // tasarım baked rengini koru
       this.mat.color.set(hex);
       if (this._isGLB && this._glbMats) this._glbMats.forEach(m => { m.color && m.color.set(hex); });
       return this;

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dijital Showroom — LOOMR</title>
+  <meta name="description" content="LOOMR Salon: koleksiyonu gezilebilir 3D galeride keşfedin.">
+  <meta property="og:title" content="LOOMR — Dijital Showroom">
+  <meta property="og:description" content="Fikirden üretime, tasarımdan koleksiyona. Koleksiyonu 3D salonda gezin.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62.5..125,100..900;1,62.5..125,100..900&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
+  <style>
+    :root{ --acc:#C7331E; --cream:#F4EFE7; --ink:#16110F; --gold:#C2A05E; }
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    html,body{ height:100%; overflow:hidden; background:var(--ink); }
+    body{ font-family:'Archivo',sans-serif; color:var(--cream); }
+    #salon{ position:fixed; inset:0; display:block; width:100vw !important; height:100vh !important; }
+    .hud-top{ position:fixed; top:0; left:0; right:0; display:flex; justify-content:space-between; align-items:center;
+      padding:18px 26px; z-index:20; pointer-events:none; }
+    .hud-logo{ font-weight:900; font-stretch:120%; letter-spacing:.06em; font-size:20px; color:var(--cream);
+      text-decoration:none; pointer-events:auto; text-shadow:0 1px 8px rgba(0,0,0,.5); }
+    .hud-logo em{ font-style:normal; color:var(--acc); }
+    .hud-links{ display:flex; gap:18px; pointer-events:auto; }
+    .hud-links a{ font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+      color:var(--cream); opacity:.85; text-decoration:none; text-shadow:0 1px 6px rgba(0,0,0,.5); }
+    .hud-links a:hover{ color:var(--acc); opacity:1; }
+    .hud-hint{ position:fixed; bottom:22px; left:50%; transform:translateX(-50%); z-index:20;
+      font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+      color:var(--cream); opacity:.65; pointer-events:none; text-align:center; transition:opacity .8s; }
+    .hud-hint.gone{ opacity:0; }
+    #loader{ position:fixed; inset:0; background:var(--ink); z-index:50; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; gap:22px; transition:opacity .9s; }
+    #loader.done{ opacity:0; pointer-events:none; }
+    #loader .big{ font-weight:900; font-stretch:125%; font-size:clamp(42px,9vw,110px); letter-spacing:.04em; }
+    #loader .big em{ font-style:normal; color:var(--acc); }
+    #loader .sub{ font-family:'Fraunces',serif; font-style:italic; font-size:clamp(15px,2.4vw,22px); color:var(--gold); }
+    #bar{ width:min(360px,70vw); height:2px; background:rgba(244,239,231,.18); }
+    #bar i{ display:block; height:100%; width:0%; background:var(--acc); transition:width .3s; }
+    #loader .mono{ font-family:'Space Mono',monospace; font-size:10px; letter-spacing:.2em; text-transform:uppercase; opacity:.55; }
+    #panel{ position:fixed; top:0; right:0; bottom:0; width:min(420px,92vw); background:var(--cream); color:var(--ink);
+      z-index:30; padding:34px 30px; transform:translateX(105%); transition:transform .55s cubic-bezier(.7,0,.2,1);
+      display:flex; flex-direction:column; gap:16px; }
+    #panel.open{ transform:translateX(0); }
+    #panel .mono{ font-family:'Space Mono',monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--acc); }
+    #panel h2{ font-weight:900; font-stretch:118%; font-size:34px; line-height:1.02; }
+    #panel .tag{ font-family:'Fraunces',serif; font-style:italic; font-size:17px; opacity:.8; }
+    #panel img{ width:100%; border:1px solid rgba(22,17,15,.15); max-height:46vh; object-fit:cover; }
+    #panel .cta{ margin-top:auto; display:flex; flex-direction:column; gap:10px; }
+    #panel .cta a{ display:block; text-align:center; padding:13px 18px; text-decoration:none;
+      font-family:'Space Mono',monospace; font-size:12px; letter-spacing:.14em; text-transform:uppercase; }
+    #panel .cta a.p{ background:var(--ink); color:var(--cream); }
+    #panel .cta a.p:hover{ background:var(--acc); }
+    #panel .cta a.g{ border:1px solid var(--ink); color:var(--ink); }
+    #panel .cta a.g:hover{ border-color:var(--acc); color:var(--acc); }
+    #closeP{ position:absolute; top:16px; right:18px; background:none; border:none; font-size:26px; cursor:pointer; color:var(--ink); }
+    #closeP:hover{ color:var(--acc); }
+    @media (max-width:640px){ .hud-links{ display:none; } }
+  </style>
+</head>
+<body>
+  <canvas id="salon"></canvas>
+
+  <div class="hud-top">
+    <a class="hud-logo" href="index.html">LOOMR<em>.</em></a>
+    <nav class="hud-links">
+      <a href="lookbook.html">Lookbook</a>
+      <a href="hizmetler.html">Hizmetler</a>
+      <a href="giris.html">Workspace</a>
+    </nav>
+  </div>
+  <div class="hud-hint" id="hint">Kaydır / sürükle: salonda ilerle &nbsp;·&nbsp; Esere tıkla: yakından incele</div>
+
+  <div id="loader">
+    <div class="big">LOOMR<em>.</em></div>
+    <div class="sub">Salon hazırlanıyor…</div>
+    <div id="bar"><i id="barFill"></i></div>
+    <div class="mono" id="loadTxt">0%</div>
+  </div>
+
+  <aside id="panel" aria-hidden="true">
+    <button id="closeP" aria-label="Kapat">×</button>
+    <span class="mono" id="pNo">SS27 · 01</span>
+    <h2 id="pTitle">Kampanya Görseli</h2>
+    <div class="tag">Emre Korkmaz Textile Design Studio</div>
+    <img id="pImg" src="" alt="Look">
+    <div class="cta">
+      <a class="p" id="pMail" href="mailto:tedarik@loomr.studio?subject=LOOMR%20Numune%20Talebi">Numune / Teklif İste</a>
+      <a class="g" href="lookbook.html">Lookbook'ta Gör</a>
+    </div>
+  </aside>
+
+  <script src="js/lib/three.min.js"></script>
+  <script src="js/lib/GLTFLoader.js"></script>
+  <script>
+  (function(){
+    'use strict';
+    /* Mobil: 3D salon yerine sade showroom (lookbook) */
+    var isMobile = window.matchMedia('(max-width: 820px)').matches ||
+                   (('ontouchstart' in window) && Math.min(screen.width,screen.height) < 820);
+    if(isMobile){ location.replace('lookbook.html'); return; }
+    /* Sağ tık menüsünü kapat (sağ tıkla da eser seçilebilsin) */
+    addEventListener('contextmenu', function(e){ e.preventDefault(); });
+    /* Duvar eserleri: lookbook seçkisi */
+    var ARTS=['lb-collection-tailored','lb-collection-denim-rules','lb-collection-london','lb-collection-summer-2026',
+      'lb-collection-oversize-2026','lb-collection-denim-2026','lb-collection-classic-2027','lb-collection-winter',
+      'lb-collection-summer','lb-collection-urban-relax','lb-collection-cropped','lb-cold-elegance-portrait',
+      'lb-redwall-standing','lb-redwall-pinstripe','lb-redwall-armchair','lb-redwall-navy','lb-redwall-vest',
+      'lb-redwall-wrap','lb-redwall-slit','lb-redwall-standing2','lb-look-tweed-suit','lb-portrait-tweed',
+      'lb-editorial-classic-lines','lb-refined-relaxation'];
+    var GLBS=[ {id:'denim-pantolon',  x:-0.95, z: 13,  h:1.55, name:'Denim Pantolon · Baggy'},
+               {id:'stand-blazer',    x: 0.95, z: 7.5, h:1.6,  name:'Blazer'},
+               {id:'stand-denimceket',x:-0.95, z:  2,  h:1.6,  name:'Denim Ceket'},
+               {id:'look-3989',       x: 0.95, z:-3.5, h:1.25, name:'Crop Blazer'},
+               {id:'stand-tank',      x:-0.95, z: -9,  h:1.55, name:'Tank'},
+               {id:'stand-p01',       x: 0.95, z:-14.5,h:1.6,  name:'Koleksiyon Parçası'} ];
+
+    var canvas=document.getElementById('salon');
+    var renderer;
+    try{ renderer=new THREE.WebGLRenderer({canvas:canvas, antialias:true}); }
+    catch(e){ location.href='lookbook.html'; return; }
+    renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+    renderer.outputEncoding=THREE.sRGBEncoding;
+    renderer.toneMapping=THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure=1.02;
+    renderer.shadowMap.enabled=true;
+    renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+
+    var scene=new THREE.Scene();
+    scene.background=new THREE.Color(0x120e0c);
+    scene.fog=new THREE.Fog(0x120e0c, 26, 58);
+
+    var camera=new THREE.PerspectiveCamera(58, innerWidth/innerHeight, .1, 120);
+    var EYE=1.62;
+    camera.position.set(0,EYE,24);
+
+    /* ---- Ortam yansıması (gradient cubemap) — metal/parlak yüzeyler için ---- */
+    (function(){
+      function face(top,bot){
+        var c=document.createElement('canvas'); c.width=c.height=64;
+        var g=c.getContext('2d'); var gr=g.createLinearGradient(0,0,0,64);
+        gr.addColorStop(0,top); gr.addColorStop(1,bot);
+        g.fillStyle=gr; g.fillRect(0,0,64,64); return c;
+      }
+      var warm='#5a4a3a', dark='#0e0b09', mid='#2c231d';
+      var faces=[face(mid,dark),face(mid,dark),face(warm,mid),face(dark,dark),face(mid,dark),face(mid,dark)];
+      var cube=new THREE.CubeTexture(faces.map(function(c){return c;}));
+      cube.needsUpdate=true; cube.encoding=THREE.sRGBEncoding;
+      scene.environment=cube;
+    })();
+
+    /* ---------- SALON ---------- */
+    var HALL_L=52, HALL_W=11, HALL_H=4.6;
+    var bordo=0x5F161F;
+    var texL=new THREE.TextureLoader();
+    function rTex(p,rx,ry,srgb){
+      var t=texL.load(p);
+      t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(rx,ry);
+      t.anisotropy=renderer.capabilities.getMaxAnisotropy();
+      if(srgb) t.encoding=THREE.sRGBEncoding;
+      return t;
+    }
+    /* Parke zemin (yarı saydam -> altındaki ayna dünyası yansıma verir) */
+    var floorMat=new THREE.MeshStandardMaterial({
+      map:rTex('img/salon-tex/herringbone_parquet_diff.jpg',5,24,true),
+      roughnessMap:rTex('img/salon-tex/herringbone_parquet_rough.jpg',5,24,false),
+      normalMap:rTex('img/salon-tex/herringbone_parquet_nor_gl.jpg',5,24,false),
+      color:0x9a8672, roughness:.9, metalness:.06,
+      transparent:true, opacity:.93
+    });
+    floorMat.normalScale=new THREE.Vector2(.7,.7);
+    var floor=new THREE.Mesh(new THREE.PlaneGeometry(HALL_W,HALL_L), floorMat);
+    floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; floor.renderOrder=2; scene.add(floor);
+    var mirror=new THREE.Group(); scene.add(mirror);   // zemin altı ayna dünyası
+
+    /* Sıvalı duvarlar */
+    var wallMat=new THREE.MeshStandardMaterial({
+      map:rTex('img/salon-tex/painted_plaster_wall_diff.jpg',10,2,true),
+      roughnessMap:rTex('img/salon-tex/painted_plaster_wall_rough.jpg',10,2,false),
+      color:0xD9CFBC, roughness:.96
+    });
+    function wall(w,h,x,y,z,ry,mat){
+      var m=new THREE.Mesh(new THREE.PlaneGeometry(w,h), mat||wallMat.clone());
+      m.position.set(x,y,z); m.rotation.y=ry; scene.add(m); return m;
+    }
+    wall(HALL_L,HALL_H,-HALL_W/2,HALL_H/2,0, Math.PI/2);
+    wall(HALL_L,HALL_H, HALL_W/2,HALL_H/2,0,-Math.PI/2);
+    wall(HALL_W,HALL_H,0,HALL_H/2,-HALL_L/2,0,
+      new THREE.MeshStandardMaterial({
+        map:rTex('img/salon-tex/painted_plaster_wall_diff.jpg',3,1.4,true),
+        roughnessMap:rTex('img/salon-tex/painted_plaster_wall_rough.jpg',3,1.4,false),
+        color:0x7d2430, roughness:.9
+      }));
+    wall(HALL_W,HALL_H,0,HALL_H/2, HALL_L/2,Math.PI);
+    var ceil=new THREE.Mesh(new THREE.PlaneGeometry(HALL_W,HALL_L),
+      new THREE.MeshStandardMaterial({color:0x1e1815, roughness:1}));
+    ceil.rotation.x=Math.PI/2; ceil.position.y=HALL_H; scene.add(ceil);
+
+    /* Uç duvar: altın LOOMR + çizgi */
+    (function(){
+      /* GERÇEK 3D altın taş LOOMR (Blender'da üretildi, derinlikli harfler) */
+      var signLoader=new THREE.GLTFLoader();
+      signLoader.load('models/loomr-sign.glb', function(g3){
+        var sign=g3.scene;
+        sign.rotation.x=Math.PI/2;
+        sign.position.set(0, 2.55, -HALL_L/2+.16);
+        sign.traverse(function(o){ if(o.isMesh){ o.castShadow=true; o.material.envMapIntensity=1.4; } });
+        scene.add(sign);
+        var sm=sign.clone(true);
+        sm.traverse(function(o){ if(o.isMesh){ o.material=o.material.clone(); o.material.transparent=true; o.material.opacity=.25; } });
+        sm.scale.y=-1; sm.position.y=-2.55; mirror.add(sm);
+        /* tabelayı yıkayan spot */
+        var ss=new THREE.SpotLight(0xffe2b0, 1.8, 12, .5, .5);
+        ss.position.set(0, 4.3, -HALL_L/2+3.4);
+        ss.target=sign; scene.add(ss);
+      });
+      /* arkasına sıcak hale */
+      var hc=document.createElement('canvas'); hc.width=hc.height=256;
+      var hg=hc.getContext('2d');
+      var rad=hg.createRadialGradient(128,128,10,128,128,128);
+      rad.addColorStop(0,'rgba(255,214,150,.5)'); rad.addColorStop(1,'rgba(255,214,150,0)');
+      hg.fillStyle=rad; hg.fillRect(0,0,256,256);
+      var halo=new THREE.Mesh(new THREE.PlaneGeometry(9,4),
+        new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(hc), transparent:true,
+          blending:THREE.AdditiveBlending, depthWrite:false}));
+      halo.position.set(0,2.55,-HALL_L/2+.02); scene.add(halo);
+      var f=new THREE.Mesh(new THREE.PlaneGeometry(7.6,.025),
+        new THREE.MeshBasicMaterial({color:0xC2A05E}));
+      f.position.set(0,1.58,-HALL_L/2+.04); scene.add(f);
+    })();
+
+    /* ---------- MİMARİ DETAY ---------- */
+    var trimDark=new THREE.MeshStandardMaterial({color:0x241c17, roughness:.55});
+    var woodDark=new THREE.MeshStandardMaterial({color:0x3a2c21, roughness:.6, metalness:.05});
+    var pilMat=new THREE.MeshStandardMaterial({color:0xE2D8C5, roughness:.9});
+    var brass=new THREE.MeshStandardMaterial({color:0xC2A05E, roughness:.28, metalness:.9});
+    [-1,1].forEach(function(s){
+      var base=new THREE.Mesh(new THREE.BoxGeometry(.06,.2,HALL_L), trimDark);
+      base.position.set(s*(HALL_W/2-.03),.1,0); scene.add(base);
+      /* Lambri (alt bant koyu ahşap) */
+      var wains=new THREE.Mesh(new THREE.BoxGeometry(.03,.75,HALL_L), woodDark);
+      wains.position.set(s*(HALL_W/2-.015),.575,0); scene.add(wains);
+      var wtrim=new THREE.Mesh(new THREE.BoxGeometry(.05,.05,HALL_L), brass);
+      wtrim.position.set(s*(HALL_W/2-.025),.975,0); scene.add(wtrim);
+      var crown=new THREE.Mesh(new THREE.BoxGeometry(.08,.14,HALL_L), pilMat);
+      crown.position.set(s*(HALL_W/2-.04),HALL_H-.07,0); scene.add(crown);
+      /* Pilastrlar eser ARALARINA hizalı (önlerini kapatmasın) */
+      var _pw=12, _gap=(HALL_L-9)/_pw, _s0=(_pw-1)*_gap/2-1.5;
+      for(var j=0;j<_pw-1;j+=2){
+        var z=_s0-(j+.5)*_gap;
+        var p=new THREE.Mesh(new THREE.BoxGeometry(.14,HALL_H,.3), pilMat);
+        p.position.set(s*(HALL_W/2-.05),HALL_H/2,z); scene.add(p);
+      }
+    });
+    /* Kasetli tavan kirişleri */
+    for(var bz=-HALL_L/2+3.25; bz<HALL_L/2; bz+=3.25){
+      var beam=new THREE.Mesh(new THREE.BoxGeometry(HALL_W,.16,.14), trimDark);
+      beam.position.set(0,HALL_H-.08,bz); scene.add(beam);
+    }
+    [-2.75,2.75].forEach(function(bx){
+      var lb=new THREE.Mesh(new THREE.BoxGeometry(.14,.16,HALL_L), trimDark);
+      lb.position.set(bx,HALL_H-.08,0); scene.add(lb);
+    });
+    /* Bordo halı yolluk + altın kenar */
+    /* Desenli halı dokusu (bordo zemin + altın bordür + motif) */
+    function carpetTex(){
+      var c=document.createElement('canvas'); c.width=512; c.height=1024;
+      var g=c.getContext('2d');
+      g.fillStyle='#400c13'; g.fillRect(0,0,512,1024);
+      // kenar altın bordürler
+      g.fillStyle='#B08D4F';
+      [18,40].forEach(function(x){ g.fillRect(x,0,5,1024); g.fillRect(512-x-5,0,5,1024); });
+      // iç ince çizgi
+      g.fillStyle='rgba(194,160,94,.5)';
+      g.fillRect(58,0,2,1024); g.fillRect(452,0,2,1024);
+      // orta motif: baklava dizisi
+      g.strokeStyle='rgba(194,160,94,.38)'; g.lineWidth=2.5;
+      for(var y=42;y<1024;y+=86){
+        g.beginPath();
+        g.moveTo(256,y-26); g.lineTo(282,y); g.lineTo(256,y+26); g.lineTo(230,y); g.closePath();
+        g.stroke();
+        g.beginPath(); g.arc(256,y,4,0,7); g.fillStyle='rgba(194,160,94,.45)'; g.fill();
+      }
+      // dokuma greni
+      for(var i=0;i<9000;i++){
+        var xx=Math.random()*512, yy=Math.random()*1024;
+        g.fillStyle='rgba(0,0,0,'+(Math.random()*.08)+')';
+        g.fillRect(xx,yy,1.5,1.5);
+      }
+      var t=new THREE.CanvasTexture(c);
+      t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(1,10);
+      t.encoding=THREE.sRGBEncoding; t.anisotropy=8;
+      return t;
+    }
+    var runnerMat=new THREE.MeshStandardMaterial({
+      map:carpetTex(), roughness:1, metalness:0,
+      normalMap:rTex('img/salon-tex/fabric_pattern_07_nor_gl.jpg',4,48,false)
+    });
+    runnerMat.normalScale=new THREE.Vector2(1.3,1.3);
+    var runner=new THREE.Mesh(new THREE.PlaneGeometry(3.1,HALL_L-5), runnerMat);
+    runner.rotation.x=-Math.PI/2; runner.position.y=.012; runner.renderOrder=3; scene.add(runner);
+    var runEdge=new THREE.Mesh(new THREE.PlaneGeometry(3.3,HALL_L-4.8),
+      new THREE.MeshStandardMaterial({color:0xC2A05E, roughness:.5, metalness:.5}));
+    runEdge.rotation.x=-Math.PI/2; runEdge.position.y=.008; scene.add(runEdge);
+    /* Tavan ışık şeridi + ayna kopyası */
+    var stripMat=new THREE.MeshBasicMaterial({color:0xfff3e0});
+    var strip=new THREE.Mesh(new THREE.PlaneGeometry(.5,HALL_L-6), stripMat);
+    strip.rotation.x=Math.PI/2; strip.position.set(0,HALL_H-.02,0); scene.add(strip);
+    var stripM=strip.clone(); stripM.material=new THREE.MeshBasicMaterial({color:0xfff3e0, transparent:true, opacity:.18});
+    stripM.rotation.x=-Math.PI/2; stripM.position.y=-HALL_H+.02; mirror.add(stripM);
+    /* Ray spot armatürleri + ışık huzmeleri */
+    [-1.9,1.9].forEach(function(rx){
+      var rail=new THREE.Mesh(new THREE.CylinderGeometry(.028,.028,HALL_L-8,10), trimDark);
+      rail.rotation.x=Math.PI/2; rail.position.set(rx,HALL_H-.26,0); scene.add(rail);
+      for(var sz=-HALL_L/2+5; sz<HALL_L/2-4; sz+=5.2){
+        var can=new THREE.Mesh(new THREE.CylinderGeometry(.06,.075,.22,12), trimDark);
+        can.position.set(rx,HALL_H-.4,sz);
+        can.rotation.z=(rx<0?-.55:.55); scene.add(can);
+        var cap=new THREE.Mesh(new THREE.CircleGeometry(.055,12),
+          new THREE.MeshBasicMaterial({color:0xffe2b0}));
+        cap.position.set(rx+(rx<0?-.062:.062),HALL_H-.485,sz);
+        cap.rotation.y=(rx<0?Math.PI/2:-Math.PI/2); cap.rotation.x=-.5; scene.add(cap);
+      }
+    });
+    /* Işık huzmeleri (duvarlara, seyrek) */
+    var beamMat=new THREE.MeshBasicMaterial({color:0xffdda8, transparent:true, opacity:.045,
+      blending:THREE.AdditiveBlending, depthWrite:false, side:THREE.DoubleSide});
+    for(var hz=-18; hz<=18; hz+=9){
+      [-1,1].forEach(function(s){
+        var cone=new THREE.Mesh(new THREE.ConeGeometry(1.15,3.6,16,1,true), beamMat);
+        cone.position.set(s*(HALL_W/2-1.6), HALL_H-2.1, hz);
+        cone.rotation.z=s*.75; scene.add(cone);
+      });
+    }
+    /* Havada süzülen toz */
+    (function(){
+      var N=260, pos=new Float32Array(N*3);
+      for(var i=0;i<N;i++){
+        pos[i*3]=(Math.random()-.5)*HALL_W*.9;
+        pos[i*3+1]=Math.random()*HALL_H;
+        pos[i*3+2]=(Math.random()-.5)*(HALL_L-6);
+      }
+      var g=new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.BufferAttribute(pos,3));
+      var dust=new THREE.Points(g, new THREE.PointsMaterial({color:0xffe9c9, size:.022,
+        transparent:true, opacity:.5, blending:THREE.AdditiveBlending, depthWrite:false}));
+      scene.add(dust); window.__dust=dust;
+    })();
+    /* Deri banklar */
+    [11.5,-1.2,-13.5].forEach(function(bz,bi){
+      var bx=(bi%2? -2.95:2.95);
+      var seat=new THREE.Mesh(new THREE.BoxGeometry(1.7,.13,.52),
+        new THREE.MeshStandardMaterial({color:0x2b2018, roughness:.42, metalness:.05}));
+      seat.position.set(bx,.42,bz); seat.castShadow=true; scene.add(seat);
+      var cush=new THREE.Mesh(new THREE.BoxGeometry(1.66,.05,.48),
+        new THREE.MeshStandardMaterial({color:0x35271c, roughness:.6}));
+      cush.position.set(bx,.51,bz); scene.add(cush);
+      [[-.72,-.18],[.72,-.18],[-.72,.18],[.72,.18]].forEach(function(o){
+        var leg=new THREE.Mesh(new THREE.CylinderGeometry(.022,.022,.42,10), brass);
+        leg.position.set(bx+o[0],.21,bz+o[1]); scene.add(leg);
+      });
+    });
+    /* Kadife kordon bariyer (pirinç baba + sarkan kordon) */
+    (function(){
+      var ropeMat=new THREE.MeshStandardMaterial({color:0x6a1420, roughness:.92});
+      [-2.1,2.1].forEach(function(px){
+        var pts=[];
+        for(var pz=16.5; pz>=-12.5; pz-=5.8) pts.push(pz);
+        pts.forEach(function(pz){
+          var post=new THREE.Mesh(new THREE.CylinderGeometry(.03,.038,.95,12), brass);
+          post.position.set(px,.475,pz); post.castShadow=true; scene.add(post);
+          var ball=new THREE.Mesh(new THREE.SphereGeometry(.05,14,10), brass);
+          ball.position.set(px,.98,pz); scene.add(ball);
+        });
+        for(var k=0;k<pts.length-1;k++){
+          var a=new THREE.Vector3(px,.92,pts[k]), b=new THREE.Vector3(px,.92,pts[k+1]);
+          var mid=new THREE.Vector3(px,.74,(pts[k]+pts[k+1])/2);
+          var curve=new THREE.CatmullRomCurve3([a,mid,b]);
+          var rope=new THREE.Mesh(new THREE.TubeGeometry(curve,14,.02,8), ropeMat);
+          scene.add(rope);
+        }
+      });
+    })();
+
+    /* ---------- IŞIK ---------- */
+    scene.add(new THREE.HemisphereLight(0xfff0dc, 0x241b15, .62));
+    scene.add(new THREE.AmbientLight(0xffffff,.16));
+    var endSpot=new THREE.SpotLight(0xffe9c9,1.6,34,.7,.5);
+    endSpot.position.set(0,4.2,-HALL_L/2+6); endSpot.target.position.set(0,1.8,-HALL_L/2);
+    scene.add(endSpot); scene.add(endSpot.target);
+
+    /* ---------- DUVAR ESERLERİ ---------- */
+    var artworks=[], loadedCount=0, totalToLoad=ARTS.length;
+    var ART_H=2.0, perWall=Math.ceil(ARTS.length/2);
+    var GAPZ=(HALL_L-9)/perWall;
+    var startZ=(perWall-1)*GAPZ/2 - 1.5;
+    var frameGeoCache={};
+    function updateLoader(){
+      loadedCount++;
+      var pct=Math.round(loadedCount/totalToLoad*100);
+      document.getElementById('barFill').style.width=pct+'%';
+      document.getElementById('loadTxt').textContent=pct+'%';
+      if(loadedCount>=totalToLoad){
+        setTimeout(function(){ document.getElementById('loader').classList.add('done'); },350);
+      }
+    }
+    ARTS.forEach(function(fn,i){
+      var side=i<perWall?-1:1;
+      var j=side<0?i:i-perWall;
+      var z=startZ-j*GAPZ;
+      var x=side*(HALL_W/2-.07);
+      texL.load('img/salon/'+fn+'.jpg', function(tex){
+        tex.encoding=THREE.sRGBEncoding;
+        tex.anisotropy=renderer.capabilities.getMaxAnisotropy();
+        var ar=tex.image.width/tex.image.height;
+        var w=Math.min(ART_H*ar, 2.3);
+        var art=new THREE.Mesh(new THREE.PlaneGeometry(w,ART_H),
+          new THREE.MeshBasicMaterial({map:tex}));
+        art.position.set(x-side*.045, 1.78, z);   /* çerçevenin ÖNÜNDE olmalı (yarı-derinlik .03) */
+        art.rotation.y=side<0?Math.PI/2:-Math.PI/2;
+        art.userData={file:fn, idx:i, w:w};
+        scene.add(art); artworks.push(art);
+        /* zemin yansıması */
+        var am=art.clone();
+        am.material=new THREE.MeshBasicMaterial({map:tex, transparent:true, opacity:.22});
+        am.scale.y=-1; am.position.y=-1.78; mirror.add(am);
+        var key=w.toFixed(2);
+        if(!frameGeoCache[key]) frameGeoCache[key]=new THREE.BoxGeometry(w+.14, ART_H+.14, .06);
+        var fr=new THREE.Mesh(frameGeoCache[key],
+          new THREE.MeshStandardMaterial({color:0x17120f, roughness:.4, metalness:.4}));
+        fr.position.set(x, 1.78, z); fr.rotation.y=art.rotation.y; scene.add(fr);
+        /* pirinç tablo apliği + parıltı */
+        var lamp=new THREE.Mesh(new THREE.CylinderGeometry(.026,.026,w*.5,10), brass);
+        lamp.rotation.x=Math.PI/2; lamp.rotation.z=Math.PI/2;
+        lamp.position.set(x-side*.14, 1.78+ART_H/2+.18, z);
+        lamp.rotation.y=art.rotation.y; scene.add(lamp);
+        var glow=new THREE.Mesh(new THREE.PlaneGeometry(w*.72,.06),
+          new THREE.MeshBasicMaterial({color:0xffe9c4, transparent:true, opacity:.5}));
+        glow.position.set(x-side*.055, 1.78+ART_H/2+.1, z);
+        glow.rotation.y=art.rotation.y; scene.add(glow);
+        /* plaket */
+        var pc=document.createElement('canvas'); pc.width=256; pc.height=96;
+        var pg=pc.getContext('2d');
+        pg.fillStyle='#EFE8DC'; pg.fillRect(0,0,256,96);
+        pg.strokeStyle='#C2A05E'; pg.lineWidth=4; pg.strokeRect(6,6,244,84);
+        pg.fillStyle='#16110F'; pg.font='700 32px "Space Mono", monospace';
+        pg.textAlign='center'; pg.textBaseline='middle';
+        pg.fillText('LOOK · '+String(i+1).padStart(2,'0'), 128, 50);
+        var pt=new THREE.CanvasTexture(pc);
+        var plaque=new THREE.Mesh(new THREE.PlaneGeometry(.32,.12),
+          new THREE.MeshBasicMaterial({map:pt}));
+        plaque.position.set(x-side*.024, 1.78-ART_H/2-.2, z+(w/2+.3));
+        plaque.rotation.y=art.rotation.y; scene.add(plaque);
+        updateLoader();
+      }, undefined, updateLoader);
+    });
+
+    /* ---------- PODYUMLAR ---------- */
+    var spinning=[], mirrorPairs=[];
+    var podMat=new THREE.MeshStandardMaterial({color:0x241d19, roughness:.35, metalness:.25});
+    var podTop=new THREE.MeshStandardMaterial({color:0xC2A05E, roughness:.3, metalness:.85});
+    GLBS.forEach(function(cfg,pi){
+      var px=cfg.x||0;
+      var pod=new THREE.Mesh(new THREE.CylinderGeometry(.78,.88,.4,48), podMat);
+      pod.position.set(px,.2,cfg.z); pod.castShadow=pod.receiveShadow=true; scene.add(pod);
+      var rim=new THREE.Mesh(new THREE.CylinderGeometry(.79,.79,.022,48), podTop);
+      rim.position.set(px,.41,cfg.z); scene.add(rim);
+      var sp=new THREE.SpotLight(0xfff0dc, 1.5, 15, .48, .55);
+      sp.position.set(px+1.5,4.3,cfg.z+1.3); sp.target=pod; sp.castShadow=(pi<4); scene.add(sp);
+      var nc=document.createElement('canvas'); nc.width=512; nc.height=128;
+      var ng=nc.getContext('2d');
+      ng.fillStyle='#16110F'; ng.fillRect(0,0,512,128);
+      ng.strokeStyle='#C2A05E'; ng.lineWidth=5; ng.strokeRect(8,8,496,112);
+      ng.fillStyle='#EFE8DC'; ng.font='700 40px "Space Mono", monospace';
+      ng.textAlign='center'; ng.textBaseline='middle';
+      ng.fillText(cfg.name, 256, 66);
+      var nt2=new THREE.CanvasTexture(nc);
+      var np=new THREE.Mesh(new THREE.PlaneGeometry(.92,.23),
+        new THREE.MeshBasicMaterial({map:nt2}));
+      np.position.set(px, .21, cfg.z+.92); np.rotation.x=-.32; scene.add(np);
+      var loader=new THREE.GLTFLoader();
+      loader.load('models/'+cfg.id+'.glb', function(g){
+        var root=g.scene;
+        var box=new THREE.Box3().setFromObject(root);
+        var h=box.max.y-box.min.y;
+        var s=(cfg.h||1.85)/h;
+        root.scale.setScalar(s);
+        box.setFromObject(root);
+        var pivot=new THREE.Group();
+        root.position.set(-(box.min.x+box.max.x)/2, .42-box.min.y, -(box.min.z+box.max.z)/2);
+        pivot.add(root);
+        pivot.position.set(px,0,cfg.z);
+        root.traverse(function(o){ if(o.isMesh){ o.castShadow=true; } });
+        scene.add(pivot); spinning.push(pivot);
+        /* zemin yansıması */
+        var mp=pivot.clone(true);
+        mp.traverse(function(o){
+          if(o.isMesh){
+            o.castShadow=false;
+            o.material=o.material.clone();
+            o.material.transparent=true; o.material.opacity=.2;
+          }
+        });
+        mp.scale.y=-1; mirror.add(mp);
+        mirrorPairs.push({src:pivot,dst:mp});
+      }, undefined, function(){});
+    });
+
+    /* ---------- GEZİNME ---------- */
+    var railZ=24, railTarget=24, RAIL_MIN=-HALL_L/2+4, RAIL_MAX=24;
+    var lookX=0, lookXT=0;
+    var focused=null, camAnim=null;
+    addEventListener('wheel', function(e){
+      if(focused) return;
+      railTarget+=e.deltaY*.012;
+      railTarget=Math.max(RAIL_MIN,Math.min(RAIL_MAX,railTarget));
+      hideHint();
+    }, {passive:true});
+    var dragging=false, lastY=0, lastX=0, moved=0;
+    addEventListener('pointerdown', function(e){ dragging=true; lastY=e.clientY; lastX=e.clientX; moved=0; });
+    addEventListener('pointermove', function(e){
+      if(dragging && !focused){
+        railTarget+=(e.clientY-lastY)*.03;
+        railTarget=Math.max(RAIL_MIN,Math.min(RAIL_MAX,railTarget));
+        moved+=Math.abs(e.clientY-lastY)+Math.abs(e.clientX-lastX);
+        lastY=e.clientY; lastX=e.clientX; hideHint();
+      }
+      lookXT=(e.clientX/innerWidth-.5)*1.1;
+    });
+    addEventListener('pointerup', function(e){
+      dragging=false;
+      if(moved<6) tryPick(e.clientX,e.clientY);
+    });
+    var hintGone=false;
+    function hideHint(){ if(!hintGone){ hintGone=true; document.getElementById('hint').classList.add('gone'); } }
+
+    var ray=new THREE.Raycaster(), ndc=new THREE.Vector2();
+    function tryPick(cx,cy){
+      if(focused) return;
+      ndc.set(cx/innerWidth*2-1, -(cy/innerHeight)*2+1);
+      ray.setFromCamera(ndc,camera);
+      var hit=ray.intersectObjects(artworks)[0];
+      if(!hit) return;
+      focused=hit.object;
+      var a=focused, side=a.position.x<0?-1:1;
+      var to={ x:a.position.x-side*2.3, y:1.72, z:a.position.z, lz:a.position.z, lx:a.position.x };
+      camAnim={ t:0, fx:camera.position.x, fy:camera.position.y, fz:camera.position.z, to:to };
+      var i=a.userData.idx;
+      document.getElementById('pNo').textContent='LOOK · '+String(i+1).padStart(2,'0');
+      document.getElementById('pTitle').textContent='Koleksiyon · Look '+String(i+1).padStart(2,'0');
+      document.getElementById('pImg').src='img/salon/'+a.userData.file+'.jpg';
+      document.getElementById('pMail').href='mailto:tedarik@loomr.studio?subject=LOOMR%20Numune%20Talebi%20-%20Look%20'+(i+1);
+      setTimeout(function(){ document.getElementById('panel').classList.add('open'); },420);
+    }
+    function unfocus(){
+      document.getElementById('panel').classList.remove('open');
+      focused=null; camAnim=null;
+    }
+    document.getElementById('closeP').addEventListener('click',unfocus);
+    addEventListener('keydown',function(e){ if(e.key==='Escape') unfocus(); });
+
+    /* ---------- DÖNGÜ ---------- */
+    var clock=new THREE.Clock(), tAcc=0;
+    function tick(){
+      requestAnimationFrame(tick);
+      var dt=Math.min(clock.getDelta(),.05); tAcc+=dt;
+      spinning.forEach(function(m){ m.rotation.y+=dt*.45; });
+      mirrorPairs.forEach(function(p){ p.dst.rotation.y=p.src.rotation.y; });
+      if(window.__dust){ window.__dust.rotation.y=Math.sin(tAcc*.05)*.03; window.__dust.position.y=Math.sin(tAcc*.18)*.06; }
+      if(focused && camAnim){
+        camAnim.t=Math.min(1,camAnim.t+dt*1.8);
+        var k=camAnim.t*camAnim.t*(3-2*camAnim.t);
+        camera.position.x=camAnim.fx+(camAnim.to.x-camAnim.fx)*k;
+        camera.position.y=camAnim.fy+(camAnim.to.y-camAnim.fy)*k;
+        camera.position.z=camAnim.fz+(camAnim.to.z-camAnim.fz)*k;
+        camera.lookAt(camAnim.to.lx, 1.72, camAnim.to.lz);
+      } else {
+        railZ+=(railTarget-railZ)*Math.min(1,dt*4);
+        lookX+=(lookXT-lookX)*Math.min(1,dt*5);
+        camera.position.set(0,EYE,railZ);
+        camera.lookAt(lookX*3, EYE-.05, railZ-8);
+      }
+      renderer.setSize(innerWidth,innerHeight,true);
+      camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
+      renderer.render(scene,camera);
+    }
+    tick();
+  })();
+  </script>
+</body>
+</html>

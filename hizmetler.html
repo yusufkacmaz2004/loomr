@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOOMR — Hizmetler</title>
+  <meta name="description" content="LOOMR hizmetleri — modelistlik, styling, üretim, tasarım ve kumaş danışmanlığı. Fikirden üretime, tek stüdyo disiplini.">
+  <meta property="og:title" content="LOOMR — Hizmetler">
+  <meta property="og:description" content="Modelist, stilist, üretim, tasarım ve kumaş hizmetleri — bir stüdyonun zarafeti, bir sistemin gücüyle.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62.5..125,100..900;1,62.5..125,100..900&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/editorial.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    html{overflow-x:clip}
+    body{margin:0;overflow-x:clip;font-family:"Archivo","Inter",sans-serif;background:var(--ed-cream);color:var(--ed-ink);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    img{display:block;max-width:100%}
+
+    /* ---------- Giriş manifestosu ---------- */
+    .svc-intro { padding: clamp(3rem, 8vw, 6.5rem) clamp(1.4rem, 4vw, 3rem); border-bottom: 1px solid #E3D9CD; max-width: 62rem; }
+    .svc-intro .lbl { color: var(--acc); margin-bottom: 1.6rem; }
+    .svc-intro h2 { font-family: "Fraunces", serif; font-weight: 300; font-size: clamp(1.7rem, 4.4vw, 3.4rem); line-height: 1.08; letter-spacing: -0.02em; margin: 0; max-width: 22ch; }
+    .svc-intro h2 em { font-style: italic; color: var(--acc); }
+    .svc-intro p { margin-top: 1.6rem; max-width: 58ch; color: #6E645B; font-size: 1.05rem; line-height: 1.7; }
+
+    /* ---------- Hizmet bölümleri (alternatif split) ---------- */
+    .svc { display: grid; grid-template-columns: 1fr; border-bottom: 1px solid #E3D9CD; background: var(--ed-cream); }
+    @media (min-width: 940px){ .svc { grid-template-columns: 1fr 1fr; align-items: stretch; } }
+
+    .svc__media { position: relative; min-height: 56vh; overflow: hidden; background: #EFE8DE; }
+    @media (min-width: 940px){ .svc__media { min-height: 100%; } }
+    .svc__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+    .svc:hover .svc__media img { transform: scale(1.04); }
+    .svc__tag { position: absolute; left: 1rem; bottom: 1rem; z-index: 2; color: #fff; background: rgba(20,12,10,.5); backdrop-filter: blur(6px);
+      padding: .45rem .95rem; border-radius: 100px; font-family: "Space Mono", monospace; font-size: .62rem; letter-spacing: .16em; text-transform: uppercase; }
+
+    .svc__body { padding: clamp(2.2rem, 5vw, 4.6rem); display: grid; align-content: center; gap: 0; }
+    .svc__no { font-family: "Space Mono", monospace; font-size: .72rem; letter-spacing: .22em; text-transform: uppercase; color: var(--acc); }
+    .svc__ttl { font-family: "Archivo", sans-serif; font-weight: 900; font-stretch: 125%; text-transform: uppercase;
+      font-size: clamp(1.9rem, 4vw, 3rem); line-height: .96; letter-spacing: -0.02em; margin: 1rem 0 0; }
+    .svc__lede { font-family: "Fraunces", serif; font-style: italic; font-weight: 300; color: var(--acc);
+      font-size: clamp(1.05rem, 1.9vw, 1.4rem); line-height: 1.3; margin: .9rem 0 0; }
+    .svc__desc { margin: 1.3rem 0 0; max-width: 46ch; color: #6E645B; font-size: .98rem; line-height: 1.7; }
+
+    .svc__list { list-style: none; padding: 0; margin: 1.8rem 0 0; display: grid; gap: .1rem; }
+    .svc__list li { display: grid; grid-template-columns: 1.4rem 1fr; gap: .4rem; align-items: baseline;
+      padding: .7rem 0; border-bottom: 1px dashed #D9CEC0; font-size: .92rem; color: var(--ed-ink); }
+    .svc__list li::before { content: "✦"; color: var(--acc); font-size: .8rem; }
+    .svc__list li b { font-weight: 600; }
+
+    .svc__cta { display: inline-flex; align-items: center; gap: .6rem; margin-top: 2rem; align-self: start;
+      background: var(--ed-ink); color: var(--ed-cream); padding: .9rem 1.5rem; border-radius: 100px;
+      font-family: "Space Mono", monospace; font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+      transition: background .3s var(--ease), color .3s, transform .3s; }
+    .svc__cta:hover { background: var(--acc); color: #fff; transform: translateY(-2px); }
+    .svc__cta span { transition: transform .3s var(--ease); }
+    .svc__cta:hover span { transform: translate(4px, 0); }
+
+    /* Görsel–metin sırasını değiştir (çift bölümler) */
+    @media (min-width: 940px){
+      .svc:nth-child(even) .svc__media { order: 2; }
+      .svc:nth-child(even) .svc__body  { order: 1; }
+    }
+  </style>
+</head>
+<body class="ed">
+
+  <div class="ed-cursor" aria-hidden="true"></div>
+
+  <!-- TOP BAR -->
+  <div class="ed-bar">
+    <a href="index.html" class="ed-bar__logo">LOOMR</a>
+    <nav class="ed-mono">
+      <a href="vizyon.html">Vizyon</a>
+      <a href="showroom.html">Showroom</a>
+      <a href="kumas.html">Kumaş</a>
+      <a href="hizmetler.html">Hizmetler</a>
+      <a href="giris.html">Workspace</a>
+    </nav>
+    <a href="giris.html" class="ed-mono">Giriş ↗</a>
+  </div>
+
+  <!-- PAGE HEAD -->
+  <header class="ed-page-head">
+    <div class="ed-page-head__in">
+      <div class="ed-mono">✦ ✦ ✦ &nbsp; Fikirden Üretime</div>
+      <h1>Hizmetler</h1>
+      <p>Bir eskizin ilk çizgisinden mağaza rafına kadar; modelistlik, styling, üretim, tasarım ve kumaş. Beş uzmanlık, tek stüdyo disiplini altında birleşir.</p>
+    </div>
+  </header>
+
+  <!-- INTRO -->
+  <section class="svc-intro">
+    <div class="ed-mono lbl reveal">00 — Yaklaşım</div>
+    <h2 class="reveal">Uçtan uca bir üretim aklı, <em>butik</em> bir dikkatle.</h2>
+    <p class="reveal">Her koleksiyon kendi ritmine sahiptir. LOOMR ekibi, kalıptan kumaşa, styling'den seri üretime kadar her aşamayı aynı editoryal titizlikle yürütür — ölçekli çalışan bir stüdyonun netliğiyle, küçük bir atölyenin özeniyle. Aşağıdaki beş hizmeti tekil ya da uçtan uca bir paket olarak alabilirsiniz.</p>
+  </section>
+
+  <!-- 01 · MODELIST -->
+  <section class="svc reveal">
+    <div class="svc__media">
+      <img src="img/look-tweed-suit.png" alt="Modelist hizmeti — kalıp ve numune modelistliği" loading="lazy">
+      <span class="svc__tag">Kalıp · Numune</span>
+    </div>
+    <div class="svc__body">
+      <div class="svc__no">01 — Modelist Hizmeti</div>
+      <h2 class="svc__ttl">Modelistlik</h2>
+      <div class="svc__lede">Çizimi, giyilebilir kalıba çeviren el.</div>
+      <p class="svc__desc">Tasarım çizimlerinizi ölçüsü tutan, dikime hazır kalıplara dönüştürüyoruz. Numune modelistliği ve teknik föy hazırlığıyla, her beden serisinin üretim hattında sorunsuz akmasını sağlıyoruz.</p>
+      <ul class="svc__list">
+        <li><b>Kalıp çıkarma</b> — çizimden birinci kalıba</li>
+        <li><b>Numune modelistliği</b> — prova ve revizyon döngüleri</li>
+        <li><b>Teknik föy</b> — ölçü tablosu, dikiş ve aksesuar notları</li>
+        <li><b>Beden serileme</b> — üretime hazır gradasyon</li>
+      </ul>
+      <a href="showroom.html" class="svc__cta">Stüdyoda başla <span>→</span></a>
+    </div>
+  </section>
+
+  <!-- 02 · STILIST -->
+  <section class="svc reveal">
+    <div class="svc__media">
+      <img src="img/editorial-classic-lines.png" alt="Stilist hizmeti — koleksiyon styling ve lookbook kürasyonu" loading="lazy">
+      <span class="svc__tag">Styling · Lookbook</span>
+    </div>
+    <div class="svc__body">
+      <div class="svc__no">02 — Stilist Hizmeti</div>
+      <h2 class="svc__ttl">Styling</h2>
+      <div class="svc__lede">Koleksiyona bir bakış açısı kazandırmak.</div>
+      <p class="svc__desc">Ürünleri tek tek değil, bir hikâye olarak kurguluyoruz. Kombin ve lookbook kürasyonu, sezon anlatısı ve çekim yönetimiyle koleksiyonunuz doğru izleyiciye doğru tavırla ulaşır.</p>
+      <ul class="svc__list">
+        <li><b>Koleksiyon styling</b> — sezon anlatısı ve ton</li>
+        <li><b>Kombin kürasyonu</b> — look ve kapsül kurgusu</li>
+        <li><b>Lookbook</b> — editoryal düzen ve akış</li>
+        <li><b>Çekim yönetimi</b> — sanat yönetimi ve set koordinasyonu</li>
+      </ul>
+      <a href="giris.html" class="svc__cta">Workspace'e gir <span>→</span></a>
+    </div>
+  </section>
+
+  <!-- 03 · URETIM -->
+  <section class="svc reveal">
+    <div class="svc__media">
+      <img src="img/detail-jeans.png" alt="Üretim hizmeti — numuneden seri üretime ve kalite kontrol" loading="lazy">
+      <span class="svc__tag">Üretim · Kalite</span>
+    </div>
+    <div class="svc__body">
+      <div class="svc__no">03 — Üretim Hizmeti</div>
+      <h2 class="svc__ttl">Üretim</h2>
+      <div class="svc__lede">Numuneden rafa, tek bir kalite çizgisi.</div>
+      <p class="svc__desc">İlk numuneden seri üretime kadar tüm süreci koordine ediyoruz. AQL standartlarında kalite kontrol ve tedarik yönetimiyle, teslim tarihinize sadık kalarak koleksiyonu güvenle sahaya çıkarıyoruz.</p>
+      <ul class="svc__list">
+        <li><b>Numune → seri üretim</b> — aşamalı ölçekleme</li>
+        <li><b>Kalite kontrol</b> — AQL bazlı denetim</li>
+        <li><b>Tedarik koordinasyonu</b> — atölye ve aksesuar yönetimi</li>
+        <li><b>Termin takibi</b> — üretim takvimi ve raporlama</li>
+      </ul>
+      <a href="mailto:tedarik@loomr.studio?subject=Üretim%20Teklifi%20Talebi" class="svc__cta">Teklif iste <span>→</span></a>
+    </div>
+  </section>
+
+  <!-- 04 · TASARIM -->
+  <section class="svc reveal">
+    <div class="svc__media">
+      <img src="img/design-jacket.png" alt="Tasarım hizmeti — 3D tasarım stüdyosu ve teknik çizim" loading="lazy">
+      <span class="svc__tag">3D · Konsept</span>
+    </div>
+    <div class="svc__body">
+      <div class="svc__no">04 — Tasarım Hizmeti</div>
+      <h2 class="svc__ttl">Tasarım</h2>
+      <div class="svc__lede">Konsepti, dikilmeden önce görmek.</div>
+      <p class="svc__desc">3D tasarım stüdyosunda fikirlerinizi giysiye dönüşmeden önce görselleştiriyoruz. Konseptten teknik çizime, kumaş ve renk seçimine kadar her kararı birlikte alıyor; numune öncesi denemeleri dijitalde tamamlıyoruz.</p>
+      <ul class="svc__list">
+        <li><b>3D tasarım stüdyosu</b> — gerçek zamanlı giysi önizleme</li>
+        <li><b>Konsept → teknik çizim</b> — üretilebilir detaylandırma</li>
+        <li><b>Kumaş &amp; renk</b> — malzeme ve palet seçimi</li>
+        <li><b>Dijital numune</b> — fiziksel prova öncesi doğrulama</li>
+      </ul>
+      <a href="showroom.html" class="svc__cta">3D Stüdyoyu aç <span>→</span></a>
+    </div>
+  </section>
+
+  <!-- 05 · KUMAS -->
+  <section class="svc reveal">
+    <div class="svc__media">
+      <img src="img/denim-fabric-book.png" alt="Kumaş hizmeti — kumaş kaynak ve danışmanlık" loading="lazy">
+      <span class="svc__tag">Sourcing · Danışmanlık</span>
+    </div>
+    <div class="svc__body">
+      <div class="svc__no">05 — Kumaş Hizmeti</div>
+      <h2 class="svc__ttl">Kumaş</h2>
+      <div class="svc__lede">Doğru kumaş, koleksiyonun sessiz karakteri.</div>
+      <p class="svc__desc">Koleksiyonunuza en uygun kumaşı bulup getiriyoruz. Kaynak araştırması, numune temini ve beş kumaş ailesi üzerine danışmanlıkla; tuşe, dökümü ve performansı tasarımınızın ihtiyacına göre eşleştiriyoruz.</p>
+      <ul class="svc__list">
+        <li><b>Kumaş kaynak</b> — sourcing ve tedarikçi eşleştirme</li>
+        <li><b>Numune temini</b> — swatch ve top numune</li>
+        <li><b>Kumaş ailesi danışmanlığı</b> — Denim · Viskon · Polyester · Yün · Tencel</li>
+        <li><b>Performans eşleştirme</b> — tuşe, döküm ve dayanım</li>
+      </ul>
+      <a href="mailto:tedarik@loomr.studio?subject=Kumaş%20Numune%20Talebi" class="svc__cta">Numune iste <span>→</span></a>
+    </div>
+  </section>
+
+  <!-- CLOSE -->
+  <section class="ed-close">
+    <div class="ed-mono reveal" style="opacity:.85;margin-bottom:1.4rem">✦ Fikirden Üretime ✦</div>
+    <h2 class="reveal">Birlikte<br><span class="em">başlayalım.</span></h2>
+    <p class="ed-close__lead reveal">Tekil bir hizmet ya da uçtan uca üretim — ihtiyacınızı anlatın, doğru ekibi kuralım.</p>
+    <a href="mailto:tedarik@loomr.studio?subject=LOOMR%20Hizmet%20Talebi" class="ed-cta reveal">Bize Yazın →</a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="ed-foot ed-mono">
+    <span class="ed-bar__logo">LOOMR</span>
+    <span>Emre Korkmaz Textile Design Studio</span>
+    <span>İstanbul · Londra · Milano · Berlin · © 2026</span>
+  </footer>
+
+  <script src="js/editorial.js"></script>
+</body>
+</html>

@@ -176,6 +176,76 @@
       ] }
   ];
 
+  /* ---------- Lif & karışım kataloğu (dokuma seçenekleri) ----------
+     tex: 3D dokusal üretim tipi (garment-3d.js) */
+  const FIBERS = [
+    { id: "pamuk",         ad: "Pamuk",            en: "Cotton",  komp: "%100 Pamuk",            tex: "plain", img: "img/fabric-pamuk.png",     not: "Nefes alır, doğal tutum, çok yönlü." },
+    { id: "polyester",     ad: "Polyester",        en: "Polyester", komp: "%100 Polyester",       tex: "twill", img: "img/fabric-polyester.png", not: "Dayanıklı, formunu korur, az kırışır." },
+    { id: "tencel",        ad: "Tencel",           en: "Lyocell", komp: "%100 TENCEL™ Lyocell",  tex: "satin", img: "img/fabric-tencel.png",    not: "İpeksi, dökümlü, sürdürülebilir." },
+    { id: "modal",         ad: "Modal",            en: "Modal",   komp: "%100 Modal",            tex: "satin", img: "img/fabric-modal.png",     not: "İpeksi tutum, yüksek nem emişi." },
+    { id: "keten",         ad: "Keten",            en: "Linen",   komp: "%100 Keten",            tex: "plain", img: "img/fabric-keten.png",     not: "Serin, nefes alır, doğal doku." },
+    { id: "yun",           ad: "Yün",              en: "Wool",    komp: "%100 Yün",              tex: "wool",  img: "img/fabric-yun.png",       not: "Sıcak tutar, esnek, doğal." },
+    { id: "naylon",        ad: "Naylon",           en: "Nylon",   komp: "%100 Naylon",           tex: "satin", img: "img/fabric-naylon.png",    not: "Hafif, dayanıklı, aşınmaya karşı güçlü." },
+    { id: "pamuk-poly",    ad: "Pamuk-Polyester",  en: "Cotton-Poly", komp: "%65 Pamuk · %35 Polyester", tex: "twill", not: "Hem nefes alır hem daha az kırışır." },
+    { id: "yun-akrilik",   ad: "Yün-Akrilik",      en: "Wool-Acrylic", komp: "%50 Yün · %50 Akrilik",  tex: "wool",  not: "Sıcak tutarken daha ekonomik ve dayanıklı." },
+    { id: "pamuk-elastan", ad: "Pamuk-Elastan",    en: "Cotton-Elastane", komp: "%97 Pamuk · %3 Elastan", tex: "plain", not: "Rahat ve esnek; jean ve taytlarla." }
+  ];
+
+  /* ---------- Denim taksonomisi (denim seçenekleri) ---------- */
+  const DENIM = {
+    types: [
+      { id: "rigid",    ad: "Rigid Denim",     not: "Esnemez, klasik tutum." },
+      { id: "stretch",  ad: "Stretch Denim",   not: "Elastanlı, konfor esnekliği." },
+      { id: "medium",   ad: "Medium Weight",   not: "Orta gramaj, çok amaçlı." },
+      { id: "heavy",    ad: "Heavy Weight",    not: "Ağır gramaj, yapılı duruş." },
+      { id: "bull",     ad: "Bull Denim",      not: "3/1 dimi, sık ve dayanıklı." },
+      { id: "colored",  ad: "Colored Denim",   not: "Boyalı / overdye renkli denim." }
+    ],
+    washes: [
+      { id: "raw",         ad: "Raw",          l: 0.00, not: "Ham, yıkanmamış." },
+      { id: "rinse",       ad: "Rinse Wash",   l: 0.06, not: "Hafif durulama, en az solma." },
+      { id: "stone",       ad: "Stone Wash",   l: 0.20, not: "Taş yıkama, orta aşındırma." },
+      { id: "enzyme",      ad: "Enzyme Wash",  l: 0.16, not: "Enzimle yumuşatma, temiz solma." },
+      { id: "acid",        ad: "Acid Wash",    l: 0.34, not: "Yüksek kontrastlı mermer efekt." },
+      { id: "bleach",      ad: "Bleach Wash",  l: 0.42, not: "Kimyasal ağartma, açık ton." },
+      { id: "vintage",     ad: "Vintage Wash", l: 0.26, not: "Eskitilmiş, retro solma." },
+      { id: "dirty",       ad: "Dirty Wash",   l: 0.10, not: "Kirli/tint sarımsı ton." },
+      { id: "snow",        ad: "Snow Wash",    l: 0.38, not: "Karlı beyaz benekli efekt." },
+      { id: "garment-dyed",ad: "Garment Dyed", l: 0.04, not: "Ürün boyama, dolgun renk." }
+    ],
+    weights: [
+      { id: "5-8",   ad: "5–8 oz",   not: "Gömlek denimi." },
+      { id: "8-10",  ad: "8–10 oz",  not: "Hafif pantolon." },
+      { id: "10-12", ad: "10–12 oz", not: "Standart jean." },
+      { id: "12-14", ad: "12–14 oz", not: "Premium jean." },
+      { id: "14-16", ad: "14–16 oz", not: "Ağır denim." },
+      { id: "16+",   ad: "16 oz+",   not: "Heritage & workwear." }
+    ],
+    comps: [
+      { id: "100-cotton", ad: "%100 Pamuk",                    not: "Klasik, doğal tutum." },
+      { id: "99-1",       ad: "%99 Pamuk · %1 Elastan",        not: "Doğala yakın hafif stretch." },
+      { id: "98-2",       ad: "%98 Pamuk · %2 Elastan",        not: "Konfor stretch." },
+      { id: "cot-poly-el",ad: "Pamuk · Polyester · Elastan",   not: "Dayanıklı + esnek." },
+      { id: "80-20-lyo",  ad: "%80 Pamuk · %20 Lyocell",       not: "Yumuşak ve dökümlü." },
+      { id: "organic",    ad: "%100 Organik Pamuk",            not: "Sürdürülebilir koleksiyon." },
+      { id: "recycled",   ad: "Geri Dönüştürülmüş Karışım",    not: "Eko odaklı koleksiyon." }
+    ],
+    // garment tipine göre önerilen varsayılan gramaj
+    defWeightByType: { gomlek: "5-8", short: "8-10", pantolon: "10-12", ceket: "12-14" }
+  };
+
+  /* ---------- Kadın ölçü tablosu (garment id → satırlar). Erkek = garment.measures ---------- */
+  const MEAS_K = {
+    "denim-pantolon": [["Bel (yarım)","34 cm","±0.5"],["Kalça (yarım)","50 cm","±0.5"],["Ağ (ön)","25 cm","±0.5"],["Paça genişliği","16 cm","±0.3"],["İç bacak","76 cm","±1.0"],["Bel yüksekliği","28 cm","±0.5"]],
+    "dokuma-pantolon":[["Bel (yarım)","35 cm","±0.5"],["Kalça (yarım)","52 cm","±0.5"],["Ağ (ön)","26 cm","±0.5"],["Paça genişliği","19 cm","±0.3"],["İç bacak","77 cm","±1.0"],["Pile derinliği","2.5 cm","±0.2"]],
+    "denim-short":    [["Bel (yarım)","34 cm","±0.5"],["Kalça (yarım)","50 cm","±0.5"],["Ağ (ön)","24 cm","±0.5"],["Paça genişliği","22 cm","±0.3"],["İç bacak","14 cm","±0.5"],["Boy (yan)","38 cm","±0.5"]],
+    "dokuma-short":   [["Bel (yarım)","35 cm","±0.5"],["Kalça (yarım)","51 cm","±0.5"],["Ağ (ön)","25 cm","±0.5"],["Paça genişliği","24 cm","±0.3"],["İç bacak","15 cm","±0.5"],["Boy (yan)","40 cm","±0.5"]],
+    "denim-ceket":    [["Göğüs (yarım)","48 cm","±1.0"],["Bel (yarım)","42 cm","±1.0"],["Omuz","40 cm","±0.5"],["Kol boyu","60 cm","±0.5"],["Ön boy","58 cm","±0.5"],["Yaka genişliği","7 cm","±0.3"]],
+    "dokuma-ceket":   [["Göğüs (yarım)","49 cm","±1.0"],["Bel (yarım)","41 cm","±1.0"],["Omuz","39 cm","±0.5"],["Kol boyu","61 cm","±0.5"],["Ön boy","66 cm","±0.5"],["Yaka (revers) eni","7.5 cm","±0.3"]],
+    "denim-gomlek":   [["Göğüs (yarım)","48 cm","±1.0"],["Bel (yarım)","44 cm","±1.0"],["Omuz","39 cm","±0.5"],["Kol boyu","59 cm","±0.5"],["Ön boy","66 cm","±0.5"],["Yaka çevresi","37 cm","±0.3"]],
+    "dokuma-gomlek":  [["Göğüs (yarım)","49 cm","±1.0"],["Bel (yarım)","45 cm","±1.0"],["Omuz","40 cm","±0.5"],["Kol boyu","58 cm","±0.5"],["Ön boy","68 cm","±0.5"],["Yaka çevresi","37 cm","±0.3"]]
+  };
+
   /* ---------- Modelist dizini ---------- */
   const MODELISTS = [
     { id: "ml-01", ad: "Selin Aydın", sehir: "İstanbul", uzmanlik: ["gomlek", "pantolon"], denim: true,  puan: 4.9, termin: "3–5 gün", not: "Denim & örme uzmanı" },
@@ -208,13 +278,29 @@
     return scored[0].m;
   }
 
+  /* ---------- Hazır 3D tasarımlar (gerçek GLB modeller) ---------- */
+  const DESIGNS = [
+    { id: "design-jeans",  ad: "Wide-Leg Jean",       kat: "Pantolon", model: "models/design-jeans.glb",  img: "img/design-jeans.png",  detay: "img/detail-jeans.png" },
+    { id: "design-jacket", ad: "Denim Trucker Ceket", kat: "Ceket",    model: "models/design-jacket.glb", img: "img/design-jacket.png", detay: "img/detail-jacket.png" },
+    { id: "design-tank",   ad: "Ribbed Crop Atlet",   kat: "Atlet",    model: "models/design-tank.glb",   img: "img/design-tank.png",   detay: "img/detail-tank.png" }
+  ];
+
   const helpers = {
     fabric: (id) => FABRICS.find(f => f.id === id),
+    design: (id) => DESIGNS.find(d => d.id === id),
     fabricsByFamily: (fam) => FABRICS.filter(f => f.family === fam),
     garment: (id) => GARMENTS.find(g => g.id === id),
     color: (id) => COLORS.find(c => c.id === id),
+    fiber: (id) => FIBERS.find(f => f.id === id),
+    denimType: (id) => DENIM.types.find(t => t.id === id),
+    wash: (id) => DENIM.washes.find(w => w.id === id),
+    weight: (id) => DENIM.weights.find(w => w.id === id),
+    denimComp: (id) => DENIM.comps.find(c => c.id === id),
+    // cinsiyete göre ölçü satırları: "kadin" → MEAS_K, aksi → garment.measures (erkek)
+    measuresFor: (garment, gender) =>
+      (gender === "kadin" && garment && MEAS_K[garment.id]) ? MEAS_K[garment.id] : (garment ? garment.measures : []),
     suggestModelist
   };
 
-  global.LOOMR_DATA = { COLORS, FABRICS, FABRIC_FAMILIES, GARMENTS, MODELISTS, FACTORIES, ...helpers };
+  global.LOOMR_DATA = { COLORS, FABRICS, FABRIC_FAMILIES, GARMENTS, FIBERS, DENIM, MEAS_K, DESIGNS, MODELISTS, FACTORIES, ...helpers };
 })(typeof window !== "undefined" ? window : this);

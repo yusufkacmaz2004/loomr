@@ -39,6 +39,49 @@
     .gtoggle button.on{ color: var(--acc); }
     .gitem .gi-t, .fitem .ft{ font-family: "Archivo", sans-serif; }
 
+    /* Zengin seçici çipleri (denim türü / yıkama / gramaj / kompozisyon / lif) */
+    .chips{ display:flex; flex-wrap:wrap; gap:.4rem; margin:.15rem 0 .35rem; }
+    .chip{
+      border:1px solid rgba(22,17,15,.18); background:var(--paper,#FBF9F5);
+      color:var(--ink); border-radius:100px; padding:.32rem .7rem; cursor:pointer;
+      font-family:"Space Mono", ui-monospace, monospace; font-size:.68rem; letter-spacing:.02em;
+      line-height:1.1; transition:.18s; white-space:nowrap;
+    }
+    .chip:hover{ border-color:var(--acc); color:var(--acc); }
+    .chip.sel{ background:var(--acc); border-color:var(--acc); color:#fff; }
+    #denimPanel[hidden], #fiberInfo[hidden]{ display:none; }
+    .fiber-info{ margin:.1rem 0 .3rem; }
+    .fiber-info .fi-komp{ font-family:"Archivo",sans-serif; font-weight:600; font-size:.82rem; }
+    .fiber-info .fi-not{ font-size:.74rem; color:#8a8378; line-height:1.45; margin-top:.15rem; }
+
+    /* Yakın çekim detay kutusu (sahne sağ üst — kırmızı alan) */
+    .stage{ position:relative; }
+    .detailbox{ position:absolute; top:14px; right:14px; z-index:6; width:250px;
+      background:rgba(251,249,245,.92); backdrop-filter:blur(7px);
+      border:1px solid rgba(22,17,15,.1); border-radius:13px; padding:.5rem;
+      box-shadow:0 10px 34px rgba(22,17,15,.14); }
+    .detailbox__lbl{ font-family:"Space Mono", ui-monospace, monospace; font-size:.56rem; letter-spacing:.18em;
+      color:var(--acc); text-transform:uppercase; margin:.1rem .2rem .4rem; }
+    .detailbox img{ width:100%; aspect-ratio:16/11; object-fit:cover; display:block; border-radius:9px; background:#efe9df; }
+    .detailbox[hidden]{ display:none; }
+
+    /* Ürünler (sol sütun — gerçek 3D) */
+    .products{ display:flex; gap:.5rem; }
+    .pcard{ flex:1; min-width:0; margin:0; cursor:pointer; border:1.5px solid transparent; border-radius:9px;
+      overflow:hidden; background:#fff; text-align:center; transition:.18s; }
+    .pcard:hover{ border-color:var(--acc); transform:translateY(-2px); }
+    .pcard.sel{ border-color:var(--acc); box-shadow:0 4px 14px rgba(199,51,30,.22); }
+    .pcard img{ width:100%; aspect-ratio:3/4; object-fit:cover; display:block; background:#efe9df; }
+    .pcard .pk{ font-family:"Space Mono", monospace; font-size:.5rem; letter-spacing:.04em; padding:.28rem .1rem; color:var(--ink); }
+
+    /* Tasarım düzenle paneli (parça-bazlı renk — model parçalarına göre uyarlanır) */
+    #teditPanel[hidden]{ display:none; }
+    .tedit-row{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; margin:.35rem 0; }
+    .tedit-row label{ font-size:.76rem; color:var(--ink); }
+    .tedit-row input[type=color]{ width:38px; height:26px; border:1px solid rgba(22,17,15,.2); border-radius:6px; background:none; cursor:pointer; padding:0; }
+    .tedit-note{ font-size:.72rem; color:#8a8378; line-height:1.5; margin-top:.3rem; }
+    @media (max-width:900px){ .detailbox{ position:static; width:auto; margin:.6rem 0; box-shadow:none; } }
+
     /* Sahne başlığı → serif rozet */
     .stage__badge{ font-family: "Fraunces", serif; }
     .stage__hint{ font-family: "Space Mono", monospace; letter-spacing: .18em; }
@@ -96,6 +139,7 @@
       <a href="vizyon.html">Vizyon</a>
       <a href="tasarim.html">Stüdyo</a>
       <a href="kumas.html">Kumaş</a>
+      <a href="hizmetler.html">Hizmetler</a>
       <a href="app.html">Workspace</a>
     </nav>
     <a href="app.html" class="ed-mono">Workspace ↗</a>
@@ -114,12 +158,15 @@
   <div class="studio" id="studio">
     <!-- SOL: Garment seçici -->
     <div class="studio__col studio__col--left">
-      <h4>Garment</h4>
-      <div class="gtoggle" id="ctoggle">
-        <button data-c="denim" class="on">Denim</button>
-        <button data-c="dokuma">Dokuma</button>
+      <h4>Cinsiyet</h4>
+      <div class="gtoggle" id="gtoggle">
+        <button data-x="kadin">Kadın</button>
+        <button data-x="erkek" class="on">Erkek</button>
       </div>
+      <h4>Şablon</h4>
       <div class="gpick" id="gpick"></div>
+      <h4>Ürünler · Gerçek 3D</h4>
+      <div class="products" id="productRow"></div>
 
       <h4>Şablon Notu</h4>
       <p style="font-size:.78rem;color:var(--stone);line-height:1.5" id="gnote">—</p>
@@ -127,6 +174,10 @@
 
     <!-- ORTA: 3D sahne -->
     <div class="stage">
+      <div class="detailbox" id="detailBox" hidden aria-label="Ürün yakın çekim">
+        <div class="detailbox__lbl" id="detailLbl">Yakın Çekim</div>
+        <img id="detailImg" alt="Ürün detayı">
+      </div>
       <div class="stage__canvas" id="canvas">
         <div class="stage__badge" id="stageBadge">—</div>
         <div class="stage__hint">Döndürmek için sürükle · yakınlaştırmak için tekerlek</div>
@@ -142,8 +193,28 @@
 
     <!-- SAĞ: Kumaş + renk + özet -->
     <div class="studio__col studio__col--right">
-      <h4>Kumaş Kütüphanesi</h4>
-      <div class="fpick" id="fpick"></div>
+      <div id="teditPanel" hidden>
+        <h4>Tasarım Düzenle</h4>
+        <div id="teditRows"></div>
+        <p class="tedit-note" id="teditNote"></p>
+      </div>
+      <h4>Kumaş Türü</h4>
+      <div class="chips" id="ktypePick"></div>
+
+      <!-- DENIM alt seçicileri (kumaş türü = Denim iken görünür) -->
+      <div id="denimPanel">
+        <h4>Denim Türü</h4>
+        <div class="chips" id="dtypePick"></div>
+        <h4>Yıkama</h4>
+        <div class="chips" id="washPick"></div>
+        <h4>Gramaj</h4>
+        <div class="chips" id="weightPick"></div>
+        <h4>Kompozisyon</h4>
+        <div class="chips" id="compPick"></div>
+      </div>
+
+      <!-- Lif bilgisi (kumaş türü = lif iken görünür) -->
+      <div id="fiberInfo" class="fiber-info" hidden></div>
 
       <h4>Renk</h4>
       <div class="cpick" id="cpick"></div>
@@ -262,109 +333,229 @@
     const API = window.LoomrAPI;
     const GI = { pantolon: "👖", short: "🩳", ceket: "🧥", gomlek: "👔" };
 
-    const state = { construction: "denim", garment: null, fabric: null, color: null };
+    const GLBL = { kadin: "Kadın", erkek: "Erkek" };
+    const state = { gender: "erkek", ktype: "denim", construction: "denim", garment: null, fabric: null, color: null,
+                    denimType: null, wash: null, weight: null, comp: null, fiber: null };
     let currentTechpack = null;
 
     // 3D stüdyo
     const studio = new LoomrStudio(document.getElementById("canvas"));
 
-    /* ---------- Garment listesi ---------- */
+    /* ---------- Element referansları ---------- */
     const gpick = document.getElementById("gpick");
+    const cpick = document.getElementById("cpick");
+    const denimPanel = document.getElementById("denimPanel");
+    const fiberInfo = document.getElementById("fiberInfo");
+    const ktypePick = document.getElementById("ktypePick");
+    const dtypePick = document.getElementById("dtypePick");
+    const washPick = document.getElementById("washPick");
+    const weightPick = document.getElementById("weightPick");
+    const compPick = document.getElementById("compPick");
+
+    /* ---------- Çip listeleri (bir kez) ---------- */
+    const chipHTML = items => items.map(it =>
+      `<button class="chip" data-id="${it.id}" title="${(it.not || "").replace(/"/g, "&quot;")}">${it.ad}</button>`).join("");
+    // Kumaş türü = Denim + lifler (verilen tüm kumaş türleri)
+    const KTYPES = [{ id: "denim", ad: "Denim", not: "Twill örgü denim — tür, yıkama ve gramaj seçilir." }].concat(D.FIBERS);
+    ktypePick.innerHTML  = chipHTML(KTYPES);
+    dtypePick.innerHTML  = chipHTML(D.DENIM.types);
+    washPick.innerHTML   = chipHTML(D.DENIM.washes);
+    weightPick.innerHTML = chipHTML(D.DENIM.weights);
+    compPick.innerHTML   = chipHTML(D.DENIM.comps);
+    const markSel = (el, id) => el.querySelectorAll(".chip").forEach(b => b.classList.toggle("sel", b.dataset.id === id));
+
+    /* ---------- Ürünler (gerçek 3D) + yakın çekim + parça-bazlı düzenle ---------- */
+    const productRow = document.getElementById("productRow");
+    const detailBox = document.getElementById("detailBox");
+    const detailImg = document.getElementById("detailImg");
+    const teditPanel = document.getElementById("teditPanel");
+    const teditRows = document.getElementById("teditRows");
+    const teditNote = document.getElementById("teditNote");
+    productRow.innerHTML = D.DESIGNS.map(d =>
+      `<figure class="pcard" data-d="${d.id}" title="${d.ad}"><img src="${d.img}" alt="${d.ad}" loading="lazy"><figcaption class="pk">${d.kat}</figcaption></figure>`).join("");
+
+    // Blender parça adları → görünen etiket
+    const PARTLBL = { denim_body: "Denim gövde", waistband: "Bel bandı", pocket_left: "Sol cep", pocket_right: "Sağ cep",
+      stitching_orange: "Dikiş", stitching: "Dikiş", button_metal: "Düğme", button: "Düğme", rivets: "Perçin",
+      zipper_area: "Fermuar", collar: "Yaka", sleeve_left: "Sol kol", sleeve_right: "Sağ kol" };
+    function buildTedit(parts) {
+      if (parts.length > 1) {
+        teditRows.innerHTML = parts.map((nm, i) =>
+          `<div class="tedit-row"><label>${PARTLBL[nm] || nm}</label><input type="color" data-pi="${i}" value="#3a5a86"></div>`).join("");
+        teditNote.textContent = "İsimli parçalar bulundu — her parçanın rengini ayrı ayrı değiştirebilirsin.";
+      } else {
+        teditRows.innerHTML = `<div class="tedit-row"><label>Genel ton</label><input type="color" data-pi="0" value="#4a6a9a"></div>`;
+        teditNote.textContent = "Bu model tek parça (Meshy). Dikiş/düğme ayrı düzenleme için Blender'da isimli-parçalı GLB gerekir.";
+      }
+      teditRows.querySelectorAll("input[type=color]").forEach(inp =>
+        inp.addEventListener("input", e => studio.setPartColor(+e.target.dataset.pi, e.target.value)));
+      teditPanel.hidden = false;
+    }
+    function exitDesign() {
+      detailBox.hidden = true; teditPanel.hidden = true;
+      productRow.querySelectorAll(".pcard").forEach(b => b.classList.remove("sel"));
+    }
+    function selectDesign(id) {
+      const d = D.design(id); if (!d) return;
+      studio.setModel(d.model, buildTedit);
+      document.getElementById("stageBadge").textContent = `3D · ${d.ad}`;
+      document.getElementById("gnote").textContent = `Gerçek 3D ürün — ${d.kat}. Döndür, yakınlaştır ve rengini düzenle.`;
+      detailImg.src = d.detay; document.getElementById("detailLbl").textContent = `Yakın Çekim · ${d.kat}`; detailBox.hidden = false;
+      productRow.querySelectorAll(".pcard").forEach(b => b.classList.toggle("sel", b.dataset.d === id));
+      gpick.querySelectorAll(".gitem").forEach(b => b.classList.remove("sel"));
+    }
+    productRow.addEventListener("click", e => { const b = e.target.closest(".pcard"); if (b) selectDesign(b.dataset.d); });
+
+    /* ---------- Renk paleti ---------- */
+    cpick.innerHTML = D.COLORS.map(c =>
+      `<span class="cdot" data-c="${c.id}" style="background:${c.hex}" title="${c.ad}"></span>`).join("");
+    const markColor = () => cpick.querySelectorAll(".cdot").forEach(b =>
+      b.classList.toggle("sel", state.color && b.dataset.c === state.color.id));
+
+    /* ---------- Garment listesi (cinsiyet + yapıya göre) ---------- */
     function renderGarments() {
       const list = D.GARMENTS.filter(g => g.construction === state.construction);
       gpick.innerHTML = list.map(g => `
         <button class="gitem" data-g="${g.id}">
           <span class="gi-ic">${GI[g.type] || "◇"}</span>
           <span>
-            <span class="gi-t">${g.ad}</span><br>
+            <span class="gi-t">${GLBL[state.gender]} ${g.ad}</span><br>
             <span class="gi-s">${g.desc}</span>
           </span>
         </button>`).join("");
+      gpick.querySelectorAll(".gitem").forEach(b =>
+        b.classList.toggle("sel", state.garment && b.dataset.g === state.garment.id));
     }
 
-    /* ---------- Kumaş listesi (aileye göre) ---------- */
-    const fpick = document.getElementById("fpick");
-    function renderFabrics() {
-      let html = "";
-      for (const fam of D.FABRIC_FAMILIES) {
-        const fs = D.fabricsByFamily(fam.id);
-        html += `<div class="ffam-tag" style="margin:.4rem 0 .1rem">${fam.ad}</div>`;
-        html += fs.map(f => `
-          <button class="fitem" data-f="${f.id}">
-            <span class="fsw" style="background:${f.renk}"></span>
-            <span>
-              <span class="ft">${f.ad}</span><br>
-              <span class="fs">${f.komp} · ${f.gsm} GSM</span>
-            </span>
-          </button>`).join("");
-      }
-      fpick.innerHTML = html;
+    function updatePanels() {
+      const isDenim = state.ktype === "denim";
+      denimPanel.hidden = !isDenim;
+      fiberInfo.hidden = isDenim;
+      if (!isDenim && state.fiber)
+        fiberInfo.innerHTML = `<div class="fi-komp">${state.fiber.komp}</div><div class="fi-not">${state.fiber.not}</div>`;
+      markSel(ktypePick, state.ktype);
     }
 
-    /* ---------- Renk paleti ---------- */
-    const cpick = document.getElementById("cpick");
-    cpick.innerHTML = D.COLORS.map(c =>
-      `<span class="cdot" data-c="${c.id}" style="background:${c.hex}" title="${c.ad}"></span>`).join("");
+    /* ---------- 3D malzeme + föy yardımcıları ---------- */
+    const REP_DENIM = "denim-13oz";
+    const REP_FIBER = { pamuk: "viskon-keten", polyester: "poly-twill", tencel: "tencel-twill",
+      modal: "tencel-twill", keten: "viskon-keten", yun: "yun-flanel", naylon: "poly-memory",
+      "pamuk-poly": "poly-twill", "yun-akrilik": "yun-kasmir", "pamuk-elastan": "viskon-dokuma" };
+    const TEXMAT = { twill: [0.6, 0.2], wool: [0.95, 0.02], satin: [0.35, 0.55], plain: [0.7, 0.12], knit: [0.8, 0.06], canvas: [0.85, 0.05] };
+    // kumaş türüne göre döküm karakteri (0 sert/yapılı .. 1 akıcı/dökümlü)
+    const DRAPE = { denim: 0.15, pamuk: 0.5, polyester: 0.4, tencel: 0.85, modal: 0.82, keten: 0.5,
+      yun: 0.62, naylon: 0.74, "pamuk-poly": 0.46, "yun-akrilik": 0.62, "pamuk-elastan": 0.58 };
+
+    function lighten(hex, amt) {
+      const n = parseInt(hex.slice(1), 16);
+      let r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+      r = Math.round(r + (255 - r) * amt); g = Math.round(g + (255 - g) * amt); b = Math.round(b + (255 - b) * amt);
+      return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+    }
+    function fabricLabel() {
+      if (state.construction === "denim")
+        return [state.denimType, state.weight, state.comp, state.wash].filter(Boolean).map(x => x.ad).join(" · ") || "Denim";
+      return state.fiber ? `${state.fiber.ad} · ${state.fiber.komp}` : "Dokuma";
+    }
+
+    function applyFabric() {
+      const isDenim = state.construction === "denim";
+      // kayıt/föy ikincil alanları için temsili gerçek kumaş
+      const repId = isDenim ? REP_DENIM : (state.fiber ? (REP_FIBER[state.fiber.id] || "viskon-dokuma") : "viskon-dokuma");
+      state.fabric = D.fabric(repId) || D.FABRICS[0];
+      // 3D malzeme
+      const tex = isDenim ? "twill" : (state.fiber ? state.fiber.tex : "plain");
+      const tm = TEXMAT[tex] || [0.7, 0.15];
+      const base = state.color ? state.color.hex : "#2C3A55";
+      const effHex = (isDenim && state.wash) ? lighten(base, state.wash.l) : base;
+      studio.setDrape(DRAPE[state.ktype] != null ? DRAPE[state.ktype] : 0.4);
+      studio.setFabric({ tex, roughness: tm[0], sheen: tm[1], renk: effHex });
+      studio.setColor(effHex);
+      // seçili çipler
+      markSel(dtypePick, state.denimType && state.denimType.id);
+      markSel(washPick, state.wash && state.wash.id);
+      markSel(weightPick, state.weight && state.weight.id);
+      markSel(compPick, state.comp && state.comp.id);
+      markSel(ktypePick, state.ktype);
+      renderSummary();
+    }
 
     /* ---------- Seçim uygula ---------- */
     function selectGarment(id) {
       const g = D.garment(id);
       if (!g) return;
       state.garment = g;
-      studio.setGarment(g.mesh, g.id);
+      studio.setGarment(g.mesh, g.id, state.gender);
       document.getElementById("gnote").textContent = g.desc;
-      document.getElementById("stageBadge").textContent = g.ad;
+      document.getElementById("stageBadge").textContent = `${GLBL[state.gender]} ${g.ad}`;
       gpick.querySelectorAll(".gitem").forEach(b => b.classList.toggle("sel", b.dataset.g === id));
-      // ilk kez: varsayılan kumaş/renk
-      if (!state.fabric) selectFabric(g.defFamily ? D.fabricsByFamily(g.defFamily)[0].id : D.FABRICS[0].id);
-      else studio.setFabric(state.fabric);
-      if (!state.color) selectColor(g.defColor || D.COLORS[0].id);
-      else studio.setColor(state.color.hex);
-      renderSummary();
+      exitDesign();
+      // varsayılanlar
+      if (!state.color) state.color = D.color(g.defColor || "indigo");
+      if (state.construction === "denim") {
+        if (!state.denimType) state.denimType = D.DENIM.types[0];
+        if (!state.wash) state.wash = D.DENIM.washes[0];
+        state.weight = D.weight(D.DENIM.defWeightByType[g.type]) || D.DENIM.weights[2];
+        if (!state.comp) state.comp = D.DENIM.comps[0];
+      }
+      markColor();
+      applyFabric();
     }
-    function selectFabric(id) {
-      const f = D.fabric(id);
-      if (!f) return;
-      state.fabric = f;
-      studio.setFabric(f);
-      fpick.querySelectorAll(".fitem").forEach(b => b.classList.toggle("sel", b.dataset.f === id));
-      renderSummary();
-    }
+    // geriye dönük uyumluluk (loadDesign fabric_id ile çağırır)
+    function selectFabric() { applyFabric(); }
     function selectColor(id) {
       const c = D.color(id);
       if (!c) return;
       state.color = c;
-      studio.setColor(c.hex);
-      cpick.querySelectorAll(".cdot").forEach(b => b.classList.toggle("sel", b.dataset.c === id));
-      renderSummary();
+      markColor();
+      applyFabric();
     }
 
     function renderSummary() {
-      const { garment: g, fabric: f, color: c } = state;
+      const { garment: g, color: c } = state;
       if (!g) return;
-      document.getElementById("summary").innerHTML = [
-        ["Ürün", g.ad],
-        ["Yapı", g.construction === "denim" ? "Denim" : "Dokuma"],
-        ["Kumaş", f ? f.ad : "—"],
-        ["Kompozisyon", f ? f.komp : "—"],
-        ["Gramaj", f ? f.gsm + " GSM" : "—"],
-        ["Renk", c ? c.ad : "—"],
-      ].map(([k, v]) => `<div class="r"><span>${k}</span><b>${v}</b></div>`).join("");
+      const rows = [["Cinsiyet", GLBL[state.gender]], ["Ürün", g.ad],
+        ["Kumaş türü", state.ktype === "denim" ? "Denim" : (state.fiber ? state.fiber.ad : "—")]];
+      if (state.construction === "denim")
+        rows.push(["Denim türü", state.denimType ? state.denimType.ad : "—"],
+          ["Yıkama", state.wash ? state.wash.ad : "—"],
+          ["Gramaj", state.weight ? state.weight.ad : "—"],
+          ["Kompozisyon", state.comp ? state.comp.ad : "—"]);
+      else
+        rows.push(["Lif", state.fiber ? state.fiber.ad : "—"],
+          ["Kompozisyon", state.fiber ? state.fiber.komp : "—"]);
+      rows.push(["Renk", c ? c.ad : "—"]);
+      document.getElementById("summary").innerHTML =
+        rows.map(([k, v]) => `<div class="r"><span>${k}</span><b>${v}</b></div>`).join("");
     }
 
     /* ---------- Olaylar ---------- */
-    document.getElementById("ctoggle").addEventListener("click", e => {
+    document.getElementById("gtoggle").addEventListener("click", e => {
       const b = e.target.closest("button"); if (!b) return;
-      state.construction = b.dataset.c;
-      document.querySelectorAll("#ctoggle button").forEach(x => x.classList.toggle("on", x === b));
+      state.gender = b.dataset.x;
+      document.querySelectorAll("#gtoggle button").forEach(x => x.classList.toggle("on", x === b));
+      studio.setGender(state.gender);
       renderGarments();
-      // aynı tipte karşılık seç
+      document.getElementById("stageBadge").textContent = state.garment ? `${GLBL[state.gender]} ${state.garment.ad}` : "—";
+      applyFabric();
+    });
+    function selectKType(id) {
+      state.ktype = id;
+      if (id === "denim") { state.construction = "denim"; state.fiber = null; }
+      else { state.construction = "dokuma"; state.fiber = D.fiber(id); }
+      updatePanels();
+      renderGarments();
+      // aynı garment tipini yeni yapıda seç
       const same = D.GARMENTS.find(g => g.construction === state.construction && state.garment && g.type === state.garment.type);
       selectGarment((same || D.GARMENTS.find(g => g.construction === state.construction)).id);
-    });
+    }
+    ktypePick.addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) selectKType(b.dataset.id); });
     gpick.addEventListener("click", e => { const b = e.target.closest(".gitem"); if (b) selectGarment(b.dataset.g); });
-    fpick.addEventListener("click", e => { const b = e.target.closest(".fitem"); if (b) selectFabric(b.dataset.f); });
     cpick.addEventListener("click", e => { const b = e.target.closest(".cdot"); if (b) selectColor(b.dataset.c); });
+    dtypePick.addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) { state.denimType = D.denimType(b.dataset.id); applyFabric(); } });
+    washPick.addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) { state.wash = D.wash(b.dataset.id); applyFabric(); } });
+    weightPick.addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) { state.weight = D.weight(b.dataset.id); applyFabric(); } });
+    compPick.addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) { state.comp = D.denimComp(b.dataset.id); applyFabric(); } });
 
     // sahne araçları
     document.querySelector(".stage__tools").addEventListener("click", e => {
@@ -394,7 +585,7 @@
       studio.frontView();
       const design = await API.designs.create({
         garment_id: g.id, fabric_id: f.id, color_id: c.id, color_hex: c.hex,
-        name: `${g.ad} · ${f.ad} · ${c.ad}`, thumb: studio.capture(),
+        name: `${GLBL[state.gender]} ${g.ad} · ${fabricLabel()} · ${c.ad}`, thumb: studio.capture(),
       });
       showToast(`✓ Tasarım kaydedildi — <b>${design.ref}</b>`);
     });
@@ -414,7 +605,7 @@
       // önce tasarımı, sonra föyü kalıcı kaydet
       const design = await API.designs.create({
         garment_id: g.id, fabric_id: f.id, color_id: c.id, color_hex: c.hex,
-        name: `${g.ad} · ${f.ad} · ${c.ad}`, thumb,
+        name: `${GLBL[state.gender]} ${g.ad} · ${fabricLabel()} · ${c.ad}`, thumb,
       });
       const tp = await API.techpacks.create({ design_id: design.ref || design.id, thumb });
       currentTechpack = tp;
@@ -422,21 +613,29 @@
       // doldur
       document.getElementById("tpRef").textContent = tp.ref;
       document.getElementById("tpDate").textContent = new Date().toLocaleDateString("tr-TR", { day: "2-digit", month: "long", year: "numeric" });
-      document.getElementById("tpTitle").textContent = g.ad;
-      document.getElementById("tpSub").textContent = `${g.construction === "denim" ? "Denim" : "Dokuma"} · ${f.ad} · ${c.ad}`;
+      document.getElementById("tpTitle").textContent = `${GLBL[state.gender]} ${g.ad}`;
+      document.getElementById("tpSub").textContent = `${g.construction === "denim" ? "Denim" : "Dokuma"} · ${fabricLabel()} · ${c.ad}`;
       document.getElementById("tpImg").src = thumb;
 
       document.getElementById("tpSwatch").style.background = c.hex;
       document.getElementById("tpColorName").textContent = c.ad;
       document.getElementById("tpPantone").textContent = "Pantone® " + c.pantone;
 
-      document.getElementById("tpSpec").innerHTML = [
-        ["Kumaş", f.ad], ["Kompozisyon", f.komp], ["Gramaj", f.gsm + " GSM"],
-        ["En", f.en + " cm"], ["Menşei", f.mensei], ["Sertifika", (f.sert || []).join(", ") || "—"],
-        ["MOQ", f.moq], ["Termin", f.termin],
-      ].map(([k, v]) => `<tr><th style="width:40%">${k}</th><td>${v}</td></tr>`).join("");
+      const specRows = (state.construction === "denim")
+        ? [["Kumaş", "Denim" + (state.denimType ? " — " + state.denimType.ad : "")],
+           ["Kompozisyon", state.comp ? state.comp.ad : f.komp],
+           ["Gramaj", state.weight ? state.weight.ad : f.gsm + " GSM"],
+           ["Yıkama", state.wash ? state.wash.ad : "—"],
+           ["En", f.en + " cm"], ["Menşei", f.mensei],
+           ["Sertifika", (f.sert || []).join(", ") || "—"], ["MOQ", f.moq], ["Termin", f.termin]]
+        : [["Kumaş", state.fiber ? state.fiber.ad : f.ad],
+           ["Kompozisyon", state.fiber ? state.fiber.komp : f.komp],
+           ["Gramaj", f.gsm + " GSM"], ["En", f.en + " cm"], ["Menşei", f.mensei],
+           ["Sertifika", (f.sert || []).join(", ") || "—"], ["MOQ", f.moq], ["Termin", f.termin]];
+      document.getElementById("tpSpec").innerHTML = specRows
+        .map(([k, v]) => `<tr><th style="width:40%">${k}</th><td>${v}</td></tr>`).join("");
 
-      const measures = (tp.measures?.length ? tp.measures : g.measures) || [];
+      const measures = (tp.measures?.length ? tp.measures : D.measuresFor(g, state.gender)) || [];
       document.getElementById("tpMeasures").innerHTML = measures.map(m =>
         `<tr><td>${m[0]}</td><td>${m[1]}</td><td class="muted">${m[2]}</td></tr>`).join("");
 
@@ -488,7 +687,12 @@
         const g = D.garment(d.garment_id);
         if (g) {
           state.construction = g.construction;
-          document.querySelectorAll("#ctoggle button").forEach(x => x.classList.toggle("on", x.dataset.c === g.construction));
+          if (g.construction === "denim") { state.ktype = "denim"; state.fiber = null; }
+          else {
+            const map = { tencel: "tencel", yun: "yun", polyester: "polyester", viskon: "modal", denim: "pamuk" };
+            state.ktype = map[g.defFamily] || "pamuk"; state.fiber = D.fiber(state.ktype);
+          }
+          updatePanels();
           renderGarments();
         }
         state.fabric = d.fabric_id ? D.fabric(d.fabric_id) : null;
@@ -501,8 +705,8 @@
     }
 
     /* ---------- Başlat ---------- */
+    updatePanels();
     renderGarments();
-    renderFabrics();
     // Mevcut GLB modellerini öğren (yoksa sessizce prosedürel), sonra ilk garmenti kur
     fetch("models/manifest.json")
       .then(r => (r.ok ? r.json() : []))
