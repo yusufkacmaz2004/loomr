@@ -119,21 +119,27 @@
     },
     async create(input) {
       if (await online()) return req("POST", "/techpacks", input);
+      // yerel: design_id verildiyse tasarımdan garment/fabric bilgisini çöz (server db.js ile aynı davranış)
+      let base = input;
+      if (input.design_id) {
+        const d = lsFind(LS.designs, input.design_id);
+        if (d) base = { ...d, ...input, design_id: d.id };
+      }
       // yerel: garment/fabric bilgisinden föy kur
-      const g = reference.garment(input.garment_id);
-      const f = reference.fabric(input.fabric_id);
+      const g = reference.garment(base.garment_id);
+      const f = reference.fabric(base.fabric_id);
       const rec = lsCreate(LS.techpacks, "TP", {
-        design_id: input.design_id || null,
-        garment_id: input.garment_id,
-        fabric_id: input.fabric_id,
-        color_id: input.color_id || null,
-        color_hex: input.color_hex || null,
-        name: input.name || (g ? `${g.ad} — Teknik Föy` : "Teknik Föy"),
+        design_id: base.design_id || null,
+        garment_id: base.garment_id,
+        fabric_id: base.fabric_id,
+        color_id: base.color_id || null,
+        color_hex: base.color_hex || null,
+        name: base.name || (g ? `${g.ad} — Teknik Föy` : "Teknik Föy"),
         status: "taslak",
-        measures: input.measures || (g ? g.measures : []),
-        bom: input.bom || (g ? g.bom : []),
-        care: input.care || localCare(g, f),
-        thumb: input.thumb || null,
+        measures: base.measures || (g ? g.measures : []),
+        bom: base.bom || (g ? g.bom : []),
+        care: base.care || localCare(g, f),
+        thumb: base.thumb || null,
         garment: g ? { id: g.id, ad: g.ad, type: g.type, construction: g.construction } : null,
         fabric: f ? { id: f.id, ad: f.ad, komp: f.komp, family: f.family, gsm: f.gsm } : null,
         modelist: null,
