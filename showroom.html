@@ -643,115 +643,52 @@
       }, undefined, updateLoader);
     });
 
-    /* ---------- SAĞ DUVAR: taş dokulu 3D LOOMR ---------- */
-    /* Gerçek sıva/taş dokusu harflerin içine işlenir; katmanlı gerçek derinlik,
-       mat yüzey (parlama yok, hale yok), ışık yaymaz */
-    (function(){
-      var stoneImg=new Image();
-      stoneImg.onload=function(){
-        function stoneCanvas(front){
-          var c=document.createElement('canvas'); c.width=1024; c.height=256;
-          var g=c.getContext('2d');
-          g.font='900 150px "Arial Black","Archivo",sans-serif';
-          g.textAlign='center'; g.textBaseline='middle';
-          g.fillText('LOOMR',512,132);
-          g.globalCompositeOperation='source-atop';
-          g.drawImage(stoneImg,0,0,1024,512);          /* gerçek taş dokusu */
-          if(front){
-            g.fillStyle='rgba(246,243,237,.5)';        /* beyaz taş tonu */
-            g.fillRect(0,0,1024,256);
-            /* üst kenar aydınlık, alt kenar gölgeli — oyma taş hissi */
-            var top=g.createLinearGradient(0,30,0,115);
-            top.addColorStop(0,'rgba(255,255,255,.34)'); top.addColorStop(1,'rgba(255,255,255,0)');
-            g.fillStyle=top; g.fillRect(0,0,1024,128);
-            var bot=g.createLinearGradient(0,150,0,235);
-            bot.addColorStop(0,'rgba(55,50,45,0)'); bot.addColorStop(1,'rgba(55,50,45,.42)');
-            g.fillStyle=bot; g.fillRect(0,120,1024,136);
-          } else {
-            g.fillStyle='rgba(118,112,104,.65)';       /* yan yüzler koyu gri */
-            g.fillRect(0,0,1024,256);
-          }
-          g.globalCompositeOperation='source-over';
-          return c;
-        }
-        function mkTex(c){
-          var t=new THREE.CanvasTexture(c);
-          t.encoding=THREE.sRGBEncoding;
-          t.anisotropy=renderer.capabilities.getMaxAnisotropy();
-          return t;
-        }
-        var frontMat=new THREE.MeshStandardMaterial({
-          map:mkTex(stoneCanvas(true)), transparent:true, alphaTest:.45,
-          roughness:.94, metalness:0, envMapIntensity:.15 });
-        var sideMat=new THREE.MeshStandardMaterial({
-          map:mkTex(stoneCanvas(false)), transparent:true, alphaTest:.45,
-          roughness:.97, metalness:0, envMapIntensity:.08 });
-        var W=.95, H=.24, D=.06, LAY=8;
-        var plGeo=new THREE.PlaneGeometry(W,H);
-        /* sağ duvar (side=+1), pilastr olmayan aralıklar: j=1,3,5,7,9 */
-        for(var nj=1; nj<perWall-1; nj+=2){
-          var nz=startZ-(nj+.5)*GAPZ;
-          var grp=new THREE.Group();
-          for(var sl=0; sl<=LAY; sl++){
-            var pl=new THREE.Mesh(plGeo, sl===LAY?frontMat:sideMat);
-            pl.position.z=-D+sl*(D/LAY);
-            grp.add(pl);
-          }
-          grp.position.set(HALL_W/2-.07, 3.05, nz);
-          grp.rotation.y=-Math.PI/2;
-          scene.add(grp);
-        }
-      };
-      stoneImg.src='img/salon-tex/painted_plaster_wall_diff.jpg';
-    })();
-
-    /* ---------- SOL DUVAR: neon LOOMR (parlar + hafif gerçek ışık verir) ---------- */
+    /* ---------- İKİ DUVAR: neon LOOMR (parlar + hafif gerçek ışık verir) ---------- */
     var neonPulse=[];
     (function(){
-      function neonTex(core){
-        var c=document.createElement('canvas'); c.width=512; c.height=128;
-        var g=c.getContext('2d');
-        g.font='900 76px "Arial Black","Archivo",sans-serif';
-        g.textAlign='center'; g.textBaseline='middle';
-        if(core){
-          /* beyaz neon tüp: sıcak beyaz çekirdek + yumuşak kontur */
-          g.shadowColor='rgba(255,236,210,.95)'; g.shadowBlur=16;
-          g.strokeStyle='#ffe9cf'; g.lineWidth=6;
-          g.strokeText('LOOMR',256,66);
-          g.shadowBlur=7;
-          g.fillStyle='#fffdf8';
-          g.fillText('LOOMR',256,66);
-        } else {
-          /* geniş yumuşak hale */
-          g.shadowColor='rgba(255,230,195,.85)'; g.shadowBlur=34;
-          g.fillStyle='rgba(255,235,205,.7)';
-          g.fillText('LOOMR',256,66);
-          g.fillText('LOOMR',256,66);
+      /* Parlama tek dokuya gömülü — ayrı hale düzlemi YOK (çift görüntü olmasın) */
+      var c=document.createElement('canvas'); c.width=1024; c.height=256;
+      var g=c.getContext('2d');
+      g.font='900 132px "Arial Black","Archivo",sans-serif';
+      g.textAlign='center'; g.textBaseline='middle';
+      /* geniş yumuşak parlama */
+      g.shadowColor='rgba(255,232,200,.9)'; g.shadowBlur=46;
+      g.fillStyle='rgba(255,236,205,.5)';
+      g.fillText('LOOMR',512,132); g.fillText('LOOMR',512,132);
+      /* tüp konturu */
+      g.shadowBlur=15;
+      g.strokeStyle='#ffeacd'; g.lineWidth=8;
+      g.strokeText('LOOMR',512,132);
+      /* beyaz çekirdek */
+      g.shadowBlur=0;
+      g.fillStyle='#fffdf6';
+      g.fillText('LOOMR',512,132);
+      var neonTex=new THREE.CanvasTexture(c);
+      neonTex.encoding=THREE.sRGBEncoding;
+      neonTex.anisotropy=renderer.capabilities.getMaxAnisotropy();
+      var plateMat=new THREE.MeshStandardMaterial({color:0x1b1512, roughness:.6, metalness:.3});
+      var plateGeo=new THREE.BoxGeometry(1.02,.27,.045);
+      var neonGeo=new THREE.PlaneGeometry(.95,.238);
+      /* iki duvar, pilastr olmayan aralıklar: j=1,3,5,7,9 */
+      [-1,1].forEach(function(side){
+        for(var nj=1; nj<perWall-1; nj+=2){
+          var nz=startZ-(nj+.5)*GAPZ;
+          var ry=side<0?Math.PI/2:-Math.PI/2;
+          /* koyu montaj plakası — duvardan taşan gerçek derinlik */
+          var plate=new THREE.Mesh(plateGeo, plateMat);
+          plate.position.set(side*(HALL_W/2-.05), 3.05, nz);
+          plate.rotation.y=ry; scene.add(plate);
+          var neon=new THREE.Mesh(neonGeo,
+            new THREE.MeshBasicMaterial({map:neonTex, transparent:true, depthWrite:false}));
+          neon.position.set(side*(HALL_W/2-.085), 3.05, nz);
+          neon.rotation.y=ry; neon.renderOrder=5; scene.add(neon);
+          /* kısık sıcak ışık — duvara ve parkeye hafif dokunur */
+          var nl=new THREE.PointLight(0xffe2c0, .22, 4.5, 2);
+          nl.position.set(side*(HALL_W/2-.45), 3.0, nz);
+          scene.add(nl);
+          neonPulse.push({core:neon.material, light:nl});
         }
-        var t=new THREE.CanvasTexture(c);
-        t.encoding=THREE.sRGBEncoding;
-        t.anisotropy=renderer.capabilities.getMaxAnisotropy();
-        return t;
-      }
-      var coreTex=neonTex(true), haloTex=neonTex(false);
-      /* sol duvar (side=-1), pilastr olmayan aralıklar */
-      for(var nj=1; nj<perWall-1; nj+=2){
-        var nz=startZ-(nj+.5)*GAPZ;
-        var core=new THREE.Mesh(new THREE.PlaneGeometry(.85,.21),
-          new THREE.MeshBasicMaterial({map:coreTex, transparent:true, depthWrite:false}));
-        core.position.set(-(HALL_W/2-.08), 3.05, nz);
-        core.rotation.y=Math.PI/2; core.renderOrder=5; scene.add(core);
-        var halo=new THREE.Mesh(new THREE.PlaneGeometry(1.2,.32),
-          new THREE.MeshBasicMaterial({map:haloTex, transparent:true, opacity:.45,
-            blending:THREE.AdditiveBlending, depthWrite:false}));
-        halo.position.set(-(HALL_W/2-.1), 3.05, nz);
-        halo.rotation.y=Math.PI/2; halo.renderOrder=5; scene.add(halo);
-        /* tabelanın duvara ve parkeye verdiği hafif sıcak ışık */
-        var nl=new THREE.PointLight(0xffe2c0, .5, 5, 2);
-        nl.position.set(-(HALL_W/2-.45), 3.0, nz);
-        scene.add(nl);
-        neonPulse.push({core:core.material, halo:halo.material, light:nl});
-      }
+      });
     })();
 
     /* ---------- PODYUMLAR ---------- */
@@ -894,13 +831,12 @@
       var dt=Math.min(clock.getDelta(),.05); tAcc+=dt;
       spinning.forEach(function(m){ m.rotation.y+=dt*.45; });
       mirrorPairs.forEach(function(p){ p.dst.rotation.y=p.src.rotation.y; });
-      /* sol duvar neonları: belli belirsiz nabız (malzeme + ışık senkron) */
+      /* neonlar: belli belirsiz nabız (malzeme + ışık senkron) */
       neonPulse.forEach(function(n,ni){
         var puls=.94+.06*Math.sin(tAcc*7.5+ni*1.9);
         if(Math.random()<.003) puls*=.6;
         n.core.opacity=puls;
-        n.halo.opacity=.45*puls;
-        n.light.intensity=.5*puls;
+        n.light.intensity=.22*puls;
       });
       if(window.__dust){ window.__dust.rotation.y=Math.sin(tAcc*.05)*.03; window.__dust.position.y=Math.sin(tAcc*.18)*.06; }
       if(focused && camAnim){
