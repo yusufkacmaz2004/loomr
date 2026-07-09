@@ -705,6 +705,55 @@
       stoneImg.src='img/salon-tex/painted_plaster_wall_diff.jpg';
     })();
 
+    /* ---------- SOL DUVAR: neon LOOMR (parlar + hafif gerçek ışık verir) ---------- */
+    var neonPulse=[];
+    (function(){
+      function neonTex(core){
+        var c=document.createElement('canvas'); c.width=512; c.height=128;
+        var g=c.getContext('2d');
+        g.font='900 76px "Arial Black","Archivo",sans-serif';
+        g.textAlign='center'; g.textBaseline='middle';
+        if(core){
+          /* beyaz neon tüp: sıcak beyaz çekirdek + yumuşak kontur */
+          g.shadowColor='rgba(255,236,210,.95)'; g.shadowBlur=16;
+          g.strokeStyle='#ffe9cf'; g.lineWidth=6;
+          g.strokeText('LOOMR',256,66);
+          g.shadowBlur=7;
+          g.fillStyle='#fffdf8';
+          g.fillText('LOOMR',256,66);
+        } else {
+          /* geniş yumuşak hale */
+          g.shadowColor='rgba(255,230,195,.85)'; g.shadowBlur=34;
+          g.fillStyle='rgba(255,235,205,.7)';
+          g.fillText('LOOMR',256,66);
+          g.fillText('LOOMR',256,66);
+        }
+        var t=new THREE.CanvasTexture(c);
+        t.encoding=THREE.sRGBEncoding;
+        t.anisotropy=renderer.capabilities.getMaxAnisotropy();
+        return t;
+      }
+      var coreTex=neonTex(true), haloTex=neonTex(false);
+      /* sol duvar (side=-1), pilastr olmayan aralıklar */
+      for(var nj=1; nj<perWall-1; nj+=2){
+        var nz=startZ-(nj+.5)*GAPZ;
+        var core=new THREE.Mesh(new THREE.PlaneGeometry(.85,.21),
+          new THREE.MeshBasicMaterial({map:coreTex, transparent:true, depthWrite:false}));
+        core.position.set(-(HALL_W/2-.08), 3.05, nz);
+        core.rotation.y=Math.PI/2; core.renderOrder=5; scene.add(core);
+        var halo=new THREE.Mesh(new THREE.PlaneGeometry(1.2,.32),
+          new THREE.MeshBasicMaterial({map:haloTex, transparent:true, opacity:.45,
+            blending:THREE.AdditiveBlending, depthWrite:false}));
+        halo.position.set(-(HALL_W/2-.1), 3.05, nz);
+        halo.rotation.y=Math.PI/2; halo.renderOrder=5; scene.add(halo);
+        /* tabelanın duvara ve parkeye verdiği hafif sıcak ışık */
+        var nl=new THREE.PointLight(0xffe2c0, .5, 5, 2);
+        nl.position.set(-(HALL_W/2-.45), 3.0, nz);
+        scene.add(nl);
+        neonPulse.push({core:core.material, halo:halo.material, light:nl});
+      }
+    })();
+
     /* ---------- PODYUMLAR ---------- */
     var spinning=[], mirrorPairs=[];
     var podMat=new THREE.MeshStandardMaterial({color:0x241d19, roughness:.35, metalness:.25});
@@ -845,6 +894,14 @@
       var dt=Math.min(clock.getDelta(),.05); tAcc+=dt;
       spinning.forEach(function(m){ m.rotation.y+=dt*.45; });
       mirrorPairs.forEach(function(p){ p.dst.rotation.y=p.src.rotation.y; });
+      /* sol duvar neonları: belli belirsiz nabız (malzeme + ışık senkron) */
+      neonPulse.forEach(function(n,ni){
+        var puls=.94+.06*Math.sin(tAcc*7.5+ni*1.9);
+        if(Math.random()<.003) puls*=.6;
+        n.core.opacity=puls;
+        n.halo.opacity=.45*puls;
+        n.light.intensity=.5*puls;
+      });
       if(window.__dust){ window.__dust.rotation.y=Math.sin(tAcc*.05)*.03; window.__dust.position.y=Math.sin(tAcc*.18)*.06; }
       if(focused && camAnim){
         camAnim.t=Math.min(1,camAnim.t+dt*1.8);
