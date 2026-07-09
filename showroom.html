@@ -267,32 +267,54 @@
         t.anisotropy=renderer.capabilities.getMaxAnisotropy();
         t.encoding=THREE.sRGBEncoding; return t;
       }
-      var signFront=mkSignTex(signCanvas(true)), signSide=mkSignTex(signCanvas(false));
-      var SIGN_W=7.4, SIGN_H=1.85, SIGN_D=.2, SIGN_LAYERS=10;
-      var sign=new THREE.Group();
-      for(var sl=0; sl<=SIGN_LAYERS; sl++){
-        var last=(sl===SIGN_LAYERS);
-        var pl=new THREE.Mesh(new THREE.PlaneGeometry(SIGN_W,SIGN_H),
-          new THREE.MeshStandardMaterial({
-            map:last?signFront:signSide, transparent:true, alphaTest:.45,
-            metalness:.85, roughness:last?.5:.78,
-            envMapIntensity:last?.9:.3
-          }));
-        pl.position.z=-SIGN_D+sl*(SIGN_D/SIGN_LAYERS);
-        sign.add(pl);
+      /* Ortak son işlem: sahneye ekle, zemin yansıması, spotlar */
+      function finishSign(sign){
+        scene.add(sign);
+        var sm=sign.clone(true);
+        sm.traverse(function(o){ if(o.isMesh){ o.material=o.material.clone(); o.material.transparent=true; o.material.opacity=.25; } });
+        sm.scale.y=-sm.scale.y; sm.position.y=-2.55; mirror.add(sm);
+        /* tabelayı yıkayan yumuşak spot + alttan sıyıran sıcak dolgu */
+        var ss=new THREE.SpotLight(0xffd9a0, 1.15, 12, .5, .9);
+        ss.position.set(0, 4.3, -HALL_L/2+3.4);
+        ss.target=sign; scene.add(ss);
+        var su=new THREE.SpotLight(0xffc98a, .4, 8, .9, .9);
+        su.position.set(0, .25, -HALL_L/2+2.4);
+        su.target=sign; scene.add(su);
       }
-      sign.position.set(0, 2.55, -HALL_L/2+.36);
-      scene.add(sign);
-      var sm=sign.clone(true);
-      sm.traverse(function(o){ if(o.isMesh){ o.material=o.material.clone(); o.material.opacity=.25; } });
-      sm.scale.y=-1; sm.position.y=-2.55; mirror.add(sm);
-      /* tabelayı yıkayan yumuşak spot + alttan sıyıran sıcak dolgu (patine derinliği) */
-      var ss=new THREE.SpotLight(0xffd9a0, 1.15, 12, .5, .9);
-      ss.position.set(0, 4.3, -HALL_L/2+3.4);
-      ss.target=sign; scene.add(ss);
-      var su=new THREE.SpotLight(0xffc98a, .4, 8, .9, .9);
-      su.position.set(0, .25, -HALL_L/2+2.4);
-      su.target=sign; scene.add(su);
+      /* Yedek: prosedürel eskitilmiş pirinç (GLB yüklenemezse) */
+      function buildProceduralSign(){
+        var signFront=mkSignTex(signCanvas(true)), signSide=mkSignTex(signCanvas(false));
+        var SIGN_W=7.4, SIGN_H=1.85, SIGN_D=.2, SIGN_LAYERS=10;
+        var sign=new THREE.Group();
+        for(var sl=0; sl<=SIGN_LAYERS; sl++){
+          var last=(sl===SIGN_LAYERS);
+          var pl=new THREE.Mesh(new THREE.PlaneGeometry(SIGN_W,SIGN_H),
+            new THREE.MeshStandardMaterial({
+              map:last?signFront:signSide, transparent:true, alphaTest:.45,
+              metalness:.85, roughness:last?.5:.78,
+              envMapIntensity:last?.9:.3
+            }));
+          pl.position.z=-SIGN_D+sl*(SIGN_D/SIGN_LAYERS);
+          sign.add(pl);
+        }
+        sign.position.set(0, 2.55, -HALL_L/2+.36);
+        finishSign(sign);
+      }
+      /* Asıl tabela: gerçek 3D altın-taş LOOMR (Meshy, 1024 dokulu ~1.5MB) */
+      new THREE.GLTFLoader().load('models/loomr-sign-v2.glb', function(g){
+        var root=g.scene;
+        var box=new THREE.Box3().setFromObject(root);
+        var size=new THREE.Vector3(); box.getSize(size);
+        var s=5.6/size.x;
+        root.scale.setScalar(s);
+        box.setFromObject(root);
+        var ctr=new THREE.Vector3(); box.getCenter(ctr);
+        var holder=new THREE.Group();
+        root.position.sub(ctr); holder.add(root);
+        holder.position.set(0, 2.62, -HALL_L/2+.16+size.z*s/2);
+        root.traverse(function(o){ if(o.isMesh){ o.castShadow=true; o.material.envMapIntensity=.9; } });
+        finishSign(holder);
+      }, undefined, buildProceduralSign);
       /* arkasına sıcak hale */
       var hc=document.createElement('canvas'); hc.width=hc.height=256;
       var hg=hc.getContext('2d');
