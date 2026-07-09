@@ -57,7 +57,15 @@
     #closeP{ position:absolute; top:16px; right:18px; background:none; border:none; font-size:26px; cursor:pointer; color:var(--ink); }
     #closeP:hover{ color:var(--acc); }
     #cine{ position:fixed; inset:0; pointer-events:none; z-index:10; }
-    @media (max-width:640px){ .hud-links{ display:none; } }
+    .art-nav{ position:fixed; top:50%; transform:translateY(-50%); z-index:25; width:52px; height:52px;
+      border-radius:50%; border:1px solid rgba(244,239,231,.4); background:rgba(22,17,15,.55); color:var(--cream);
+      font-size:26px; line-height:1; cursor:pointer; display:none; align-items:center; justify-content:center;
+      font-family:'Archivo',sans-serif; padding:0 0 4px; transition:background .25s, border-color .25s; }
+    .art-nav:hover{ background:var(--acc); border-color:var(--acc); }
+    body.focused .art-nav{ display:flex; }
+    #navPrev{ left:20px; }
+    #navNext{ right:calc(min(420px, 92vw) + 20px); }
+    @media (max-width:640px){ .hud-links{ display:none; } #navNext{ right:20px; } }
   </style>
 </head>
 <body>
@@ -80,6 +88,9 @@
     <div id="bar"><i id="barFill"></i></div>
     <div class="mono" id="loadTxt">0%</div>
   </div>
+
+  <button class="art-nav" id="navPrev" aria-label="Önceki eser">‹</button>
+  <button class="art-nav" id="navNext" aria-label="Sonraki eser">›</button>
 
   <aside id="panel" aria-hidden="true">
     <button id="closeP" aria-label="Kapat">×</button>
@@ -715,14 +726,10 @@
     function hideHint(){ if(!hintGone){ hintGone=true; document.getElementById('hint').classList.add('gone'); } }
 
     var ray=new THREE.Raycaster(), ndc=new THREE.Vector2();
-    function tryPick(cx,cy){
-      if(focused) return;
-      ndc.set(cx/innerWidth*2-1, -(cy/innerHeight)*2+1);
-      ray.setFromCamera(ndc,camera);
-      var hit=ray.intersectObjects(artworks)[0];
-      if(!hit) return;
-      focused=hit.object;
-      var a=focused, side=a.position.x<0?-1:1;
+    function focusArt(a){
+      var wasFocused=!!focused;
+      focused=a;
+      var side=a.position.x<0?-1:1;
       var to={ x:a.position.x-side*2.3, y:1.72, z:a.position.z, lz:a.position.z, lx:a.position.x };
       camAnim={ t:0, fx:camera.position.x, fy:camera.position.y, fz:camera.position.z, to:to };
       var i=a.userData.idx;
@@ -730,14 +737,44 @@
       document.getElementById('pTitle').textContent='Koleksiyon · Look '+String(i+1).padStart(2,'0');
       document.getElementById('pImg').src='img/salon/'+a.userData.file+'.jpg';
       document.getElementById('pMail').href='mailto:tedarik@loomr.studio?subject=LOOMR%20Numune%20Talebi%20-%20Look%20'+(i+1);
-      setTimeout(function(){ document.getElementById('panel').classList.add('open'); },420);
+      document.body.classList.add('focused');
+      if(wasFocused) document.getElementById('panel').classList.add('open');
+      else setTimeout(function(){ if(focused) document.getElementById('panel').classList.add('open'); },420);
+    }
+    function tryPick(cx,cy){
+      if(focused) return;
+      ndc.set(cx/innerWidth*2-1, -(cy/innerHeight)*2+1);
+      ray.setFromCamera(ndc,camera);
+      var hit=ray.intersectObjects(artworks)[0];
+      if(!hit) return;
+      focusArt(hit.object);
+    }
+    /* Kenara kayarak yandaki esere geç (dir: +1 = izleyicinin sağı) */
+    function navigate(dir){
+      if(!focused) return;
+      var side=focused.position.x<0?-1:1;
+      var zT=focused.position.z + (side<0? -dir : dir)*GAPZ;
+      var best=null, bd=1e9;
+      artworks.forEach(function(a2){
+        if((a2.position.x<0?-1:1)!==side || a2===focused) return;
+        var d=Math.abs(a2.position.z-zT);
+        if(d<bd){ bd=d; best=a2; }
+      });
+      if(best && bd<GAPZ*.55) focusArt(best);
     }
     function unfocus(){
       document.getElementById('panel').classList.remove('open');
+      document.body.classList.remove('focused');
       focused=null; camAnim=null;
     }
     document.getElementById('closeP').addEventListener('click',unfocus);
-    addEventListener('keydown',function(e){ if(e.key==='Escape') unfocus(); });
+    document.getElementById('navPrev').addEventListener('click',function(){ navigate(-1); });
+    document.getElementById('navNext').addEventListener('click',function(){ navigate(1); });
+    addEventListener('keydown',function(e){
+      if(e.key==='Escape') unfocus();
+      else if(e.key==='ArrowRight') navigate(1);
+      else if(e.key==='ArrowLeft') navigate(-1);
+    });
 
     /* ---------- DÖNGÜ ---------- */
     var clock=new THREE.Clock(), tAcc=0;
