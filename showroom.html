@@ -56,11 +56,13 @@
     #panel .cta a.g:hover{ border-color:var(--acc); color:var(--acc); }
     #closeP{ position:absolute; top:16px; right:18px; background:none; border:none; font-size:26px; cursor:pointer; color:var(--ink); }
     #closeP:hover{ color:var(--acc); }
+    #cine{ position:fixed; inset:0; pointer-events:none; z-index:10; }
     @media (max-width:640px){ .hud-links{ display:none; } }
   </style>
 </head>
 <body>
   <canvas id="salon"></canvas>
+  <div id="cine"></div>
 
   <div class="hud-top">
     <a class="hud-logo" href="index.html">LOOMR<em>.</em></a>
@@ -126,6 +128,21 @@
     renderer.toneMappingExposure=1.08;
     renderer.shadowMap.enabled=true;
     renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+
+    /* Sinematik katman: vinyet + ince film greni (oyunsu düz görüntüyü kırar) */
+    (function(){
+      var nc=document.createElement('canvas'); nc.width=nc.height=160;
+      var ng=nc.getContext('2d'), id=ng.createImageData(160,160);
+      for(var i=0;i<id.data.length;i+=4){
+        var v=(Math.random()*255)|0;
+        id.data[i]=v; id.data[i+1]=v; id.data[i+2]=v; id.data[i+3]=13;
+      }
+      ng.putImageData(id,0,0);
+      var cine=document.getElementById('cine');
+      cine.style.backgroundImage=
+        'radial-gradient(120% 92% at 50% 42%, rgba(0,0,0,0) 50%, rgba(6,4,3,.46) 100%), url('+nc.toDataURL()+')';
+      cine.style.backgroundRepeat='no-repeat, repeat';
+    })();
 
     var scene=new THREE.Scene();
     scene.background=new THREE.Color(0x120e0c);
@@ -194,7 +211,11 @@
       }));
     wall(HALL_W,HALL_H,0,HALL_H/2, HALL_L/2,Math.PI);
     var ceil=new THREE.Mesh(new THREE.PlaneGeometry(HALL_W,HALL_L),
-      new THREE.MeshStandardMaterial({color:0x1e1815, roughness:1}));
+      new THREE.MeshStandardMaterial({
+        map:rTex('img/salon-tex/painted_plaster_wall_diff.jpg',8,32,true),
+        roughnessMap:rTex('img/salon-tex/painted_plaster_wall_rough.jpg',8,32,false),
+        color:0x352c25, roughness:.95
+      }));
     ceil.rotation.x=Math.PI/2; ceil.position.y=HALL_H; scene.add(ceil);
 
     /* Uç duvar: altın LOOMR + çizgi */
@@ -360,11 +381,28 @@
     var runEdge=new THREE.Mesh(new THREE.PlaneGeometry(3.3,HALL_L-4.8),
       new THREE.MeshStandardMaterial({color:0xC2A05E, roughness:.5, metalness:.5}));
     runEdge.rotation.x=-Math.PI/2; runEdge.position.y=.008; scene.add(runEdge);
-    /* Tavan ışık şeridi + ayna kopyası */
-    var stripMat=new THREE.MeshBasicMaterial({color:0xfff3e0});
+    /* Tavan ışık şeridi: yumuşak kenarlı gizli-kova (cove) aydınlatma + ayna kopyası */
+    var stripTex=(function(){
+      var c=document.createElement('canvas'); c.width=128; c.height=16;
+      var g=c.getContext('2d');
+      var gr=g.createLinearGradient(0,0,128,0);
+      gr.addColorStop(0,'rgba(255,233,196,0)');
+      gr.addColorStop(.28,'rgba(255,233,196,.85)');
+      gr.addColorStop(.5,'rgba(255,240,214,1)');
+      gr.addColorStop(.72,'rgba(255,233,196,.85)');
+      gr.addColorStop(1,'rgba(255,233,196,0)');
+      g.fillStyle=gr; g.fillRect(0,0,128,16);
+      var t=new THREE.CanvasTexture(c); t.encoding=THREE.sRGBEncoding; return t;
+    })();
+    var stripMat=new THREE.MeshBasicMaterial({map:stripTex, transparent:true, depthWrite:false});
     var strip=new THREE.Mesh(new THREE.PlaneGeometry(.5,HALL_L-6), stripMat);
     strip.rotation.x=Math.PI/2; strip.position.set(0,HALL_H-.02,0); scene.add(strip);
-    var stripM=strip.clone(); stripM.material=new THREE.MeshBasicMaterial({color:0xfff3e0, transparent:true, opacity:.18});
+    /* geniş, zayıf saçılma halesi (sahte bloom) */
+    var stripGlow=new THREE.Mesh(new THREE.PlaneGeometry(1.7,HALL_L-6),
+      new THREE.MeshBasicMaterial({map:stripTex, transparent:true, opacity:.18,
+        blending:THREE.AdditiveBlending, depthWrite:false}));
+    stripGlow.rotation.x=Math.PI/2; stripGlow.position.set(0,HALL_H-.06,0); scene.add(stripGlow);
+    var stripM=strip.clone(); stripM.material=new THREE.MeshBasicMaterial({map:stripTex, transparent:true, opacity:.12, depthWrite:false});
     stripM.rotation.x=-Math.PI/2; stripM.position.y=-HALL_H+.02; mirror.add(stripM);
     /* Ray spot armatürleri + ışık huzmeleri */
     [-1.9,1.9].forEach(function(rx){
@@ -380,9 +418,17 @@
         cap.rotation.y=(rx<0?Math.PI/2:-Math.PI/2); cap.rotation.x=-.5; scene.add(cap);
       }
     });
-    /* Işık huzmeleri (duvarlara, seyrek) */
-    var beamMat=new THREE.MeshBasicMaterial({color:0xffdda8, transparent:true, opacity:.045,
-      blending:THREE.AdditiveBlending, depthWrite:false, side:THREE.DoubleSide});
+    /* Işık huzmeleri (duvarlara, seyrek) — tabana doğru eriyen yumuşak volumetrik */
+    var coneAlpha=(function(){
+      var c=document.createElement('canvas'); c.width=16; c.height=64;
+      var g=c.getContext('2d');
+      var gr=g.createLinearGradient(0,0,0,64);
+      gr.addColorStop(0,'#c8c8c8'); gr.addColorStop(.55,'#3a3a3a'); gr.addColorStop(1,'#000');
+      g.fillStyle=gr; g.fillRect(0,0,16,64);
+      return new THREE.CanvasTexture(c);
+    })();
+    var beamMat=new THREE.MeshBasicMaterial({color:0xffdda8, transparent:true, opacity:.06,
+      alphaMap:coneAlpha, blending:THREE.AdditiveBlending, depthWrite:false, side:THREE.DoubleSide});
     for(var hz=-18; hz<=18; hz+=9){
       [-1,1].forEach(function(s){
         var cone=new THREE.Mesh(new THREE.ConeGeometry(1.15,3.6,16,1,true), beamMat);
@@ -390,6 +436,48 @@
         cone.rotation.z=s*.75; scene.add(cone);
       });
     }
+    /* ---- Temas gölgeleri + köşe AO (nesneleri zemine oturtur) ---- */
+    var aoTex=(function(){
+      var c=document.createElement('canvas'); c.width=c.height=128;
+      var g=c.getContext('2d');
+      var r=g.createRadialGradient(64,64,6,64,64,64);
+      r.addColorStop(0,'rgba(0,0,0,.62)'); r.addColorStop(.6,'rgba(0,0,0,.3)'); r.addColorStop(1,'rgba(0,0,0,0)');
+      g.fillStyle=r; g.fillRect(0,0,128,128);
+      return new THREE.CanvasTexture(c);
+    })();
+    function contactShadow(w,d,x,z,op){
+      var m=new THREE.Mesh(new THREE.PlaneGeometry(w,d),
+        new THREE.MeshBasicMaterial({map:aoTex, transparent:true, opacity:(op||.75), depthWrite:false}));
+      m.rotation.x=-Math.PI/2; m.position.set(x,.02,z); m.renderOrder=4; scene.add(m);
+    }
+    function bandTex(horiz,rev){
+      var c=document.createElement('canvas');
+      c.width=horiz?64:16; c.height=horiz?16:64;
+      var g=c.getContext('2d');
+      var gr=horiz?g.createLinearGradient(0,0,64,0):g.createLinearGradient(0,0,0,64);
+      gr.addColorStop(0, rev?'rgba(0,0,0,0)':'rgba(0,0,0,.5)');
+      gr.addColorStop(1, rev?'rgba(0,0,0,.5)':'rgba(0,0,0,0)');
+      g.fillStyle=gr; g.fillRect(0,0,c.width,c.height);
+      return new THREE.CanvasTexture(c);
+    }
+    /* duvar-tavan köşesi kararması */
+    [-1,1].forEach(function(s){
+      var top=new THREE.Mesh(new THREE.PlaneGeometry(HALL_L,.85),
+        new THREE.MeshBasicMaterial({map:bandTex(false,false), transparent:true, opacity:.4, depthWrite:false}));
+      top.position.set(s*(HALL_W/2-.035), HALL_H-.42, 0);
+      top.rotation.y=s<0?Math.PI/2:-Math.PI/2; scene.add(top);
+      /* duvar-zemin birleşimi gölgesi (süpürgelik dibi) */
+      var jn=new THREE.Mesh(new THREE.PlaneGeometry(.6,HALL_L),
+        new THREE.MeshBasicMaterial({map:bandTex(true, s>0), transparent:true, opacity:.42, depthWrite:false}));
+      jn.rotation.x=-Math.PI/2; jn.position.set(s*(HALL_W/2-.3),.018,0);
+      jn.renderOrder=4; scene.add(jn);
+    });
+    /* uç duvar dibi gölgesi */
+    var endJn=new THREE.Mesh(new THREE.PlaneGeometry(HALL_W,.7),
+      new THREE.MeshBasicMaterial({map:bandTex(false,false), transparent:true, opacity:.4, depthWrite:false}));
+    endJn.rotation.x=-Math.PI/2; endJn.position.set(0,.018,-HALL_L/2+.35);
+    endJn.renderOrder=4; scene.add(endJn);
+
     /* Havada süzülen toz */
     (function(){
       var N=260, pos=new Float32Array(N*3);
@@ -400,8 +488,8 @@
       }
       var g=new THREE.BufferGeometry();
       g.setAttribute('position', new THREE.BufferAttribute(pos,3));
-      var dust=new THREE.Points(g, new THREE.PointsMaterial({color:0xffe9c9, size:.022,
-        transparent:true, opacity:.5, blending:THREE.AdditiveBlending, depthWrite:false}));
+      var dust=new THREE.Points(g, new THREE.PointsMaterial({color:0xffe9c9, size:.017,
+        transparent:true, opacity:.3, blending:THREE.AdditiveBlending, depthWrite:false}));
       scene.add(dust); window.__dust=dust;
     })();
     /* Deri banklar */
@@ -417,6 +505,7 @@
         var leg=new THREE.Mesh(new THREE.CylinderGeometry(.022,.022,.42,10), brass);
         leg.position.set(bx+o[0],.21,bz+o[1]); scene.add(leg);
       });
+      contactShadow(2.4,1.15,bx,bz,.55);
     });
     /* Kadife kordon bariyer (pirinç baba + sarkan kordon) */
     (function(){
@@ -427,6 +516,7 @@
         pts.forEach(function(pz){
           var post=new THREE.Mesh(new THREE.CylinderGeometry(.03,.038,.95,12), brass);
           post.position.set(px,.475,pz); post.castShadow=true; scene.add(post);
+          contactShadow(.32,.32,px,pz,.5);
           var ball=new THREE.Mesh(new THREE.SphereGeometry(.05,14,10), brass);
           ball.position.set(px,.98,pz); scene.add(ball);
         });
@@ -448,9 +538,9 @@
     endSpot.position.set(0,4.2,-HALL_L/2+6); endSpot.target.position.set(0,1.8,-HALL_L/2);
     scene.add(endSpot); scene.add(endSpot.target);
     /* Tavan rayı boyunca sıcak ışık havuzları (loş salon hissi) */
-    for(var li=-1;li<=1;li++){
+    for(var li=-1;li<=2;li++){
       var dl=new THREE.PointLight(0xffdcae,.55,12,2);
-      dl.position.set(0,HALL_H-.3,li*14);
+      dl.position.set(0,HALL_H-.3,li===2?21:li*14);
       scene.add(dl);
     }
 
@@ -500,7 +590,7 @@
         lamp.position.set(x-side*.14, 1.78+ART_H/2+.18, z);
         lamp.rotation.y=art.rotation.y; scene.add(lamp);
         var glow=new THREE.Mesh(new THREE.PlaneGeometry(w*.72,.06),
-          new THREE.MeshBasicMaterial({color:0xffe9c4, transparent:true, opacity:.5}));
+          new THREE.MeshBasicMaterial({color:0xffe9c4, transparent:true, opacity:.28}));
         glow.position.set(x-side*.055, 1.78+ART_H/2+.1, z);
         glow.rotation.y=art.rotation.y; scene.add(glow);
         /* plaket */
@@ -528,6 +618,7 @@
       var px=cfg.x||0;
       var pod=new THREE.Mesh(new THREE.CylinderGeometry(.78,.88,.4,48), podMat);
       pod.position.set(px,.2,cfg.z); pod.castShadow=pod.receiveShadow=true; scene.add(pod);
+      contactShadow(2.5,2.5,px,cfg.z,.7);
       var rim=new THREE.Mesh(new THREE.CylinderGeometry(.79,.79,.022,48), podTop);
       rim.position.set(px,.41,cfg.z); scene.add(rim);
       var sp=new THREE.SpotLight(0xffe6c4, 1.4, 15, .42, .85);
