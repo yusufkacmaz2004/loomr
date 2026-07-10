@@ -700,6 +700,12 @@
         var c=document.createElement('canvas'); c.width=w; c.height=h;
         var g=c.getContext('2d');
         g.drawImage(im,0,0,w,h);
+        /* vuruşları kalınlaştır: kaydırılmış kopyaları 'lighten' ile bindir */
+        g.globalCompositeOperation='lighten';
+        [[2,0],[-2,0],[0,2],[0,-2],[1,1],[-1,-1],[1,-1],[-1,1]].forEach(function(o){
+          g.drawImage(im,o[0],o[1],w,h);
+        });
+        g.globalCompositeOperation='source-over';
         var id=g.getImageData(0,0,w,h), px=id.data;
         var minX=w,minY=h,maxX=0,maxY=0;
         for(var y=0;y<h;y++)for(var x=0;x<w;x++){
@@ -742,61 +748,6 @@
         });
       };
       im.src='img/emre-korkmaz-imza.png';
-    })();
-
-    /* ---------- UÇ DUVAR: şık seramik saksıda pachira (dik, dallı, difenbahya tarzı) ---------- */
-    (function(){
-      var PLANT_Z=-HALL_L/2+1.25, POT_H=.52;
-      /* kavisli krem seramik saksı + pirinç bilezikler + toprak */
-      function makePlanter(px){
-        var pts=[
-          new THREE.Vector2(.001,0),  new THREE.Vector2(.20,0),
-          new THREE.Vector2(.235,.03),new THREE.Vector2(.30,.16),
-          new THREE.Vector2(.34,.32), new THREE.Vector2(.335,.42),
-          new THREE.Vector2(.315,.50),new THREE.Vector2(.31,POT_H)
-        ];
-        var pot=new THREE.Mesh(new THREE.LatheGeometry(pts,48),
-          new THREE.MeshStandardMaterial({color:0xE8DFD0, roughness:.35, metalness:.05, envMapIntensity:.6}));
-        pot.castShadow=pot.receiveShadow=true;
-        var grp=new THREE.Group(); grp.add(pot);
-        var ring=new THREE.Mesh(new THREE.TorusGeometry(.312,.012,10,48), brass);
-        ring.rotation.x=Math.PI/2; ring.position.y=POT_H; grp.add(ring);
-        var ring2=new THREE.Mesh(new THREE.TorusGeometry(.225,.008,8,48), brass);
-        ring2.rotation.x=Math.PI/2; ring2.position.y=.02; grp.add(ring2);
-        var soil=new THREE.Mesh(new THREE.CircleGeometry(.295,32),
-          new THREE.MeshStandardMaterial({color:0x241a12, roughness:1}));
-        soil.rotation.x=-Math.PI/2; soil.position.y=POT_H-.045; grp.add(soil);
-        grp.position.set(px,0,PLANT_Z);
-        return grp;
-      }
-      new THREE.GLTFLoader().load('models/pachira/pachira_aquatica_01.gltf', function(g){
-        var src=g.scene;
-        var box=new THREE.Box3().setFromObject(src);
-        var size=new THREE.Vector3(); box.getSize(size);
-        var s=1.5/size.y;      /* saksıyla birlikte ~2 m */
-        [[-2.35,.3],[2.35,2.4]].forEach(function(cfg){
-          var planter=makePlanter(cfg[0]); scene.add(planter);
-          contactShadow(1.15,1.15,cfg[0],PLANT_Z,.6);
-          var root=src.clone(true);
-          root.scale.setScalar(s);
-          var b=new THREE.Box3().setFromObject(root);
-          var pivot=new THREE.Group();
-          root.position.set(-(b.min.x+b.max.x)/2, -b.min.y, -(b.min.z+b.max.z)/2);
-          pivot.add(root);
-          pivot.position.set(cfg[0], POT_H-.05, PLANT_Z);
-          pivot.rotation.y=cfg[1];
-          root.traverse(function(o){ if(o.isMesh){ o.castShadow=true;
-            if(o.material){ o.material.envMapIntensity=.35; o.material.side=THREE.DoubleSide; } } });
-          scene.add(pivot);
-          /* parke yansıması: saksı + bitki */
-          [planter,pivot].forEach(function(obj){
-            var mp=obj.clone(true);
-            mp.traverse(function(o){ if(o.isMesh){ o.castShadow=false;
-              o.material=o.material.clone(); o.material.transparent=true; o.material.opacity=.2; } });
-            mp.scale.y=-1; mp.position.y=-obj.position.y; mirror.add(mp);
-          });
-        });
-      }, undefined, function(){});
     })();
 
     /* ---------- PODYUMLAR ---------- */
