@@ -195,7 +195,7 @@
       roughnessMap:rTex('img/salon-tex/herringbone_parquet_rough.jpg',5,24,false),
       normalMap:rTex('img/salon-tex/herringbone_parquet_nor_gl.jpg',5,24,false),
       color:0x9a8672, roughness:.45, metalness:.14,
-      transparent:true, opacity:.9
+      transparent:true, opacity:.82
     });
     floorMat.normalScale=new THREE.Vector2(.7,.7);
     var floor=new THREE.Mesh(new THREE.PlaneGeometry(HALL_W,HALL_L), floorMat);
@@ -610,7 +610,7 @@
         scene.add(art); artworks.push(art);
         /* zemin yansıması */
         var am=art.clone();
-        am.material=new THREE.MeshBasicMaterial({map:tex, transparent:true, opacity:.28});
+        am.material=new THREE.MeshBasicMaterial({map:tex, transparent:true, opacity:.5});
         am.scale.y=-1; am.position.y=-1.78; mirror.add(am);
         var key=w.toFixed(2);
         if(!frameGeoCache[key]) frameGeoCache[key]=new THREE.BoxGeometry(w+.14, ART_H+.14, .06);
@@ -706,6 +706,10 @@
           var i=(y*w+x)*4;
           var a=Math.min(255,(Math.max(px[i],px[i+1],px[i+2])*1.5)|0);
           px[i+3]=a;
+          /* altını canlandır */
+          px[i]=Math.min(255,(px[i]*1.25)|0);
+          px[i+1]=Math.min(255,(px[i+1]*1.2)|0);
+          px[i+2]=Math.min(255,(px[i+2]*1.1)|0);
           if(a>30){ if(x<minX)minX=x; if(x>maxX)maxX=x; if(y<minY)minY=y; if(y>maxY)maxY=y; }
         }
         g.putImageData(id,0,0);
@@ -716,14 +720,21 @@
         var t=new THREE.CanvasTexture(c2);
         t.encoding=THREE.sRGBEncoding;
         t.anisotropy=renderer.capabilities.getMaxAnisotropy();
-        var SW=.6, SH=SW*bh/bw;
+        var SW=.8, SH=SW*bh/bw;
         var geo=new THREE.PlaneGeometry(SW,SH);
-        var mat=new THREE.MeshBasicMaterial({map:t, transparent:true, opacity:.95, depthWrite:false});
+        var mat=new THREE.MeshBasicMaterial({map:t, transparent:true, depthWrite:false});
+        /* koyu tabela plakası — krem duvarda altının kaybolmaması için */
+        var sigPlateMat=new THREE.MeshStandardMaterial({color:0x17110d, roughness:.55, metalness:.35});
+        var sigPlateGeo=new THREE.BoxGeometry(SW+.1, SH+.06, .035);
         [-1,1].forEach(function(side){
           for(var nj=1; nj<perWall-1; nj+=2){
             var nz=startZ-(nj+.5)*GAPZ;
+            var plate=new THREE.Mesh(sigPlateGeo, sigPlateMat);
+            plate.position.set(side*(HALL_W/2-.045), 2.68, nz);
+            plate.rotation.y=side<0?Math.PI/2:-Math.PI/2;
+            scene.add(plate);
             var sig=new THREE.Mesh(geo, mat);
-            sig.position.set(side*(HALL_W/2-.06), 2.72, nz);
+            sig.position.set(side*(HALL_W/2-.075), 2.68, nz);
             sig.rotation.y=side<0?Math.PI/2:-Math.PI/2;
             sig.renderOrder=5;
             scene.add(sig);
@@ -733,31 +744,57 @@
       im.src='img/emre-korkmaz-imza.png';
     })();
 
-    /* ---------- UÇ DUVAR: büyük saksılı antoryumlar (Poly Haven fotogrametri) ---------- */
+    /* ---------- UÇ DUVAR: şık seramik saksıda pachira (dik, dallı, difenbahya tarzı) ---------- */
     (function(){
-      var PLANT_Z=-HALL_L/2+1.15;
-      new THREE.GLTFLoader().load('models/anthurium/anthurium_botany_01.gltf', function(g){
+      var PLANT_Z=-HALL_L/2+1.25, POT_H=.52;
+      /* kavisli krem seramik saksı + pirinç bilezikler + toprak */
+      function makePlanter(px){
+        var pts=[
+          new THREE.Vector2(.001,0),  new THREE.Vector2(.20,0),
+          new THREE.Vector2(.235,.03),new THREE.Vector2(.30,.16),
+          new THREE.Vector2(.34,.32), new THREE.Vector2(.335,.42),
+          new THREE.Vector2(.315,.50),new THREE.Vector2(.31,POT_H)
+        ];
+        var pot=new THREE.Mesh(new THREE.LatheGeometry(pts,48),
+          new THREE.MeshStandardMaterial({color:0xE8DFD0, roughness:.35, metalness:.05, envMapIntensity:.6}));
+        pot.castShadow=pot.receiveShadow=true;
+        var grp=new THREE.Group(); grp.add(pot);
+        var ring=new THREE.Mesh(new THREE.TorusGeometry(.312,.012,10,48), brass);
+        ring.rotation.x=Math.PI/2; ring.position.y=POT_H; grp.add(ring);
+        var ring2=new THREE.Mesh(new THREE.TorusGeometry(.225,.008,8,48), brass);
+        ring2.rotation.x=Math.PI/2; ring2.position.y=.02; grp.add(ring2);
+        var soil=new THREE.Mesh(new THREE.CircleGeometry(.295,32),
+          new THREE.MeshStandardMaterial({color:0x241a12, roughness:1}));
+        soil.rotation.x=-Math.PI/2; soil.position.y=POT_H-.045; grp.add(soil);
+        grp.position.set(px,0,PLANT_Z);
+        return grp;
+      }
+      new THREE.GLTFLoader().load('models/pachira/pachira_aquatica_01.gltf', function(g){
         var src=g.scene;
         var box=new THREE.Box3().setFromObject(src);
         var size=new THREE.Vector3(); box.getSize(size);
-        var s=1.5/size.y;
-        /* tabelanın iki yanına; farklı açılarla ki ikiz durmasınlar */
-        [[-2.3,.4],[2.3,2.8]].forEach(function(cfg){
+        var s=1.5/size.y;      /* saksıyla birlikte ~2 m */
+        [[-2.35,.3],[2.35,2.4]].forEach(function(cfg){
+          var planter=makePlanter(cfg[0]); scene.add(planter);
+          contactShadow(1.15,1.15,cfg[0],PLANT_Z,.6);
           var root=src.clone(true);
           root.scale.setScalar(s);
           var b=new THREE.Box3().setFromObject(root);
           var pivot=new THREE.Group();
           root.position.set(-(b.min.x+b.max.x)/2, -b.min.y, -(b.min.z+b.max.z)/2);
           pivot.add(root);
-          pivot.position.set(cfg[0], 0, PLANT_Z);
+          pivot.position.set(cfg[0], POT_H-.05, PLANT_Z);
           pivot.rotation.y=cfg[1];
-          root.traverse(function(o){ if(o.isMesh){ o.castShadow=true; if(o.material) o.material.envMapIntensity=.35; } });
+          root.traverse(function(o){ if(o.isMesh){ o.castShadow=true;
+            if(o.material){ o.material.envMapIntensity=.35; o.material.side=THREE.DoubleSide; } } });
           scene.add(pivot);
-          contactShadow(1.5,1.5,cfg[0],PLANT_Z,.6);
-          /* parke yansıması */
-          var mp=pivot.clone(true);
-          mp.traverse(function(o){ if(o.isMesh){ o.castShadow=false; o.material=o.material.clone(); o.material.transparent=true; o.material.opacity=.18; } });
-          mp.scale.y=-1; mirror.add(mp);
+          /* parke yansıması: saksı + bitki */
+          [planter,pivot].forEach(function(obj){
+            var mp=obj.clone(true);
+            mp.traverse(function(o){ if(o.isMesh){ o.castShadow=false;
+              o.material=o.material.clone(); o.material.transparent=true; o.material.opacity=.2; } });
+            mp.scale.y=-1; mp.position.y=-obj.position.y; mirror.add(mp);
+          });
         });
       }, undefined, function(){});
     })();
@@ -808,7 +845,7 @@
           if(o.isMesh){
             o.castShadow=false;
             o.material=o.material.clone();
-            o.material.transparent=true; o.material.opacity=.2;
+            o.material.transparent=true; o.material.opacity=.3;
           }
         });
         mp.scale.y=-1; mirror.add(mp);
