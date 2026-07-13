@@ -10,6 +10,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Allura&family=Archivo:ital,wdth,wght@0,62.5..125,100..900;1,62.5..125,100..900&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/editorial.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
+  <script>
+    // İlk ziyarette sinematik açılışa yönlendir (oturumda bir kez)
+    try{ if(!sessionStorage.getItem('loomrAcilis')) location.replace('acilis.html'); }catch(e){}
+  </script>
   <style>
     *,*::before,*::after{box-sizing:border-box}
     html{overflow-x:clip}

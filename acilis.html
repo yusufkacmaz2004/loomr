@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOOMR — Açılış</title>
+  <meta name="description" content="LOOMR — her koleksiyon bir kesikle başlar. Kaydır ve atölyeye gir.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Allura&family=Archivo:ital,wdth,wght@0,62.5..125,100..900;1,62.5..125,100..900&family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='Georgia'>L</text></svg>">
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    :root{
+      --ink:#16110F; --cream:#F4EFE7; --gold:#C2A05E; --acc:#C7331E;
+      --bordo:#8E2430; --bordo-koyu:#5F161F;
+    }
+    html{overflow-x:clip;scroll-behavior:auto}
+    body{margin:0;overflow-x:clip;background:var(--ink);color:var(--cream);
+      font-family:"Archivo",sans-serif;-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+
+    /* Sanal scroll pisti */
+    .track{height:520vh}
+
+    /* Sabit sahne */
+    .stage{position:fixed;inset:0;overflow:hidden}
+    .stage canvas{position:absolute;inset:0;width:100%;height:100%}
+
+    /* Sinematik vinyet + tahıl */
+    .stage::after{content:"";position:absolute;inset:0;pointer-events:none;
+      background:radial-gradient(ellipse at center,transparent 52%,rgba(10,6,5,.42) 100%)}
+    .grain{position:absolute;inset:-40px;pointer-events:none;opacity:.05;z-index:3}
+
+    /* Üst bar */
+    .bar{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;
+      justify-content:space-between;padding:1.1rem 1.6rem;mix-blend-mode:difference}
+    .bar__logo{font-weight:900;font-stretch:118%;letter-spacing:.14em;font-size:1.05rem}
+    .mono{font-family:"Space Mono",monospace;font-size:.62rem;letter-spacing:.22em;text-transform:uppercase}
+
+    /* Katmanlar (JS transform verir) */
+    .layer{position:fixed;z-index:10;pointer-events:none;will-change:transform,opacity}
+
+    .intro{left:0;right:0;bottom:7vh;display:grid;justify-items:center;gap:1.1rem;text-align:center}
+    .intro .eyebrow{color:var(--gold)}
+    .intro .hint{display:grid;justify-items:center;gap:.55rem}
+    .intro .hint .line{width:1px;height:52px;background:linear-gradient(var(--cream),transparent);
+      animation:drip 1.8s ease-in-out infinite}
+    @keyframes drip{0%{transform:scaleY(0);transform-origin:top}55%{transform:scaleY(1);transform-origin:top}
+      56%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+    .motto{left:clamp(1.2rem,6vw,7rem);top:22vh;opacity:0}
+    .motto::before{content:"";position:absolute;inset:-4rem -5rem;z-index:-1;
+      background:radial-gradient(closest-side,rgba(14,9,8,.52),rgba(14,9,8,.28) 55%,transparent 78%)}
+    .motto .kicker{display:flex;align-items:center;gap:.7rem;margin-bottom:1.3rem;color:var(--gold)}
+    .motto .kicker::before{content:"";width:44px;height:1px;background:var(--gold)}
+    .motto .ln{display:block;overflow:hidden;
+      font-family:"Playfair Display",serif;font-weight:500;
+      font-size:clamp(2rem,4.2vw,3.7rem);line-height:1.14;letter-spacing:.005em;
+      text-shadow:0 2px 26px rgba(10,6,5,.65),0 1px 6px rgba(10,6,5,.4)}
+    .motto .ln>span{display:inline-block;transform:translateY(118%);will-change:transform}
+    .motto .ln .vurgu{font-style:italic;color:var(--gold)}
+
+    .imza{right:clamp(1.2rem,6vw,7rem);bottom:12vh;opacity:0;text-align:right}
+    .imza::before{content:"";position:absolute;inset:-2.6rem -3.4rem;z-index:-1;
+      background:radial-gradient(closest-side,rgba(14,9,8,.46),transparent 76%)}
+    .imza .ln{display:block;overflow:hidden}
+    .imza .ln>span{display:inline-block;transform:translateY(118%);will-change:transform}
+    .imza .script{font-family:"Allura",cursive;font-size:clamp(2.1rem,3.2vw,3rem);color:var(--gold);
+      text-shadow:0 2px 22px rgba(10,6,5,.6)}
+    .imza .mono{margin-top:.5rem;text-shadow:0 1px 12px rgba(10,6,5,.7)}
+
+    /* Kapanış paneli — site başlıyor */
+    .final{position:fixed;inset:0;z-index:15;background:var(--cream);color:var(--ink);
+      transform:translateY(102%);display:grid;place-items:center;text-align:center;will-change:transform}
+    .final__in{display:grid;gap:1.6rem;justify-items:center;padding:0 1.4rem;max-width:900px}
+    .final h1{margin:0;font-weight:900;font-stretch:120%;text-transform:uppercase;
+      font-size:clamp(2.2rem,7vw,5.4rem);line-height:.96;letter-spacing:-.01em}
+    .final h1 .em{color:var(--acc)}
+    .final p{margin:0;font-family:"Fraunces",serif;font-weight:300;font-size:clamp(1rem,1.6vw,1.25rem);
+      color:#4b423d;max-width:52ch}
+    .ctas{display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center}
+    .cta{display:inline-block;padding:.95rem 1.7rem;border:1.5px solid var(--ink);
+      font-family:"Space Mono",monospace;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;
+      background:var(--ink);color:var(--cream);pointer-events:auto;transition:background .25s,color .25s}
+    .cta:hover{background:var(--acc);border-color:var(--acc)}
+    .cta--ghost{background:transparent;color:var(--ink)}
+    .cta--ghost:hover{background:var(--ink);color:var(--cream)}
+
+    /* Yükleyici */
+    .loader{position:fixed;inset:0;z-index:40;background:var(--ink);display:grid;place-items:center;
+      transition:opacity .5s;color:var(--gold)}
+    .loader.done{opacity:0;pointer-events:none}
+    .loader .wm{font-weight:900;font-stretch:120%;letter-spacing:.2em;font-size:1.2rem;animation:pulse 1.4s ease-in-out infinite}
+    @keyframes pulse{50%{opacity:.35}}
+
+    @media (max-width:700px){
+      .motto{top:18vh}
+      .imza{bottom:16vh}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="track"></div>
+
+  <div class="stage" aria-hidden="true">
+    <canvas id="cv"></canvas>
+    <canvas class="grain" id="grain"></canvas>
+  </div>
+
+  <div class="bar">
+    <a class="bar__logo" href="index.html">LOOMR</a>
+    <span class="mono">SS27 — Açılış</span>
+  </div>
+
+  <div class="layer intro" id="intro">
+    <span class="mono eyebrow">Emre Korkmaz Textile Design Studio</span>
+    <div class="hint">
+      <span class="mono">Kaydır</span>
+      <span class="line"></span>
+    </div>
+  </div>
+
+  <div class="layer motto" id="motto">
+    <div class="kicker mono">Fikirden üretime</div>
+    <span class="ln"><span>Her koleksiyon</span></span>
+    <span class="ln"><span>bir <em class="vurgu">kesikle</em></span></span>
+    <span class="ln"><span>başlar.</span></span>
+  </div>
+
+  <div class="layer imza" id="imza">
+    <span class="ln"><span class="script">Emre Korkmaz</span></span>
+    <span class="ln"><span class="mono" style="color:var(--cream)">İstanbul · Londra · Milano · Berlin</span></span>
+  </div>
+
+  <section class="final" id="final">
+    <div class="final__in">
+      <span class="mono" style="color:var(--acc)">✦ Kumaş kesildi — atölye açık ✦</span>
+      <h1>Moda markalarının<br><span class="em">imza noktası.</span></h1>
+      <p>Koleksiyonunu ilk eskizden mağaza rafına kadar tasarla, geliştir, tedarik et ve üret — tek platformda.</p>
+      <div class="ctas">
+        <a class="cta" href="index.html">Keşfet →</a>
+        <a class="cta cta--ghost" href="showroom.html">Showroom'u Gez</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="loader" id="loader"><span class="wm">LOOMR</span></div>
+
+<script>
+(function(){
+  'use strict';
+  try{sessionStorage.setItem('loomrAcilis','1')}catch(e){}
+  var N=121, DIR='img/hero-scrub/';
+  var imgs=new Array(N), ok=new Array(N).fill(false), okCount=0;
+  var cv=document.getElementById('cv'), cx=cv.getContext('2d');
+  var loader=document.getElementById('loader');
+  var intro=document.getElementById('intro'), motto=document.getElementById('motto'),
+      imza=document.getElementById('imza'), fin=document.getElementById('final');
+  var mottoLines=[].slice.call(motto.querySelectorAll('.ln>span'));
+  var imzaLines=[].slice.call(imza.querySelectorAll('.ln>span'));
+  var cur=0, target=0, started=false;
+
+  function src(i){ return DIR+'f'+String(i+1).padStart(4,'0')+'.webp'; }
+  function load(i,cb){
+    if(imgs[i]) return;
+    var im=new Image();
+    im.onload=function(){ ok[i]=true; okCount++; if(cb)cb(); };
+    im.src=src(i); imgs[i]=im;
+  }
+  // Önce her 6. kare (hızlı ilk oynatım), sonra tamamı
+  var seed=0;
+  (function pass1(){
+    if(seed<N){ load(seed,pass1); seed+=6; }
+    else{
+      if(!started){ started=true; loader.classList.add('done'); tick(); }
+      var j=0;
+      (function pass2(){ while(j<N && imgs[j]) j++; if(j<N) load(j,pass2); })();
+    }
+  })();
+  // %25 yüklenince beklemeden başla
+  var guard=setInterval(function(){
+    if(okCount>=Math.ceil(N/24) && !started){ started=true; loader.classList.add('done'); tick(); clearInterval(guard); }
+    if(started) clearInterval(guard);
+  },120);
+
+  function fit(){ cv.width=innerWidth*devicePixelRatio; cv.height=innerHeight*devicePixelRatio; }
+  addEventListener('resize',fit); fit();
+
+  function nearest(f){
+    var i=Math.round(f);
+    if(ok[i]) return i;
+    for(var d=1;d<N;d++){ if(i-d>=0&&ok[i-d])return i-d; if(i+d<N&&ok[i+d])return i+d; }
+    return 0;
+  }
+  function draw(){
+    var im=imgs[nearest(cur)];
+    if(!im||!im.naturalWidth) return;
+    var cw=cv.width,ch=cv.height,iw=im.naturalWidth,ih=im.naturalHeight;
+    var s=Math.max(cw/iw,ch/ih),w=iw*s,h=ih*s;
+    cx.drawImage(im,(cw-w)/2,(ch-h)/2,w,h);
+  }
+
+  // Headless doğrulama: ?p=0..1 progress'i zorlar (scroll yok)
+  var forceP=new URLSearchParams(location.search).get('p');
+  function prog(){
+    if(forceP!==null) return Math.min(1,Math.max(0,parseFloat(forceP)));
+    var max=document.body.scrollHeight-innerHeight;
+    return max>0?Math.min(1,Math.max(0,scrollY/max)):0;
+  }
+  function ease(t){ return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2; }
+  function bant(p,a,b){ return Math.min(1,Math.max(0,(p-a)/(b-a))); }
+
+  function tick(){
+    var p=prog();
+    target=p*(N-1);
+    cur+=(target-cur)*0.14;
+    if(Math.abs(target-cur)<.01) cur=target;
+    draw();
+
+    // Katman koreografisi
+    var iOp=1-bant(p,.02,.10);
+    intro.style.opacity=iOp;
+    intro.style.transform='translateY('+(bant(p,.02,.10)*40)+'px)';
+
+    // Motto: satır satır maskeli reveal + yavaş süzülme, sonra yukarı erime
+    var mIn=bant(p,.20,.34), mOut=1-bant(p,.58,.68);
+    motto.style.opacity=Math.min(1,mIn*2.5)*mOut;
+    motto.style.transform='translateY('+(-bant(p,.34,.68)*54)+'px)';
+    mottoLines.forEach(function(el,i){
+      var lp=ease(bant(p,.21+i*.035,.33+i*.035));
+      el.style.transform='translateY('+((1-lp)*118)+'%)';
+    });
+
+    // İmza: aynı reveal dili
+    var zIn=bant(p,.60,.72), zOut=1-bant(p,.80,.86);
+    imza.style.opacity=Math.min(1,zIn*2.5)*zOut;
+    imza.style.transform='translateY('+(-bant(p,.72,.86)*36)+'px)';
+    imzaLines.forEach(function(el,i){
+      var lp=ease(bant(p,.61+i*.04,.71+i*.04));
+      el.style.transform='translateY('+((1-lp)*118)+'%)';
+    });
+
+    var f=ease(bant(p,.84,1));
+    fin.style.transform='translateY('+((1-f)*102)+'%)';
+
+    requestAnimationFrame(tick);
+  }
+
+  // Film greni
+  (function(){
+    var g=document.getElementById('grain'),gx=g.getContext('2d');
+    g.width=280;g.height=280;
+    var d=gx.createImageData(280,280);
+    for(var i=0;i<d.data.length;i+=4){ var v=Math.random()*255|0; d.data[i]=d.data[i+1]=d.data[i+2]=v; d.data[i+3]=28; }
+    gx.putImageData(d,0,0);
+    g.style.background='url('+g.toDataURL()+')';
+  })();
+
+  if(forceP!==null){ cur=parseFloat(forceP)*(N-1); }
+})();
+</script>
+</body>
+</html>
